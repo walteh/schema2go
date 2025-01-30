@@ -61,7 +61,7 @@ func formatStartingWhitespace(s string, colord *color.Color) string {
 		case ' ':
 			out += "⌷" // Middle Dot (U+00B7)
 		case '\t':
-			out += "└──▶" // Rightwards Arrow (U+2192)
+			out += "└──▹" // Rightwards Arrow (U+2192)
 		default:
 			return color.New(color.Faint).Sprint(out) + colord.Sprint(s[j:])
 		}

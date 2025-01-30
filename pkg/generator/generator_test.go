@@ -208,14 +208,35 @@ type BasicExample struct {
 	Ratio *float64 ` + "`json:\"ratio,omitempty\"`" + `
 }
 
-// NewBasicExample creates a new BasicExample with default values
-func NewBasicExample() *BasicExample {
-	count := 0
-	enabled := false
-	return &BasicExample{
-		Count: &count,
-		Enabled: &enabled,
+// UnmarshalJSON implements json.Unmarshaler
+func (x *BasicExample) UnmarshalJSON(data []byte) error {
+	// Define an alias to prevent recursive UnmarshalJSON calls
+	type Alias BasicExample
+	aux := &struct {
+		*Alias
+	}{
+		Alias: (*Alias)(x),
 	}
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return errors.Errorf("unmarshaling json: %w", err)
+	}
+
+	// Apply defaults for missing fields
+	if x.Count == nil {
+		defaultValue := 0
+		x.Count = &defaultValue
+	}
+	if x.Enabled == nil {
+		defaultValue := false
+		x.Enabled = &defaultValue
+	}
+
+	// Validate after applying defaults
+	if err := x.Validate(); err != nil {
+		return errors.Errorf("validating after unmarshal: %w", err)
+	}
+
+	return nil
 }
 
 // Validate ensures all required fields are present and valid
@@ -224,6 +245,18 @@ func (x *BasicExample) Validate() error {
 		return errors.New("id is required")
 	}
 	return nil
+}
+
+// MarshalJSON implements json.Marshaler
+func (x BasicExample) MarshalJSON() ([]byte, error) {
+	// Validate before marshaling
+	if err := x.Validate(); err != nil {
+		return nil, errors.Errorf("validating before marshal: %w", err)
+	}
+
+	// Use alias to avoid infinite recursion
+	type Alias BasicExample
+	return json.Marshal((*Alias)(&x))
 }`,
 	})
 }

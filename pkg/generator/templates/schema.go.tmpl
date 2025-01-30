@@ -18,27 +18,41 @@ type {{ .Name }} struct {
 	{{ if .Description -}}
 	// {{ .Description }}
 	{{- end }}
-	{{- .Name }} {{ .Type }} `json:"{{ .JSONName }}{{ if not .IsRequired }},omitempty{{ end }}"` {{- if .IsRequired }} // Required{{- end }}{{- if .DefaultValue }} // Default: {{ .DefaultValue }}{{- end }}
+	{{ .Name }} {{ .Type }} `json:"{{ .JSONName }}{{ if not .IsRequired }},omitempty{{ end }}"` {{- if .IsRequired }} // Required{{- end }}{{- if .DefaultValue }} // Default: {{ .DefaultValue }}{{- end }}
 	{{- end }}
 }
 
 {{- if .HasDefaults }}
 
-// New{{ .Name }} creates a new {{ .Name }} with default values
-func New{{ .Name }}() *{{ .Name }} {
-	{{- $fields := .Fields }}
-	{{- range $fields }}
-	{{- if .DefaultValue }}
-	{{ .Name | ToLower }} := {{ .DefaultValue }}
-	{{- end }}
-	{{- end }}
-	return &{{ .Name }}{
-		{{- range $fields }}
-		{{- if .DefaultValue }}
-		{{ .Name }}: &{{ .Name | ToLower }},
-		{{- end }}
-		{{- end }}
+// UnmarshalJSON implements json.Unmarshaler
+func (x *{{ .Name }}) UnmarshalJSON(data []byte) error {
+	// Define an alias to prevent recursive UnmarshalJSON calls
+	type Alias {{ .Name }}
+	aux := &struct {
+		*Alias
+	}{
+		Alias: (*Alias)(x),
 	}
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return errors.Errorf("unmarshaling json: %w", err)
+	}
+
+	// Apply defaults for missing fields
+	{{- range .Fields }}
+	{{- if .DefaultValue }}
+	if x.{{ .Name }} == nil {
+		defaultValue := {{ .DefaultValue }}
+		x.{{ .Name }} = &defaultValue
+	}
+	{{- end }}
+	{{- end }}
+
+	// Validate after applying defaults
+	if err := x.Validate(); err != nil {
+		return errors.Errorf("validating after unmarshal: %w", err)
+	}
+
+	return nil
 }
 {{- end }}
 
@@ -82,6 +96,18 @@ func (x *{{ .Name }}) Validate() error {
 	{{- end }}
 	{{- end }}
 	return nil
+}
+
+// MarshalJSON implements json.Marshaler
+func (x {{ .Name }}) MarshalJSON() ([]byte, error) {
+	// Validate before marshaling
+	if err := x.Validate(); err != nil {
+		return nil, errors.Errorf("validating before marshal: %w", err)
+	}
+
+	// Use alias to avoid infinite recursion
+	type Alias {{ .Name }}
+	return json.Marshal((*Alias)(&x))
 }
 {{- end }}
 
