@@ -3,6 +3,7 @@ package generator
 import (
 	"context"
 	_ "embed"
+	"fmt"
 	"go/format"
 	"sort"
 	"strings"
@@ -38,6 +39,7 @@ type Options struct {
 type generator struct {
 	opts     Options
 	template *template.Template
+	model    *SchemaModel // Current model being built
 }
 
 // New creates a new Generator with the given options
@@ -87,7 +89,7 @@ func (g *generator) Generate(ctx context.Context, input string) (string, error) 
 
 // buildSchemaModel converts a gnostic schema to our template model
 func (g *generator) buildSchemaModel(schema *jsonschema.Schema) (*SchemaModel, error) {
-	model := &SchemaModel{
+	g.model = &SchemaModel{
 		Package: g.opts.PackageName,
 		Imports: []string{
 			"encoding/json",
@@ -133,6 +135,22 @@ func (g *generator) buildSchemaModel(schema *jsonschema.Schema) (*SchemaModel, e
 		if len(field.ValidationRules) > 0 {
 			structModel.HasValidation = true
 		}
+
+		// Check if field has enum values
+		if enum := parser.GetEnum(prop); enum != nil {
+			enumModel := &EnumModel{
+				Name:     toGoFieldName(name) + "Type",
+				BaseType: field.Type,
+			}
+			for _, val := range enum {
+				enumModel.Values = append(enumModel.Values, &EnumValue{
+					Name:  toGoFieldName(fmt.Sprintf("%s_%s", name, *val.String)),
+					Value: *val.String,
+				})
+			}
+			g.model.Enums = append(g.model.Enums, enumModel)
+			field.Type = enumModel.Name // Update field type to use enum type
+		}
 	}
 
 	// Sort fields by required first, then alphabetically
@@ -146,15 +164,15 @@ func (g *generator) buildSchemaModel(schema *jsonschema.Schema) (*SchemaModel, e
 	})
 
 	// Add struct to model
-	model.Structs = append(model.Structs, structModel)
+	g.model.Structs = append(g.model.Structs, structModel)
 
-	return model, nil
+	return g.model, nil
 }
 
 // buildFieldModel converts a gnostic schema property to our field model
 func (g *generator) buildFieldModel(name string, schema *jsonschema.Schema, parent *jsonschema.Schema) (*FieldModel, error) {
 	// Convert type
-	goType, err := g.schemaToGoType(schema)
+	goType, err := g.schemaToGoType(schema, "", name)
 	if err != nil {
 		return nil, errors.Errorf("converting type: %w", err)
 	}
@@ -168,12 +186,16 @@ func (g *generator) buildFieldModel(name string, schema *jsonschema.Schema, pare
 		IsRequired:  parser.IsRequired(parent, name),
 	}
 
-	// Add validation rules
+	// Handle validation rules
 	if field.IsRequired {
-		field.ValidationRules = append(field.ValidationRules, &ValidationRule{
-			Type:    ValidationRequired,
-			Message: name + " is required",
-		})
+		// For nested objects, we only want to validate the nested object
+		if parser.GetTypeOrEmpty(schema) != "object" {
+			field.ValidationRules = append(field.ValidationRules, &ValidationRule{
+				Type:    ValidationRequired,
+				Message: name + " is required",
+				Field:   field,
+			})
+		}
 	}
 
 	// Handle optional fields
@@ -186,11 +208,20 @@ func (g *generator) buildFieldModel(name string, schema *jsonschema.Schema, pare
 		field.DefaultValue = schema.Default.Value
 	}
 
+	// Handle nested object validation
+	if parser.GetTypeOrEmpty(schema) == "object" {
+		field.ValidationRules = append(field.ValidationRules, &ValidationRule{
+			Type:    ValidationNested,
+			Message: fmt.Sprintf("validating %s", name),
+			Field:   field,
+		})
+	}
+
 	return field, nil
 }
 
 // schemaToGoType converts a JSON Schema type to a Go type
-func (g *generator) schemaToGoType(schema *jsonschema.Schema) (string, error) {
+func (g *generator) schemaToGoType(schema *jsonschema.Schema, parentName, fieldName string) (string, error) {
 	typ := parser.GetTypeOrEmpty(schema)
 	switch typ {
 	case "string":
@@ -204,16 +235,58 @@ func (g *generator) schemaToGoType(schema *jsonschema.Schema) (string, error) {
 	case "array":
 		items := parser.GetArrayItems(schema)
 		if items == nil || items.Schema == nil {
-			return "", errors.New("array must have items")
+			return "", errors.New("array items not found")
 		}
-		itemType, err := g.schemaToGoType(items.Schema)
+		itemType, err := g.schemaToGoType(items.Schema, parentName, fieldName)
 		if err != nil {
 			return "", errors.Errorf("getting array item type: %w", err)
 		}
 		return "[]" + itemType, nil
 	case "object":
-		// TODO: Handle nested objects
-		return "", errors.New("nested objects not yet supported")
+		// For nested objects, we'll use the field name as the type name
+		if fieldName == "" {
+			return "", errors.New("field name is required for nested objects")
+		}
+
+		// Create a new struct model for the nested type
+		structName := toGoFieldName(fieldName)
+		structModel := &StructModel{
+			Name:        structName,
+			Description: parser.GetDescription(schema),
+		}
+
+		// Get properties
+		props := parser.GetProperties(schema)
+		for name, prop := range props {
+			field, err := g.buildFieldModel(name, prop, schema)
+			if err != nil {
+				return "", errors.Errorf("building field model for %s: %w", name, err)
+			}
+			structModel.Fields = append(structModel.Fields, field)
+
+			// Update struct flags based on field
+			if field.IsRequired {
+				structModel.HasValidation = true
+			}
+			if field.DefaultValue != nil {
+				structModel.HasDefaults = true
+			}
+		}
+
+		// Sort fields by required first, then alphabetically
+		sort.SliceStable(structModel.Fields, func(i, j int) bool {
+			// Required fields come first
+			if structModel.Fields[i].IsRequired != structModel.Fields[j].IsRequired {
+				return structModel.Fields[i].IsRequired
+			}
+			// Then sort alphabetically
+			return structModel.Fields[i].Name < structModel.Fields[j].Name
+		})
+
+		// Add the struct model to the list
+		g.model.Structs = append(g.model.Structs, structModel)
+
+		return structName, nil
 	default:
 		return "", errors.Errorf("unsupported type: %s", typ)
 	}

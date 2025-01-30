@@ -176,3 +176,11 @@ func GetArrayItems(schema *jsonschema.Schema) *jsonschema.SchemaOrSchemaArray {
 	return schema.Items
 
 }
+
+// GetEnum returns the enum values from a schema or nil if none
+func GetEnum(schema *jsonschema.Schema) []jsonschema.SchemaEnumValue {
+	if schema.Enumeration == nil {
+		return nil
+	}
+	return *schema.Enumeration
+}

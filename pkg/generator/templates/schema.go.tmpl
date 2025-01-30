@@ -8,6 +8,19 @@ import (
 	"gitlab.com/tozd/go/errors"
 )
 
+{{- range .Enums }}
+{{- if .Description }}
+// {{ .Description }}
+{{- end }}
+type {{ .Name }} {{ .BaseType }}
+
+const (
+{{- range .Values }}
+	{{ .Name }} {{ $.Name }} = {{ printf "%#v" .Value }}{{- if .Description }} // {{ .Description }}{{- end }}
+{{- end }}
+)
+{{ end }}
+
 {{- range .Structs }}
 
 {{ if .Description -}}
@@ -61,36 +74,22 @@ func (x *{{ .Name }}) UnmarshalJSON(data []byte) error {
 // Validate ensures all required fields are present and valid
 func (x *{{ .Name }}) Validate() error {
 	{{- range .Fields }}
-	{{- $fieldName := .Name }}
 	{{- range .ValidationRules }}
 	{{- if eq .Type "required" }}
-	if x.{{ $fieldName }} == "" {
+	if x.{{ .Field.Name }} == "" {
 		return errors.New("{{ .Message }}")
 	}
-	{{- end }}
-	{{- if eq .Type "min" }}
-	if x.{{ $fieldName }} < {{ .Value }} {
-		return errors.New("{{ .Message }}")
+	{{- else if eq .Type "enum" }}
+	if x.{{ .Field.Name }} != nil {
+		switch *x.{{ .Field.Name }} {
+		case {{ .Values }}:
+		default:
+			return errors.New("{{ .Message }}")
+		}
 	}
-	{{- end }}
-	{{- if eq .Type "max" }}
-	if x.{{ $fieldName }} > {{ .Value }} {
-		return errors.New("{{ .Message }}")
-	}
-	{{- end }}
-	{{- if eq .Type "pattern" }}
-	if !regexp.MustCompile({{ .Value }}).MatchString(x.{{ $fieldName }}) {
-		return errors.New("{{ .Message }}")
-	}
-	{{- end }}
-	{{- if eq .Type "minLength" }}
-	if len(x.{{ $fieldName }}) < {{ .Value }} {
-		return errors.New("{{ .Message }}")
-	}
-	{{- end }}
-	{{- if eq .Type "maxLength" }}
-	if len(x.{{ $fieldName }}) > {{ .Value }} {
-		return errors.New("{{ .Message }}")
+	{{- else if eq .Type "nested" }}
+	if err := x.{{ .Field.Name }}.Validate(); err != nil {
+		return errors.Errorf("{{ .Message }}: %w", err)
 	}
 	{{- end }}
 	{{- end }}
