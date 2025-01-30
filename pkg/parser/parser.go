@@ -5,9 +5,12 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+func Ptr[T any](v T) *T {
+	return &v
+}
+
 // Parse parses a JSON schema string into a gnostic Schema
 func Parse(input string) (*jsonschema.Schema, error) {
-
 	var node yaml.Node
 	err := yaml.Unmarshal([]byte(input), &node)
 	if err != nil {
@@ -16,12 +19,33 @@ func Parse(input string) (*jsonschema.Schema, error) {
 
 	schema := jsonschema.NewSchemaFromObject(&node)
 
+	// // Set the ID to "#" so that internal references work
+	// schema.ID = Ptr("#")
+
 	// Resolve all references and special types
-	schema.ResolveRefs()
-	schema.ResolveAllOfs()
-	schema.ResolveAnyOfs()
+	// schema.ResolveRefs()
+	// schema.ResolveAllOfs()
+	// schema.ResolveAnyOfs()
 
 	return schema, nil
+}
+
+func NewType(s string) *jsonschema.Schema {
+	return &jsonschema.Schema{
+		Type: jsonschema.NewStringOrStringArrayWithString(s),
+	}
+}
+
+func NewTypeArray(s []string) *jsonschema.Schema {
+	return &jsonschema.Schema{
+		Type: jsonschema.NewStringOrStringArrayWithStringArray(s),
+	}
+}
+
+func NewDefinitionRef(name string) *jsonschema.Schema {
+	return &jsonschema.Schema{
+		Ref: Ptr("#/definitions/" + name),
+	}
 }
 
 // Helper methods to make working with the schema easier
