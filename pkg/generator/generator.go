@@ -3,6 +3,7 @@ package generator
 import (
 	"context"
 	_ "embed"
+	"go/format"
 	"sort"
 	"strings"
 	"text/template"
@@ -75,7 +76,13 @@ func (g *generator) Generate(ctx context.Context, input string) (string, error) 
 		return "", errors.Errorf("executing template: %w", err)
 	}
 
-	return b.String(), nil
+	// format the go code
+	formatted, err := format.Source([]byte(b.String()))
+	if err != nil {
+		return "", errors.Errorf("formatting code: %w", err)
+	}
+
+	return string(formatted), nil
 }
 
 // buildSchemaModel converts a gnostic schema to our template model

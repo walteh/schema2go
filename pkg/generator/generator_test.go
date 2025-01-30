@@ -3,7 +3,6 @@ package generator
 import (
 	"context"
 	"go/format"
-	"strings"
 	"testing"
 
 	"github.com/walteh/schema2go/pkg/diff"
@@ -145,17 +144,6 @@ type testCase struct {
 	expectedOutput string
 }
 
-func normalizeWhitespace(s string) string {
-	// Replace all newlines and multiple spaces with a single space
-	s = strings.Join(strings.Fields(s), " ")
-	// Remove spaces around braces and parentheses
-	s = strings.ReplaceAll(s, "{ ", "{")
-	s = strings.ReplaceAll(s, " }", "}")
-	s = strings.ReplaceAll(s, "( ", "(")
-	s = strings.ReplaceAll(s, " )", ")")
-	return s
-}
-
 // runTestCase is a helper function to run a single test case
 func runTestCase(t *testing.T, tc testCase) {
 	t.Helper() // marks this as a helper function for better test output
@@ -164,16 +152,9 @@ func runTestCase(t *testing.T, tc testCase) {
 			PackageName: "models",
 		})
 
-		output, err := gen.Generate(context.Background(), tc.input)
+		got, err := gen.Generate(context.Background(), tc.input)
 		if err != nil {
 			t.Fatalf("Failed to generate code: %v", err)
-		}
-
-		// format the go code
-
-		formattedGot, err := format.Source([]byte(output))
-		if err != nil {
-			t.Fatalf("Failed to format code: %v", err)
 		}
 
 		formattedWant, err := format.Source([]byte(tc.expectedOutput))
@@ -181,7 +162,7 @@ func runTestCase(t *testing.T, tc testCase) {
 			t.Fatalf("Failed to format code: %v", err)
 		}
 
-		diff.RequireKnownValueEqual(t, string(formattedWant), string(formattedGot))
+		diff.RequireKnownValueEqual(t, string(formattedWant), string(got))
 	})
 }
 
