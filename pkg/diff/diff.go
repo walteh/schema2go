@@ -44,6 +44,31 @@ func diffd(want string, got string) string {
 
 }
 
+// formatStartingWhitespace formats leading whitespace characters to be visible while maintaining proper spacing
+// Example:
+//
+//	Input:  "    \t  hello"
+//	Output: "····→···hello"
+//
+// Where:
+//
+//	· represents a space (Middle Dot U+00B7)
+//	→ represents a tab (Rightwards Arrow U+2192)
+func formatStartingWhitespace(s string, colord *color.Color) string {
+	out := " |"
+	for j, char := range s {
+		switch char {
+		case ' ':
+			out += "⌷" // Middle Dot (U+00B7)
+		case '\t':
+			out += "└──▶" // Rightwards Arrow (U+2192)
+		default:
+			return color.New(color.Faint).Sprint(out) + colord.Sprint(s[j:])
+		}
+	}
+	return color.New(color.Faint).Sprint(out)
+}
+
 func diffTyped[T any](printer *pp.PrettyPrinter, want T, got T) string {
 	// Enable colors
 
@@ -94,11 +119,11 @@ func diffTyped[T any](printer *pp.PrettyPrinter, want T, got T) string {
 					first = color.New(color.Faint).Sprint("@@" + found)
 				} else {
 					if strings.HasPrefix(found, "-") {
-						realign = append(realign, expectedPrefix+color.New(color.FgRed).Sprint(found[1:]))
+						realign = append(realign, expectedPrefix+formatStartingWhitespace(found[1:], color.New(color.FgRed)))
 					} else if strings.HasPrefix(found, "+") {
-						realign = append(realign, actualPrefix+color.New(color.FgBlue).Sprint(found[1:]))
+						realign = append(realign, actualPrefix+formatStartingWhitespace(found[1:], color.New(color.FgBlue)))
 					} else {
-						realign = append(realign, color.New(color.Faint).Sprint(strings.Repeat(" ", 8)+found))
+						realign = append(realign, strings.Repeat(" ", 8)+formatStartingWhitespace(found, color.New(color.Faint)))
 					}
 				}
 			}
