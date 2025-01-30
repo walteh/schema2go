@@ -18,7 +18,7 @@ type {{ .Name }} struct {
 	{{ if .Description -}}
 	// {{ .Description }}
 	{{- end }}
-	{{ .Name }} {{ .Type }} `json:"{{ .JSONName }}{{ if not .IsRequired }},omitempty{{ end }}"` {{- if .IsRequired }} // Required{{- end }}{{- if .DefaultValue }} // Default: {{ .DefaultValue }}{{- end }}
+	{{- .Name }} {{ .Type }} `json:"{{ .JSONName }}{{ if not .IsRequired }},omitempty{{ end }}"` {{- if .IsRequired }} // Required{{- end }}{{- if .DefaultValue }} // Default: {{ .DefaultValue }}{{- end }}
 	{{- end }}
 }
 
