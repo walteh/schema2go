@@ -7,14 +7,18 @@ if [ "${1:-}" == "test" ]; then
 
 	cc=0
 	ff=0
+	testname=0
 	real_args=()
 	extra_args=""
+	format="pkgname"
 	# Handle each argument
 	for arg in "$@"; do
 		if [ "$arg" = "-custom-coverage" ]; then
 			cc=1
 		elif [ "$arg" = "-force" ]; then
 			ff=1
+		elif [ "$arg" = "-testname" ]; then
+			testname=1
 		else
 			real_args+=("$arg")
 		fi
@@ -38,8 +42,12 @@ if [ "${1:-}" == "test" ]; then
 		extra_args="$extra_args -count=1 "
 	fi
 
+	if [[ "$testname" == "1" ]]; then
+		format="testname"
+	fi
+
 	./scripts/run-tool.sh gotestsum \
-		--format pkgname \
+		--format $format \
 		--format-icons hivis \
 		--hide-summary=skipped \
 		--raw-command -- go test -v -vet=all -json -cover $extra_args "${real_args[@]}"
