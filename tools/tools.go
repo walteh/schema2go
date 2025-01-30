@@ -16,6 +16,7 @@ import (
 	_ "github.com/goreleaser/goreleaser/v2"
 	_ "github.com/hashicorp/copywrite"
 	_ "github.com/ianlewis/todos/internal/cmd/todos"
+	_ "github.com/nikolaydubina/go-cover-treemap"
 	_ "github.com/oligot/go-mod-upgrade"
 	_ "github.com/srikrsna/protoc-gen-gotag"
 	_ "github.com/uber-go/gopatch"

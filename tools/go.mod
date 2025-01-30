@@ -19,6 +19,7 @@ require (
 	github.com/goreleaser/goreleaser/v2 v2.5.1
 	github.com/hashicorp/copywrite v0.20.0
 	github.com/ianlewis/todos v0.10.0
+	github.com/nikolaydubina/go-cover-treemap v1.5.0
 	github.com/oligot/go-mod-upgrade v0.10.0
 	github.com/srikrsna/protoc-gen-gotag v1.0.2
 	github.com/uber-go/gopatch v0.4.0
@@ -430,6 +431,7 @@ require (
 	github.com/multiformats/go-varint v0.0.7 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/nakabonne/nestif v0.3.1 // indirect
+	github.com/nikolaydubina/treemap v1.2.5 // indirect
 	github.com/nishanths/exhaustive v0.12.0 // indirect
 	github.com/nishanths/predeclared v0.2.2 // indirect
 	github.com/nunnatsa/ginkgolinter v0.18.4 // indirect
