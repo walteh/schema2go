@@ -397,4 +397,348 @@ func TestGnosticTypes(t *testing.T) {
 
 		diff.RequireKnownValueEqual(t, want, got)
 	})
+
+	// 🔄 Test Case 5: AllOf Variations
+	t.Run("allof_variations", func(t *testing.T) {
+		input := `{
+			"type": "object",
+			"allOf": [
+				{
+					"type": "object",
+					"properties": {
+						"name": { "type": "string" }
+					},
+					"required": ["name"]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"age": { "type": "integer" }
+					},
+					"required": ["age"]
+				}
+			]
+		}`
+
+		got, err := Parse(input)
+		require.NoError(t, err, "parsing schema")
+
+		want := &jsonschema.Schema{
+			Type: &jsonschema.StringOrStringArray{
+				String: Ptr("object"),
+			},
+			AllOf: &[]*jsonschema.Schema{
+				{
+					Type: &jsonschema.StringOrStringArray{
+						String: Ptr("object"),
+					},
+					Properties: &[]*jsonschema.NamedSchema{
+						{
+							Name:  "name",
+							Value: NewType("string"),
+						},
+					},
+					Required: &[]string{"name"},
+				},
+				{
+					Type: &jsonschema.StringOrStringArray{
+						String: Ptr("object"),
+					},
+					Properties: &[]*jsonschema.NamedSchema{
+						{
+							Name:  "age",
+							Value: NewType("integer"),
+						},
+					},
+					Required: &[]string{"age"},
+				},
+			},
+		}
+
+		diff.RequireKnownValueEqual(t, want, got)
+	})
+
+	// 🔄 Test Case 6: AnyOf Variations
+	t.Run("anyof_variations", func(t *testing.T) {
+		input := `{
+			"type": "object",
+			"properties": {
+				"value": {
+					"anyOf": [
+						{
+							"type": "string",
+							"minLength": 1
+						},
+						{
+							"type": "integer",
+							"minimum": 0
+						},
+						{
+							"type": "object",
+							"properties": {
+								"custom": { "type": "string" }
+							}
+						}
+					]
+				}
+			}
+		}`
+
+		got, err := Parse(input)
+		require.NoError(t, err, "parsing schema")
+
+		want := &jsonschema.Schema{
+			Type: &jsonschema.StringOrStringArray{
+				String: Ptr("object"),
+			},
+			Properties: &[]*jsonschema.NamedSchema{
+				{
+					Name: "value",
+					Value: &jsonschema.Schema{
+						AnyOf: &[]*jsonschema.Schema{
+							{
+								Type: &jsonschema.StringOrStringArray{
+									String: Ptr("string"),
+								},
+								MinLength: Ptr(int64(1)),
+							},
+							{
+								Type: &jsonschema.StringOrStringArray{
+									String: Ptr("integer"),
+								},
+								Minimum: jsonschema.NewSchemaNumberWithInteger(0),
+							},
+							{
+								Type: &jsonschema.StringOrStringArray{
+									String: Ptr("object"),
+								},
+								Properties: &[]*jsonschema.NamedSchema{
+									{
+										Name:  "custom",
+										Value: NewType("string"),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+
+		diff.RequireKnownValueEqual(t, want, got)
+	})
+
+	// 🎯 Test Case 5: OneOf with Discriminator
+	// Note: In gnostic's JSON Schema implementation, 'const' values are represented using
+	// the Enumeration field with a single value. This is because gnostic doesn't have a
+	// dedicated 'const' field in its Schema struct. For example:
+	//   JSON Schema: { "const": "dog" }
+	//   Gnostic: { "enumeration": [{ "string": "dog" }] }
+	t.Run("oneof_with_discriminator", func(t *testing.T) {
+		input := `{
+			"type": "object",
+			"oneOf": [
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": ["dog"]
+						},
+						"bark": {
+							"type": "string"
+						}
+					},
+					"required": ["type", "bark"]
+				},
+				{
+					"type": "object",
+					"properties": {
+						"type": {
+							"type": "string",
+							"enum": ["cat"]
+						},
+						"meow": {
+							"type": "string"
+						}
+					},
+					"required": ["type", "meow"]
+				}
+			]
+		}`
+
+		got, err := Parse(input)
+		require.NoError(t, err, "parsing schema")
+
+		want := &jsonschema.Schema{
+			Type: &jsonschema.StringOrStringArray{String: Ptr("object")},
+			OneOf: &[]*jsonschema.Schema{
+				{
+					Type: &jsonschema.StringOrStringArray{String: Ptr("object")},
+					Properties: &[]*jsonschema.NamedSchema{
+						{
+							Name: "type",
+							Value: &jsonschema.Schema{
+								Type: &jsonschema.StringOrStringArray{String: Ptr("string")},
+								Enumeration: &[]jsonschema.SchemaEnumValue{
+									{String: Ptr("dog")},
+								},
+							},
+						},
+						{
+							Name:  "bark",
+							Value: NewType("string"),
+						},
+					},
+					Required: &[]string{"type", "bark"},
+				},
+				{
+					Type: &jsonschema.StringOrStringArray{String: Ptr("object")},
+					Properties: &[]*jsonschema.NamedSchema{
+						{
+							Name: "type",
+							Value: &jsonschema.Schema{
+								Type: &jsonschema.StringOrStringArray{String: Ptr("string")},
+								Enumeration: &[]jsonschema.SchemaEnumValue{
+									{String: Ptr("cat")},
+								},
+							},
+						},
+						{
+							Name:  "meow",
+							Value: NewType("string"),
+						},
+					},
+					Required: &[]string{"type", "meow"},
+				},
+			},
+		}
+
+		diff.RequireKnownValueEqual(t, want, got)
+	})
+
+	// 🔄 Test Case 8: Nested Combinations
+	t.Run("nested_combinations", func(t *testing.T) {
+		input := `{
+			"type": "object",
+			"properties": {
+				"mixed": {
+					"anyOf": [
+						{
+							"type": "object",
+							"allOf": [
+								{
+									"type": "object",
+									"properties": {
+										"id": { "type": "string" }
+									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"value": { "type": "integer" }
+									}
+								}
+							]
+						},
+						{
+							"type": "object",
+							"oneOf": [
+								{
+									"type": "object",
+									"properties": {
+										"name": { "type": "string" }
+									}
+								},
+								{
+									"type": "object",
+									"properties": {
+										"code": { "type": "integer" }
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		}`
+
+		got, err := Parse(input)
+		require.NoError(t, err, "parsing schema")
+
+		want := &jsonschema.Schema{
+			Type: &jsonschema.StringOrStringArray{
+				String: Ptr("object"),
+			},
+			Properties: &[]*jsonschema.NamedSchema{
+				{
+					Name: "mixed",
+					Value: &jsonschema.Schema{
+						AnyOf: &[]*jsonschema.Schema{
+							{
+								Type: &jsonschema.StringOrStringArray{
+									String: Ptr("object"),
+								},
+								AllOf: &[]*jsonschema.Schema{
+									{
+										Type: &jsonschema.StringOrStringArray{
+											String: Ptr("object"),
+										},
+										Properties: &[]*jsonschema.NamedSchema{
+											{
+												Name:  "id",
+												Value: NewType("string"),
+											},
+										},
+									},
+									{
+										Type: &jsonschema.StringOrStringArray{
+											String: Ptr("object"),
+										},
+										Properties: &[]*jsonschema.NamedSchema{
+											{
+												Name:  "value",
+												Value: NewType("integer"),
+											},
+										},
+									},
+								},
+							},
+							{
+								Type: &jsonschema.StringOrStringArray{
+									String: Ptr("object"),
+								},
+								OneOf: &[]*jsonschema.Schema{
+									{
+										Type: &jsonschema.StringOrStringArray{
+											String: Ptr("object"),
+										},
+										Properties: &[]*jsonschema.NamedSchema{
+											{
+												Name:  "name",
+												Value: NewType("string"),
+											},
+										},
+									},
+									{
+										Type: &jsonschema.StringOrStringArray{
+											String: Ptr("object"),
+										},
+										Properties: &[]*jsonschema.NamedSchema{
+											{
+												Name:  "code",
+												Value: NewType("integer"),
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+
+		diff.RequireKnownValueEqual(t, want, got)
+	})
 }
