@@ -5,12 +5,13 @@ PASSING_TESTS=(
 	"TestBasicSchemaToStruct"
 	"TestStringEnumSchemaToStruct"
 	"TestIntegerEnumSchemaToStruct"
+	"TestAllOfSchemaToStruct"
 )
 
-CURRENT_TARGET="TestAllOfSchemaToStruct"
+CURRENT_TARGET="TestAllOfWithRefsSchemaToStruct"
 
 # next up
-# - TestAllOfWithRefsSchemaToStruct
+# -
 # - TestOneOfSchemaToStruct
 # - TestAnyOfSchemaToStruct
 
