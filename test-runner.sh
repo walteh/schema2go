@@ -4,9 +4,15 @@ PASSING_TESTS=(
 	"TestNestedObjectSimple"
 	"TestBasicSchemaToStruct"
 	"TestStringEnumSchemaToStruct"
+	"TestIntegerEnumSchemaToStruct"
 )
 
-CURRENT_TARGET="TestIntegerEnumSchemaToStruct"
+CURRENT_TARGET="TestAllOfSchemaToStruct"
+
+# next up
+# - TestAllOfWithRefsSchemaToStruct
+# - TestOneOfSchemaToStruct
+# - TestAnyOfSchemaToStruct
 
 echo "----------------------------------------"
 echo "RUNNING PASSING TESTS FIRST"

@@ -2,7 +2,6 @@ package parser
 
 import (
 	"github.com/google/gnostic/jsonschema"
-	"github.com/k0kubun/pp/v3"
 	"gopkg.in/yaml.v3"
 )
 
@@ -21,9 +20,9 @@ func Parse(input string) (*jsonschema.Schema, error) {
 		return nil, err
 	}
 
-	pp.Printf("🔍 Parsing YAML node: %+v\n", node)
+	// pp.Printf("🔍 Parsing YAML node: %+v\n", node)
 	schema := jsonschema.NewSchemaFromObject(&node)
-	pp.Printf("📝 Created schema: %+v\n", schema)
+	// pp.Printf("📝 Created schema: %+v\n", schema)
 
 	// Store the root node
 	schemaNodes[schema] = &node
@@ -255,8 +254,8 @@ func GetEnum(schema *jsonschema.Schema) []jsonschema.SchemaEnumValue {
 	// Try to get enum values directly from the YAML node
 	if node := schemaNodes[schema]; node != nil {
 		if enums := GetEnumFromNode(node); len(enums) > 0 {
-			pp.Printf("🔢 Getting enum values from schema: %+v\n", schema)
-			pp.Printf("📊 Enum values: %+v\n", enums)
+			// pp.Printf("🔢 Getting enum values from schema: %+v\n", schema)
+			// pp.Printf("📊 Enum values: %+v\n", enums)
 			return enums
 		}
 	}
@@ -265,7 +264,7 @@ func GetEnum(schema *jsonschema.Schema) []jsonschema.SchemaEnumValue {
 	if schema.Enumeration == nil {
 		return nil
 	}
-	pp.Printf("🔢 Getting enum values from schema: %+v\n", schema)
-	pp.Printf("📊 Enum values: %+v\n", *schema.Enumeration)
+	// pp.Printf("🔢 Getting enum values from schema: %+v\n", schema)
+	// pp.Printf("📊 Enum values: %+v\n", *schema.Enumeration)
 	return *schema.Enumeration
 }

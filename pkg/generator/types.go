@@ -24,8 +24,10 @@ type StructModel struct {
 
 // FieldModel represents a Go struct field
 type FieldModel struct {
-	SourceSchema *jsonschema.Schema
-	ParentSchema *jsonschema.Schema
+	SourceSchema  *jsonschema.Schema
+	ParentSchema  *jsonschema.Schema
+	customJSONTag string // Optional override for the JSON tag name (e.g., for allOf fields)
+	customGoName  string // Optional override for the Go field name (e.g., Name_AllOf)
 }
 
 // ValidationRuleType represents the type of validation rule
@@ -64,10 +66,16 @@ type EnumModel struct {
 // FieldModel Methods
 
 func (f *FieldModel) Name() string {
+	if f.customGoName != "" {
+		return f.customGoName
+	}
 	return toGoFieldName(f.JSONName())
 }
 
 func (f *FieldModel) JSONName() string {
+	if f.customJSONTag != "" {
+		return f.customJSONTag
+	}
 	props := parser.GetProperties(f.ParentSchema)
 	for name, prop := range props {
 		if prop == f.SourceSchema {
@@ -264,8 +272,36 @@ func (s *StructModel) Description() string {
 }
 
 func (s *StructModel) Fields() []*FieldModel {
+	var fields []*FieldModel
+	seen := make(map[string]bool)
+
+	// If this is an allOf schema, merge fields from all schemas
+	if parser.HasAllOf(s.SourceSchema) {
+		allOf := *s.SourceSchema.AllOf
+		for _, schema := range allOf {
+			// Get properties from this schema
+			props := parser.GetProperties(schema)
+			for name, prop := range props {
+				if !seen[name] {
+					seen[name] = true
+					fields = append(fields, &FieldModel{
+						SourceSchema:  prop,
+						ParentSchema:  s.SourceSchema,
+						customJSONTag: name,                           // Keep original JSON name
+						customGoName:  toGoFieldName(name) + "_AllOf", // Capitalize field name and add _AllOf suffix
+					})
+				}
+			}
+		}
+		// Sort fields by original name for consistent output
+		sort.Slice(fields, func(i, j int) bool {
+			return fields[i].customJSONTag < fields[j].customJSONTag
+		})
+		return fields
+	}
+
+	// For non-allOf schemas, use regular field handling
 	props := parser.GetProperties(s.SourceSchema)
-	fields := make([]*FieldModel, 0, len(props))
 
 	// First add required fields in the order they appear in the required list
 	required := parser.GetRequiredFields(s.SourceSchema)
@@ -316,9 +352,13 @@ func (s *StructModel) HasDefaults() bool {
 	return false
 }
 
+func (s *StructModel) HasAllOf() bool {
+	return parser.HasAllOf(s.SourceSchema)
+}
+
 func (s *StructModel) HasCustomMarshaling() bool {
-	// Check if we need custom marshaling (e.g., for enums, validation, defaults)
-	return s.HasValidation() || s.HasDefaults()
+	// Check if we need custom marshaling (e.g., for enums, validation, defaults, allOf)
+	return s.HasValidation() || s.HasDefaults() || s.HasAllOf()
 }
 
 // SchemaModel Methods
@@ -360,6 +400,17 @@ func (s *SchemaModel) Structs() []*StructModel {
 			return
 		}
 		seen[name] = true
+
+		// Skip generating extra structs for allOf schemas
+		if parser.HasAllOf(schema) {
+			// Add this struct
+			structs = append(structs, &StructModel{
+				SourceSchema: schema,
+				ParentSchema: parentSchema,
+			})
+			// Skip processing properties since they're handled by allOf
+			return
+		}
 
 		// Add this struct
 		structs = append(structs, &StructModel{

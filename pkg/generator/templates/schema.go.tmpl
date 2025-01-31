@@ -118,20 +118,33 @@ func (x {{ .Name }}) MarshalJSON() ([]byte, error) {
 	type Alias {{ .Name }}
 	return json.Marshal((*Alias)(&x))
 }
-{{- end }}
-
-{{- if and .HasCustomMarshaling (not .HasValidation) }}
-
-// MarshalJSON implements json.Marshaler
-func (x {{ .Name }}) MarshalJSON() ([]byte, error) {
-	// TODO: Implement custom marshaling
-	return nil, nil
-}
+{{- else if .HasAllOf }}
 
 // UnmarshalJSON implements json.Unmarshaler
 func (x *{{ .Name }}) UnmarshalJSON(data []byte) error {
-	// TODO: Implement custom unmarshaling
+	// Create an alias to avoid infinite recursion
+	type Alias {{ .Name }}
+	aux := &struct {
+		*Alias
+	}{
+		Alias: (*Alias)(x),
+	}
+
+	// First unmarshal into our alias struct
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return errors.Errorf("unmarshaling allOf fields: %w", err)
+	}
+
 	return nil
+}
+
+// MarshalJSON implements json.Marshaler
+func (x {{ .Name }}) MarshalJSON() ([]byte, error) {
+	// Create an alias to avoid infinite recursion
+	type Alias {{ .Name }}
+	
+	// Marshal the alias struct
+	return json.Marshal((*Alias)(&x))
 }
 {{- end }}
 
