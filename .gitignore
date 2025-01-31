@@ -6,3 +6,4 @@ out
 !.task/checksum/generate-taskfiles
 .cursorrules
 .cursor
+*.tmp
