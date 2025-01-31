@@ -8,6 +8,7 @@ if [ "${1:-}" == "test" ]; then
 	cc=0
 	ff=0
 	testname=0
+	pnametfails=0
 	real_args=()
 	extra_args=""
 	format="pkgname"
@@ -19,6 +20,8 @@ if [ "${1:-}" == "test" ]; then
 			ff=1
 		elif [ "$arg" = "-testname" ]; then
 			testname=1
+		elif [ "$arg" = "-pnametfails" ]; then
+			pnametfails=1
 		else
 			real_args+=("$arg")
 		fi
@@ -46,11 +49,15 @@ if [ "${1:-}" == "test" ]; then
 		format="testname"
 	fi
 
+	if [[ "$pnametfails" == "1" ]]; then
+		format="pkgname-and-test-fails"
+	fi
+
 	./scripts/run-tool.sh gotestsum \
 		--format $format \
 		--format-icons hivis \
 		--hide-summary=skipped \
-		--raw-command -- go test -v -vet=all -json -cover $extra_args "${real_args[@]}"
+		--raw-command -- go test -vet=all -json -cover $extra_args "${real_args[@]}"
 	exit $?
 fi
 

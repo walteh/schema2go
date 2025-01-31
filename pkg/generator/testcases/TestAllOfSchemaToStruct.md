@@ -36,8 +36,8 @@ import (
 )
 
 type AllOfExample struct {
-    Age_AllOf  *int    `json:"age,omitempty"`
     Name_AllOf *string `json:"name,omitempty"`
+    Age_AllOf  *int    `json:"age,omitempty"`
 }
 
 // UnmarshalJSON implements json.Unmarshaler
@@ -55,6 +55,14 @@ func (x *AllOfExample) UnmarshalJSON(data []byte) error {
         return errors.Errorf("unmarshaling allOf fields: %w", err)
     }
 
+	if err := x.Validate(); err != nil {
+		return errors.Errorf("validating after unmarshal: %w", err)
+	}
+
+    return nil
+}
+
+func (x *AllOfExample) Validate() error {
     return nil
 }
 

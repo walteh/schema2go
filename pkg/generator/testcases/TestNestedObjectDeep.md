@@ -38,22 +38,22 @@ import (
     "gitlab.com/tozd/go/errors"
 )
 
-type Coordinates struct {
+type LocationAddressCoordinates struct {
     Latitude  float64 `json:"latitude"`  // Required
     Longitude float64 `json:"longitude"` // Required
 }
 
 // Validate ensures all required fields are present
-func (x *Coordinates) Validate() error {
+func (x *LocationAddressCoordinates) Validate() error {
     return nil
 }
 
-type Address struct {
-    Coordinates Coordinates `json:"coordinates"` // Required
+type LocationAddress struct {
+    Coordinates LocationAddressCoordinates `json:"coordinates"` // Required
 }
 
 // Validate ensures all required fields are present
-func (x *Address) Validate() error {
+func (x *LocationAddress) Validate() error {
     if err := x.Coordinates.Validate(); err != nil {
         return errors.Errorf("validating coordinates: %w", err)
     }
@@ -61,7 +61,7 @@ func (x *Address) Validate() error {
 }
 
 type Location struct {
-    Address Address `json:"address"` // Required
+    Address LocationAddress `json:"address"` // Required
 }
 
 // Validate ensures all required fields are present

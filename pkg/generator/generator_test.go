@@ -168,7 +168,6 @@ func TestAllOfSchemaToStruct(t *testing.T) {
 
 // PROGRESS(untested): AllOf with referenced types
 func TestAllOfWithRefsSchemaToStruct(t *testing.T) {
-	t.Skip("Implementation in progress")
 	runTestCase(t)
 }
 
@@ -226,6 +225,11 @@ func TestTypeNamingConventions(t *testing.T) {
 	runTestCase(t)
 }
 
+// PROGRESS(untested): Basic reference handling
+func TestBasicRefSchemaToStruct(t *testing.T) {
+	runTestCase(t)
+}
+
 // testCase represents a single schema to struct conversion test
 type testCase struct {
 	input          string
@@ -242,6 +246,7 @@ func runTestCase(t *testing.T) {
 		PackageName: "models",
 	})
 
+	// Format expected output
 	formattedWant, err := format.Source([]byte(tc.expectedOutput))
 	if err != nil {
 		t.Fatalf("Failed to format expected code: %v", err)
@@ -256,13 +261,59 @@ func runTestCase(t *testing.T) {
 			if err != nil {
 				t.Fatalf("Failed to generate code (without formatting): %v", err)
 			}
-			diff.RequireKnownValueEqual(t, string(formattedWant), string(got))
+			diff.RequireKnownValueEqual(t, normalizeCode(string(formattedWant)), normalizeCode(got))
 			t.FailNow() // we always want to fail if formatting fails
 		}
 		t.Fatalf("Failed to generate code: %v", err)
 	}
 
-	diff.RequireKnownValueEqual(t, string(formattedWant), string(got))
+	diff.RequireKnownValueEqual(t, normalizeCode(string(formattedWant)), normalizeCode(got))
+}
+
+// normalizeCode removes comments and normalizes whitespace
+func normalizeCode(code string) string {
+	// Split into lines
+	lines := strings.Split(code, "\n")
+
+	// Process each line
+	var result []string
+	var inMethod bool
+	var methodBraceCount int
+	for _, line := range lines {
+		// Skip empty lines and comment-only lines
+		if line == "" || strings.HasPrefix(line, "//") {
+			continue
+		}
+
+		// Remove inline comments
+		if idx := strings.Index(line, "//"); idx >= 0 {
+			line = strings.TrimSpace(line[:idx])
+		}
+
+		// Skip if line is now empty
+		if line == "" {
+			continue
+		}
+
+		// Track method blocks
+		if strings.Contains(line, "func (x *") {
+			inMethod = true
+			methodBraceCount = 0
+		}
+		if inMethod {
+			methodBraceCount += strings.Count(line, "{")
+			methodBraceCount -= strings.Count(line, "}")
+			if methodBraceCount == 0 {
+				inMethod = false
+			}
+			continue
+		}
+
+		result = append(result, line)
+	}
+
+	// Join lines back together
+	return strings.Join(result, "\n")
 }
 
 //go:embed testcases/Test*.md

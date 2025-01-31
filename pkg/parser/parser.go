@@ -1,6 +1,8 @@
 package parser
 
 import (
+	"strings"
+
 	"github.com/google/gnostic/jsonschema"
 	"gopkg.in/yaml.v3"
 )
@@ -267,4 +269,30 @@ func GetEnum(schema *jsonschema.Schema) []jsonschema.SchemaEnumValue {
 	// pp.Printf("🔢 Getting enum values from schema: %+v\n", schema)
 	// pp.Printf("📊 Enum values: %+v\n", *schema.Enumeration)
 	return *schema.Enumeration
+}
+
+// GetDefinition resolves a JSON Schema reference and returns the referenced schema
+func GetDefinition(schema *jsonschema.Schema, ref string) *jsonschema.Schema {
+	if schema == nil || ref == "" {
+		return nil
+	}
+
+	// Extract the definition name from the reference
+	// e.g., "#/definitions/PersonInfo" -> "PersonInfo"
+	parts := strings.Split(ref, "/")
+	if len(parts) < 3 || parts[1] != "definitions" {
+		return nil
+	}
+	defName := parts[len(parts)-1]
+
+	// Look up the definition in the schema
+	if schema.Definitions == nil {
+		return nil
+	}
+	for _, def := range *schema.Definitions {
+		if def.Name == defName {
+			return def.Value
+		}
+	}
+	return nil
 }

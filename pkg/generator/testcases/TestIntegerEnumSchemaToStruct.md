@@ -49,6 +49,25 @@ type HttpConfig struct {
     Status *StatusType `json:"status,omitempty"`
 }
 
+func (x *HttpConfig) UnmarshalJSON(data []byte) error {
+    type Alias HttpConfig
+    aux := &struct {
+        *Alias
+    }{
+        Alias: (*Alias)(x),
+    }
+
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return errors.Errorf("unmarshaling json: %w", err)
+	}
+
+	if err := x.Validate(); err != nil {
+		return errors.Errorf("validating after unmarshal: %w", err)
+	}
+
+    return nil
+}
+
 // Validate ensures all required fields are present and valid
 func (x *HttpConfig) Validate() error {
     if x.Port != nil {

@@ -6,9 +6,11 @@ PASSING_TESTS=(
 	"TestStringEnumSchemaToStruct"
 	"TestIntegerEnumSchemaToStruct"
 	"TestAllOfSchemaToStruct"
+	"TestBasicRefSchemaToStruct"
 )
 
-CURRENT_TARGET="TestAllOfWithRefsSchemaToStruct"
+# Default target if none provided
+CURRENT_TARGET=${CURRENT_TARGET:-"TestAllOfWithRefsSchemaToStruct"}
 
 # next up
 # -
@@ -17,9 +19,12 @@ CURRENT_TARGET="TestAllOfWithRefsSchemaToStruct"
 
 echo "----------------------------------------"
 echo "RUNNING PASSING TESTS FIRST"
+for test in "${PASSING_TESTS[@]}"; do
+	echo "   - $test"
+done
 echo "----------------------------------------"
 # tests that should pass before continuing
-./go test -v -testname ./pkg/generator/... -run $(
+./go test -v ./pkg/generator/... -run $(
 	IFS='|'
 	echo "${PASSING_TESTS[*]}"
 )
@@ -29,10 +34,11 @@ if [ $? -ne 0 ]; then
 fi
 echo "----------------------------------------"
 echo "RUNNING CURRENT TARGET"
+echo "   - $CURRENT_TARGET"
 echo "----------------------------------------"
 
 # current target
-./go test -v -testname ./pkg/generator/... -run $(
+./go test -v ./pkg/generator/... -run $(
 	IFS='|'
 	echo "$CURRENT_TARGET"
 )

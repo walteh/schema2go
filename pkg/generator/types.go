@@ -2,6 +2,7 @@ package generator
 
 import (
 	"fmt"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -94,6 +95,19 @@ func (f *FieldModel) IsRequired() bool {
 }
 
 func (f *FieldModel) Type() string {
+	// For referenced types
+	if f.SourceSchema.Ref != nil {
+		// Extract the type name from the reference
+		refParts := strings.Split(*f.SourceSchema.Ref, "/")
+		typeName := refParts[len(refParts)-1]
+
+		// Add pointer for optional fields
+		if !f.IsRequired() {
+			return "*" + typeName
+		}
+		return typeName
+	}
+
 	if f.IsEnum() {
 		return "*" + f.EnumTypeName()
 	}
@@ -124,8 +138,12 @@ func (f *FieldModel) Type() string {
 			goType = "[]" + itemField.Type()
 		}
 	case "object":
-		// For nested objects, use the field name as the type name
-		goType = toGoFieldName(f.JSONName())
+		// For nested objects, use the parent struct name + field name
+		if parentTitle := parser.GetTitle(f.ParentSchema); parentTitle != "" {
+			goType = parentTitle + toGoFieldName(f.JSONName())
+		} else {
+			goType = toGoFieldName(f.JSONName())
+		}
 	default:
 		goType = "interface{}" // Fallback for unknown types
 	}
@@ -224,7 +242,7 @@ func (f *FieldModel) ValidationRules() []*ValidationRule {
 	}
 
 	// Nested validation
-	if parser.GetTypeOrEmpty(f.SourceSchema) == "object" {
+	if parser.GetTypeOrEmpty(f.SourceSchema) == "object" || f.SourceSchema.Ref != nil {
 		rules = append(rules, &ValidationRule{
 			Type:    ValidationNested,
 			Message: fmt.Sprintf("validating %s", f.JSONName()),
@@ -253,12 +271,14 @@ func (s *StructModel) Name() string {
 		return title
 	}
 
-	// For nested objects, use field name directly if no title
+	// For nested objects, use parent title + field name
 	if s.ParentSchema != nil {
-		props := parser.GetProperties(s.ParentSchema)
-		for name, prop := range props {
-			if prop == s.SourceSchema {
-				return toGoFieldName(name)
+		if parentTitle := parser.GetTitle(s.ParentSchema); parentTitle != "" {
+			props := parser.GetProperties(s.ParentSchema)
+			for name, prop := range props {
+				if prop == s.SourceSchema {
+					return parentTitle + toGoFieldName(name)
+				}
 			}
 		}
 	}
@@ -275,60 +295,48 @@ func (s *StructModel) Fields() []*FieldModel {
 	var fields []*FieldModel
 	seen := make(map[string]bool)
 
-	// If this is an allOf schema, merge fields from all schemas
+	// Helper function to add fields in order
+	addFieldsInOrder := func(props *[]*jsonschema.NamedSchema, parentSchema *jsonschema.Schema, addAllOfSuffix bool) {
+		if props == nil {
+			return
+		}
+		// Add fields in the order they appear in the schema
+		for _, prop := range *props {
+			if !seen[prop.Name] {
+				seen[prop.Name] = true
+				suffix := ""
+				if addAllOfSuffix {
+					suffix = "_AllOf"
+				}
+				field := &FieldModel{
+					SourceSchema:  prop.Value,
+					ParentSchema:  parentSchema,
+					customJSONTag: prop.Name,
+					customGoName:  toGoFieldName(prop.Name) + suffix,
+				}
+				fields = append(fields, field)
+			}
+		}
+	}
+
+	// For allOf schemas, merge fields from all schemas
 	if parser.HasAllOf(s.SourceSchema) {
 		allOf := *s.SourceSchema.AllOf
 		for _, schema := range allOf {
-			// Get properties from this schema
-			props := parser.GetProperties(schema)
-			for name, prop := range props {
-				if !seen[name] {
-					seen[name] = true
-					fields = append(fields, &FieldModel{
-						SourceSchema:  prop,
-						ParentSchema:  s.SourceSchema,
-						customJSONTag: name,                           // Keep original JSON name
-						customGoName:  toGoFieldName(name) + "_AllOf", // Capitalize field name and add _AllOf suffix
-					})
+			if schema.Ref != nil {
+				// Get the referenced schema
+				if refSchema := parser.GetDefinition(s.SourceSchema, *schema.Ref); refSchema != nil {
+					addFieldsInOrder(refSchema.Properties, refSchema, true)
 				}
+			} else {
+				addFieldsInOrder(schema.Properties, schema, true)
 			}
 		}
-		// Sort fields by original name for consistent output
-		sort.Slice(fields, func(i, j int) bool {
-			return fields[i].customJSONTag < fields[j].customJSONTag
-		})
 		return fields
 	}
 
 	// For non-allOf schemas, use regular field handling
-	props := parser.GetProperties(s.SourceSchema)
-
-	// First add required fields in the order they appear in the required list
-	required := parser.GetRequiredFields(s.SourceSchema)
-	for _, name := range required {
-		if prop, ok := props[name]; ok {
-			fields = append(fields, &FieldModel{
-				SourceSchema: prop,
-				ParentSchema: s.SourceSchema,
-			})
-			delete(props, name) // Remove from props so we don't add it twice
-		}
-	}
-
-	// Then add remaining fields in alphabetical order
-	var optionalNames []string
-	for name := range props {
-		optionalNames = append(optionalNames, name)
-	}
-	sort.Strings(optionalNames)
-
-	for _, name := range optionalNames {
-		fields = append(fields, &FieldModel{
-			SourceSchema: props[name],
-			ParentSchema: s.SourceSchema,
-		})
-	}
-
+	addFieldsInOrder(s.SourceSchema.Properties, s.SourceSchema, false)
 	return fields
 }
 
@@ -357,8 +365,8 @@ func (s *StructModel) HasAllOf() bool {
 }
 
 func (s *StructModel) HasCustomMarshaling() bool {
-	// Check if we need custom marshaling (e.g., for enums, validation, defaults, allOf)
-	return s.HasValidation() || s.HasDefaults() || s.HasAllOf()
+	// Always return true since we want all structs to have JSON marshaling methods
+	return true
 }
 
 // SchemaModel Methods
@@ -388,7 +396,8 @@ func (s *SchemaModel) Structs() []*StructModel {
 				props := parser.GetProperties(parentSchema)
 				for propName, prop := range props {
 					if prop == schema {
-						name = parentTitle + "_" + toGoFieldName(propName)
+						// For nested objects, use parent title + property name
+						name = parentTitle + toGoFieldName(propName)
 						break
 					}
 				}
@@ -401,14 +410,35 @@ func (s *SchemaModel) Structs() []*StructModel {
 		}
 		seen[name] = true
 
-		// Skip generating extra structs for allOf schemas
+		// Handle allOf schemas
 		if parser.HasAllOf(schema) {
 			// Add this struct
 			structs = append(structs, &StructModel{
 				SourceSchema: schema,
 				ParentSchema: parentSchema,
 			})
-			// Skip processing properties since they're handled by allOf
+
+			// Process allOf references to generate their structs
+			allOf := *schema.AllOf
+			for _, ref := range allOf {
+				if ref.Ref != nil {
+					// Get the referenced schema
+					if refSchema := parser.GetDefinition(s.SourceSchema, *ref.Ref); refSchema != nil {
+						// Extract the type name from the reference
+						refParts := strings.Split(*ref.Ref, "/")
+						typeName := refParts[len(refParts)-1]
+
+						// Create a new struct for the referenced type with the correct name
+						refStruct := &StructModel{
+							SourceSchema: refSchema,
+							ParentSchema: schema,
+						}
+						// Set the title to ensure correct naming
+						refSchema.Title = parser.Ptr(typeName)
+						structs = append(structs, refStruct)
+					}
+				}
+			}
 			return
 		}
 
@@ -418,10 +448,34 @@ func (s *SchemaModel) Structs() []*StructModel {
 			ParentSchema: parentSchema,
 		})
 
-		// Process properties for nested objects
+		// Process properties for nested objects and references
 		props := parser.GetProperties(schema)
-		for _, prop := range props {
+		for propName, prop := range props {
+			// Handle referenced types
+			if prop.Ref != nil {
+				if refSchema := parser.GetDefinition(s.SourceSchema, *prop.Ref); refSchema != nil {
+					// Extract the type name from the reference
+					refParts := strings.Split(*prop.Ref, "/")
+					typeName := refParts[len(refParts)-1]
+
+					// Create a new struct for the referenced type
+					refStruct := &StructModel{
+						SourceSchema: refSchema,
+						ParentSchema: schema,
+					}
+					// Set the title to ensure correct naming
+					refSchema.Title = parser.Ptr(typeName)
+					structs = append(structs, refStruct)
+				}
+				continue
+			}
+
+			// Handle nested objects
 			if parser.GetTypeOrEmpty(prop) == "object" {
+				// Set the title for the nested object to ensure correct naming
+				if title := parser.GetTitle(schema); title != "" {
+					prop.Title = parser.Ptr(title + toGoFieldName(propName))
+				}
 				collectStructs(prop, schema)
 			}
 		}
@@ -456,8 +510,8 @@ func (s *SchemaModel) Structs() []*StructModel {
 	collectStructs(s.SourceSchema, nil)
 
 	// Sort structs by name for consistent output
-	sort.Slice(structs, func(i, j int) bool {
-		return structs[i].Name() < structs[j].Name()
+	slices.SortFunc(structs, func(a, b *StructModel) int {
+		return strings.Compare(a.Name(), b.Name())
 	})
 
 	return structs
@@ -600,8 +654,8 @@ func (s *SchemaModel) Enums() []*EnumModel {
 	collectEnums(s.SourceSchema, "")
 
 	// Sort enums by name for consistent output
-	sort.Slice(enums, func(i, j int) bool {
-		return enums[i].Name < enums[j].Name
+	slices.SortFunc(enums, func(a, b *EnumModel) int {
+		return strings.Compare(a.Name, b.Name)
 	})
 
 	return enums

@@ -29,39 +29,40 @@ import (
     "gitlab.com/tozd/go/errors"
 )
 
-type Child struct {
-    Name string `json:"name"` // Required
-}
-
-// Validate ensures all required fields are present and valid
-func (x *Child) Validate() error {
-    if x.Name == "" {
-        return errors.New("name is required")
-    }
-    return nil
-}
-
-// MarshalJSON implements json.Marshaler
-func (x Child) MarshalJSON() ([]byte, error) {
-    // Validate before marshaling
-    if err := x.Validate(); err != nil {
-        return nil, errors.Errorf("validating before marshal: %w", err)
-    }
-
-    // Use alias to avoid infinite recursion
-    type Alias Child
-    return json.Marshal((*Alias)(&x))
-}
-
 type Parent struct {
-    Child Child `json:"child"` // Required
+    Child ParentChild `json:"child"` // Required
+}
+
+// UnmarshalJSON implements json.Unmarshaler
+func (x *Parent) UnmarshalJSON(data []byte) error {
+    // Create an alias to avoid infinite recursion
+    type Alias Parent
+    aux := &struct {
+        *Alias
+    }{
+        Alias: (*Alias)(x),
+    }
+
+    // First unmarshal into our alias struct
+    if err := json.Unmarshal(data, &aux); err != nil {
+        return errors.Errorf("unmarshaling json: %w", err)
+    }
+
+    // Validate after unmarshaling
+    if err := x.Validate(); err != nil {
+        return errors.Errorf("validating after unmarshal: %w", err)
+    }
+
+    return nil
 }
 
 // Validate ensures all required fields are present and valid
 func (x *Parent) Validate() error {
-    if err := x.Child.Validate(); err != nil {
-        return errors.Errorf("validating child: %w", err)
-    }
+	if x.Child != nil {
+		if err := x.Child.Validate(); err != nil {
+			return errors.Errorf("validating child: %w", err)
+		}
+	}
     return nil
 }
 
@@ -76,4 +77,54 @@ func (x Parent) MarshalJSON() ([]byte, error) {
     type Alias Parent
     return json.Marshal((*Alias)(&x))
 }
+
+type ParentChild struct {
+    Name string `json:"name"` // Required
+}
+
+// UnmarshalJSON implements json.Unmarshaler
+func (x *ParentChild) UnmarshalJSON(data []byte) error {
+    // Create an alias to avoid infinite recursion
+    type Alias ParentChild
+    aux := &struct {
+        *Alias
+    }{
+        Alias: (*Alias)(x),
+    }
+
+    // First unmarshal into our alias struct
+    if err := json.Unmarshal(data, &aux); err != nil {
+        return errors.Errorf("unmarshaling json: %w", err)
+    }
+
+
+    // Validate after unmarshaling
+    if err := x.Validate(); err != nil {
+        return errors.Errorf("validating after unmarshal: %w", err)
+    }
+
+    return nil
+}
+
+// Validate ensures all required fields are present and valid
+func (x *ParentChild) Validate() error {
+    if x.Name == "" {
+        return errors.New("name is required")
+    }
+    return nil
+}
+
+// MarshalJSON implements json.Marshaler
+func (x ParentChild) MarshalJSON() ([]byte, error) {
+    // Validate before marshaling
+    if err := x.Validate(); err != nil {
+        return nil, errors.Errorf("validating before marshal: %w", err)
+    }
+
+    // Use alias to avoid infinite recursion
+    type Alias ParentChild
+    return json.Marshal((*Alias)(&x))
+}
+
+
 ```

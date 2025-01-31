@@ -45,26 +45,47 @@ import (
     "gitlab.com/tozd/go/errors"
 )
 
-type PersonInfo struct {
-    Name *string `json:"name,omitempty"`
-    Age  *int    `json:"age,omitempty"`
-}
-
-type EmployeeInfo struct {
-    EmployeeID *string `json:"employeeId,omitempty"`
-    Department *string `json:"department,omitempty"`
-}
 
 type AllOfWithRefsExample struct {
+	EmployeeInfo_AllOf `json:",inline"`
     PersonInfo_AllOf   `json:",inline"`
-    EmployeeInfo_AllOf `json:",inline"`
 }
 
-func (a *AllOfWithRefsExample) UnmarshalJSON(data []byte) error {
+func (x *AllOfWithRefsExample) UnmarshalJSON(data []byte) error {
     return nil // TODO: Implement custom unmarshaling for allOf fields
 }
 
-func (a AllOfWithRefsExample) MarshalJSON() ([]byte, error) {
+func (x AllOfWithRefsExample) MarshalJSON() ([]byte, error) {
     return nil, nil // TODO: Implement custom marshaling for allOf fields
 }
+
+type EmployeeInfo struct {
+    Department *string `json:"department,omitempty"`
+    EmployeeID *string `json:"employeeId,omitempty"`
+}
+
+
+func (x *EmployeeInfo) UnmarshalJSON(data []byte) error {
+    return nil // TODO: Implement custom unmarshaling for allOf fields
+}
+
+func (x EmployeeInfo) MarshalJSON() ([]byte, error) {
+    return nil, nil // TODO: Implement custom marshaling for allOf fields
+}
+
+
+type PersonInfo struct {
+	Age  *int    `json:"age,omitempty"`
+    Name *string `json:"name,omitempty"`
+}
+
+func (x *AllOfWithRefsExample) UnmarshalJSON(data []byte) error {
+    return nil // TODO: Implement custom unmarshaling for allOf fields
+}
+
+func (x AllOfWithRefsExample) MarshalJSON() ([]byte, error) {
+    return nil, nil // TODO: Implement custom marshaling for allOf fields
+}
+
+
 ```

@@ -60,7 +60,7 @@ tasks:
             - ./**/*.go
 
     test:
-        cmd: go test ./...
+        cmd: ./test-runner.sh
 
     install-executables:
         cmds:

@@ -86,29 +86,3 @@ func (g *generator) Generate(ctx context.Context, input string) (string, error) 
 
 	return b.String(), nil
 }
-
-// Helper functions
-func toGoFieldName(name string) string {
-	// Special case for "id" -> "ID"
-	if strings.ToLower(name) == "id" {
-		return "ID"
-	}
-
-	// Split on underscores and capitalize each word
-	words := strings.Split(name, "_")
-	for i, word := range words {
-		if word == "" {
-			continue
-		}
-		words[i] = strings.Title(word)
-	}
-	return strings.Join(words, "")
-}
-
-func toTitleCase(s string) string {
-	words := strings.Split(s, "_")
-	for i := range words {
-		words[i] = strings.Title(words[i])
-	}
-	return strings.Join(words, "")
-}
