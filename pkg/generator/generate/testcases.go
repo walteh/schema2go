@@ -21,19 +21,28 @@ func generateTestCases() {
 	for _, tc := range tcs {
 		buf := bytes.NewBuffer(nil)
 
+		buf.WriteString("func " + tc.Name() + "(t *testing.T) {\n\n")
 		if tc.JSONSchema() == "" {
-			funcNames = append(funcNames, `
-			func `+tc.Name()+`(t *testing.T) {
-				t.Skip("no json-schema definition defined for testcases/`+tc.Name()+`.md")
-			}
-			`)
-			continue
+			buf.WriteString("	t.Fatalf(\"no json-schema definition defined for testcases/" + tc.Name() + ".md\")\n")
 		}
+		buf.WriteString("	tc := testcases.LoadAndParseTestCase(\"" + tc.Name() + "\")\n")
+		buf.WriteString("	require.Equal(t, testCasesHash, testcases.GetHash(), \"test cases hash mismatch, please run 'go generate ./...' to update the test cases hash\")\n\n")
+		buf.WriteString("	schema, err := generator.NewSchemaModel(tc.JSONSchema())\n")
+		buf.WriteString("	require.NoError(t, err, \"failed to parse schema\")\n")
 
-		buf.WriteString("func " + tc.Name() + "(t *testing.T) {\n")
 		rawSchemaModelFunc, err := GenerateRawSchemaTest(&tc)
 		if err != nil {
 			panic(err)
+		}
+
+		jsonSchemaFunc, err := GenerateJSONSchemaTest(tc.Name(), &tc)
+		if err != nil {
+			panic(err)
+		}
+
+		if jsonSchemaFunc != "" {
+			buf.WriteString(jsonSchemaFunc)
+			buf.WriteString("\n")
 		}
 
 		if rawSchemaModelFunc != "" {
@@ -71,19 +80,13 @@ func generateTestCases() {
 	buf.WriteString("\"testing\"\n")
 	buf.WriteString("\"github.com/walteh/schema2go/pkg/generator/testcases\"\n")
 	buf.WriteString("\"github.com/walteh/schema2go/pkg/generator\"\n")
+	buf.WriteString("\"github.com/stretchr/testify/require\"\n")
 	// buf.WriteString("\"github.com/walteh/schema2go/gen/mockery\"\n")
 	buf.WriteString("\"github.com/google/gnostic/jsonschema\"\n")
 	buf.WriteString("\"github.com/walteh/schema2go/pkg/diff\"\n")
 	buf.WriteString(")\n\n")
 
-	// add mustLoadSchemaModel
-	buf.WriteString("func mustLoadSchemaModel(t *testing.T, input string) *generator.SchemaModel {\n")
-	buf.WriteString("	schema, err := generator.NewSchemaModel(input)\n")
-	buf.WriteString("	if err != nil {\n")
-	buf.WriteString("		t.Fatalf(\"Failed to parse schema: %v\", err)\n")
-	buf.WriteString("	}\n")
-	buf.WriteString("	return schema\n")
-	buf.WriteString("}\n\n")
+	buf.WriteString("const testCasesHash = \"" + testcases.GetHash() + "\"\n\n")
 
 	for _, rawSchemaModelFunc := range funcNames {
 		buf.WriteString(rawSchemaModelFunc)
@@ -103,6 +106,16 @@ func generateTestCases() {
 	}
 }
 
+func GenerateJSONSchemaTest(funcName string, tc *testcases.TestCase) (string, error) {
+
+	tmpl := `
+		t.Run("json-schema", func(t *testing.T) {
+			// nothing to do here right now
+		})
+	`
+	return tmpl, nil
+}
+
 func GenerateGoCodeTest(funcName string, tc *testcases.TestCase) (string, error) {
 	if tc.GoCode() == "" {
 		return `
@@ -114,11 +127,8 @@ func GenerateGoCodeTest(funcName string, tc *testcases.TestCase) (string, error)
 
 	tmpl := `
 		t.Run("go-code", func(t *testing.T) {
-			tc := testcases.LoadAndParseTestCase("{{ .Name }}")
 
-			got := mustLoadSchemaModel(t, tc.JSONSchema())
-
-			{{.FuncName}}(t, got, tc.GoCode())
+			{{.FuncName}}(t, schema, tc.GoCode())
 		})
 	`
 	tmpld := template.Must(template.New("wantSchemaModel").Parse(tmpl))
@@ -148,11 +158,7 @@ func GenerateStaticSchemaTest(tc *testcases.TestCase) (string, error) {
 
 			staticWant := {{ .StaticSchema }}
 
-			tc := testcases.LoadAndParseTestCase("{{ .Name }}")
-
-			got := mustLoadSchemaModel(t, tc.JSONSchema())
-
-			staticGot := generator.NewStaticSchema(got)
+			staticGot := generator.NewStaticSchema(schema)
 
 			diff.RequireKnownValueEqual(t, staticWant, staticGot)
 		})
@@ -186,11 +192,7 @@ func GenerateRawSchemaTest(tc *testcases.TestCase) (string, error) {
 				SourceSchema: {{ .RawSchema }},
 			}
 
-			tc := testcases.LoadAndParseTestCase("{{ .Name }}")
-
-			got := mustLoadSchemaModel(t, tc.JSONSchema())
-
-			diff.RequireKnownValueEqual(t, want.SourceSchema, got.SourceSchema)
+			diff.RequireKnownValueEqual(t, want.SourceSchema, schema.SourceSchema)
 		})
 	`
 	tmpld := template.Must(template.New("wantSchemaModel").Parse(tmpl))

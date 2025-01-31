@@ -37,7 +37,7 @@ func diffd(want string, got string) string {
 		FromDate: "",
 		ToFile:   "Actual",
 		ToDate:   "",
-		Context:  1,
+		Context:  2,
 	})
 
 	return diff
@@ -59,9 +59,9 @@ func formatStartingWhitespace(s string, colord *color.Color) string {
 	for j, char := range s {
 		switch char {
 		case ' ':
-			out += "⌷" // Middle Dot (U+00B7)
+			out += "∙" // ⌷
 		case '\t':
-			out += "└──▹" // Rightwards Arrow (U+2192)
+			out += "└──▹" // →
 		default:
 			return color.New(color.Faint).Sprint(out) + colord.Sprint(s[j:])
 		}
@@ -100,11 +100,11 @@ func diffTyped[T any](printer *pp.PrettyPrinter, want T, got T) string {
 	}()
 	color.NoColor = false
 
-	expectedPrefix := fmt.Sprintf("[%s] %s", color.New(color.FgRed, color.Bold).Sprint("exp"), color.New(color.Faint).Sprint(" -"))
-	actualPrefix := fmt.Sprintf("[%s] %s", color.New(color.Bold, color.FgBlue).Sprint("act"), color.New(color.Faint).Sprint(" +"))
+	expectedPrefix := fmt.Sprintf("[%s] %s", color.New(color.FgBlue, color.Bold).Sprint("want"), color.New(color.Faint).Sprint(" +"))
+	actualPrefix := fmt.Sprintf("[%s] %s", color.New(color.Bold, color.FgRed).Sprint("got"), color.New(color.Faint).Sprint("  -"))
 
-	abc = strings.ReplaceAll(abc, "--- Expected", fmt.Sprintf("%s %s [%s]", color.New(color.Faint).Sprint("---"), color.New(color.FgRed).Sprint("expected"), color.New(color.FgRed, color.Bold).Sprint("exp")))
-	abc = strings.ReplaceAll(abc, "+++ Actual", fmt.Sprintf("%s %s [%s]", color.New(color.Faint).Sprint("+++"), color.New(color.FgBlue).Sprint("actual"), color.New(color.FgBlue, color.Bold).Sprint("act")))
+	abc = strings.ReplaceAll(abc, "--- Expected", fmt.Sprintf("%s %s [%s]", color.New(color.Faint).Sprint("---"), color.New(color.FgBlue).Sprint("want"), color.New(color.FgBlue, color.Bold).Sprint("want")))
+	abc = strings.ReplaceAll(abc, "+++ Actual", fmt.Sprintf("%s %s [%s]", color.New(color.Faint).Sprint("+++"), color.New(color.FgRed).Sprint("got"), color.New(color.FgRed, color.Bold).Sprint("got")))
 
 	realignmain := []string{}
 	for i, spltz := range strings.Split(abc, "\n@@") {
@@ -119,11 +119,14 @@ func diffTyped[T any](printer *pp.PrettyPrinter, want T, got T) string {
 					first = color.New(color.Faint).Sprint("@@" + found)
 				} else {
 					if strings.HasPrefix(found, "-") {
-						realign = append(realign, expectedPrefix+formatStartingWhitespace(found[1:], color.New(color.FgRed)))
+						realign = append(realign, expectedPrefix+formatStartingWhitespace(found[1:], color.New(color.FgBlue)))
 					} else if strings.HasPrefix(found, "+") {
-						realign = append(realign, actualPrefix+formatStartingWhitespace(found[1:], color.New(color.FgBlue)))
+						realign = append(realign, actualPrefix+formatStartingWhitespace(found[1:], color.New(color.FgRed)))
 					} else {
-						realign = append(realign, strings.Repeat(" ", 8)+formatStartingWhitespace(found, color.New(color.Faint)))
+						if found == "" {
+							found = "  "
+						}
+						realign = append(realign, strings.Repeat(" ", 9)+formatStartingWhitespace(found[1:], color.New(color.Faint)))
 					}
 				}
 			}
@@ -131,6 +134,7 @@ func diffTyped[T any](printer *pp.PrettyPrinter, want T, got T) string {
 			realignmain = append(realignmain, first)
 			realignmain = append(realignmain, realign...)
 		}
+		realignmain = append(realignmain, "")
 	}
 	str := "\n"
 	str += strings.Join(realignmain, "\n")

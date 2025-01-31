@@ -1,5 +1,7 @@
 #! /bin/bash
 
+go generate ./...
+
 PASSING_TESTS=(
 	"TestNestedObjectSimple"
 	"TestBasicSchemaToStruct"

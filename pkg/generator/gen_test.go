@@ -2,28 +2,34 @@ package generator_test
 
 import (
 	"github.com/google/gnostic/jsonschema"
+	"github.com/stretchr/testify/require"
 	"github.com/walteh/schema2go/pkg/diff"
 	"github.com/walteh/schema2go/pkg/generator"
 	"github.com/walteh/schema2go/pkg/generator/testcases"
 	"testing"
 )
 
-func mustLoadSchemaModel(t *testing.T, input string) *generator.SchemaModel {
-	schema, err := generator.NewSchemaModel(input)
-	if err != nil {
-		t.Fatalf("Failed to parse schema: %v", err)
-	}
-	return schema
-}
+const testCasesHash = "71c3efbc7d5d6ebcf4d120ee9150f8a7feb98bea88887371bcd3125a8d32c69d"
 
 func TestAllOfSchemaToStruct(t *testing.T) {
+
+	tc := testcases.LoadAndParseTestCase("TestAllOfSchemaToStruct")
+	require.Equal(t, testCasesHash, testcases.GetHash(), "test cases hash mismatch, please run 'go generate ./...' to update the test cases hash")
+
+	schema, err := generator.NewSchemaModel(tc.JSONSchema())
+	require.NoError(t, err, "failed to parse schema")
+
+	t.Run("json-schema", func(t *testing.T) {
+		// nothing to do here right now
+	})
 
 	t.Run("raw-schema", func(t *testing.T) {
 
 		want := &generator.SchemaModel{
 			SourceSchema: &jsonschema.Schema{
-				Title: ptr("AllOfExample"),
-				Type:  typ("object"),
+				Schema: ptr("http://json-schema.org/draft-07/schema#"),
+				Title:  ptr("AllOfExample"),
+				Type:   typ("object"),
 				AllOf: ptr([]*jsonschema.Schema{
 					{
 						Type: typ("object"),
@@ -41,11 +47,7 @@ func TestAllOfSchemaToStruct(t *testing.T) {
 			},
 		}
 
-		tc := testcases.LoadAndParseTestCase("TestAllOfSchemaToStruct")
-
-		got := mustLoadSchemaModel(t, tc.JSONSchema())
-
-		diff.RequireKnownValueEqual(t, want.SourceSchema, got.SourceSchema)
+		diff.RequireKnownValueEqual(t, want.SourceSchema, schema.SourceSchema)
 	})
 
 	t.Run("static-schema", func(t *testing.T) {
@@ -63,26 +65,29 @@ func TestAllOfSchemaToStruct(t *testing.T) {
 			},
 		}
 
-		tc := testcases.LoadAndParseTestCase("TestAllOfSchemaToStruct")
-
-		got := mustLoadSchemaModel(t, tc.JSONSchema())
-
-		staticGot := generator.NewStaticSchema(got)
+		staticGot := generator.NewStaticSchema(schema)
 
 		diff.RequireKnownValueEqual(t, staticWant, staticGot)
 	})
 
 	t.Run("go-code", func(t *testing.T) {
-		tc := testcases.LoadAndParseTestCase("TestAllOfSchemaToStruct")
 
-		got := mustLoadSchemaModel(t, tc.JSONSchema())
-
-		checkGoCode(t, got, tc.GoCode())
+		checkGoCode(t, schema, tc.GoCode())
 	})
 
 }
 
 func TestAllOfWithRefsSchemaToStruct(t *testing.T) {
+
+	tc := testcases.LoadAndParseTestCase("TestAllOfWithRefsSchemaToStruct")
+	require.Equal(t, testCasesHash, testcases.GetHash(), "test cases hash mismatch, please run 'go generate ./...' to update the test cases hash")
+
+	schema, err := generator.NewSchemaModel(tc.JSONSchema())
+	require.NoError(t, err, "failed to parse schema")
+
+	t.Run("json-schema", func(t *testing.T) {
+		// nothing to do here right now
+	})
 
 	t.Run("raw-schema", func(t *testing.T) {
 		t.Fatalf("no raw-schema test case defined for testcases/TestAllOfWithRefsSchemaToStruct.md")
@@ -93,16 +98,23 @@ func TestAllOfWithRefsSchemaToStruct(t *testing.T) {
 	})
 
 	t.Run("go-code", func(t *testing.T) {
-		tc := testcases.LoadAndParseTestCase("TestAllOfWithRefsSchemaToStruct")
 
-		got := mustLoadSchemaModel(t, tc.JSONSchema())
-
-		checkGoCode(t, got, tc.GoCode())
+		checkGoCode(t, schema, tc.GoCode())
 	})
 
 }
 
 func TestAnyOfSchemaToStruct(t *testing.T) {
+
+	tc := testcases.LoadAndParseTestCase("TestAnyOfSchemaToStruct")
+	require.Equal(t, testCasesHash, testcases.GetHash(), "test cases hash mismatch, please run 'go generate ./...' to update the test cases hash")
+
+	schema, err := generator.NewSchemaModel(tc.JSONSchema())
+	require.NoError(t, err, "failed to parse schema")
+
+	t.Run("json-schema", func(t *testing.T) {
+		// nothing to do here right now
+	})
 
 	t.Run("raw-schema", func(t *testing.T) {
 		t.Fatalf("no raw-schema test case defined for testcases/TestAnyOfSchemaToStruct.md")
@@ -113,16 +125,23 @@ func TestAnyOfSchemaToStruct(t *testing.T) {
 	})
 
 	t.Run("go-code", func(t *testing.T) {
-		tc := testcases.LoadAndParseTestCase("TestAnyOfSchemaToStruct")
 
-		got := mustLoadSchemaModel(t, tc.JSONSchema())
-
-		checkGoCode(t, got, tc.GoCode())
+		checkGoCode(t, schema, tc.GoCode())
 	})
 
 }
 
 func TestArrayOfReferencesSchemaToStruct(t *testing.T) {
+
+	tc := testcases.LoadAndParseTestCase("TestArrayOfReferencesSchemaToStruct")
+	require.Equal(t, testCasesHash, testcases.GetHash(), "test cases hash mismatch, please run 'go generate ./...' to update the test cases hash")
+
+	schema, err := generator.NewSchemaModel(tc.JSONSchema())
+	require.NoError(t, err, "failed to parse schema")
+
+	t.Run("json-schema", func(t *testing.T) {
+		// nothing to do here right now
+	})
 
 	t.Run("raw-schema", func(t *testing.T) {
 		t.Fatalf("no raw-schema test case defined for testcases/TestArrayOfReferencesSchemaToStruct.md")
@@ -133,16 +152,23 @@ func TestArrayOfReferencesSchemaToStruct(t *testing.T) {
 	})
 
 	t.Run("go-code", func(t *testing.T) {
-		tc := testcases.LoadAndParseTestCase("TestArrayOfReferencesSchemaToStruct")
 
-		got := mustLoadSchemaModel(t, tc.JSONSchema())
-
-		checkGoCode(t, got, tc.GoCode())
+		checkGoCode(t, schema, tc.GoCode())
 	})
 
 }
 
 func TestBasicRefSchemaToStruct(t *testing.T) {
+
+	tc := testcases.LoadAndParseTestCase("TestBasicRefSchemaToStruct")
+	require.Equal(t, testCasesHash, testcases.GetHash(), "test cases hash mismatch, please run 'go generate ./...' to update the test cases hash")
+
+	schema, err := generator.NewSchemaModel(tc.JSONSchema())
+	require.NoError(t, err, "failed to parse schema")
+
+	t.Run("json-schema", func(t *testing.T) {
+		// nothing to do here right now
+	})
 
 	t.Run("raw-schema", func(t *testing.T) {
 		t.Fatalf("no raw-schema test case defined for testcases/TestBasicRefSchemaToStruct.md")
@@ -153,16 +179,23 @@ func TestBasicRefSchemaToStruct(t *testing.T) {
 	})
 
 	t.Run("go-code", func(t *testing.T) {
-		tc := testcases.LoadAndParseTestCase("TestBasicRefSchemaToStruct")
 
-		got := mustLoadSchemaModel(t, tc.JSONSchema())
-
-		checkGoCode(t, got, tc.GoCode())
+		checkGoCode(t, schema, tc.GoCode())
 	})
 
 }
 
 func TestBasicSchemaToStruct(t *testing.T) {
+
+	tc := testcases.LoadAndParseTestCase("TestBasicSchemaToStruct")
+	require.Equal(t, testCasesHash, testcases.GetHash(), "test cases hash mismatch, please run 'go generate ./...' to update the test cases hash")
+
+	schema, err := generator.NewSchemaModel(tc.JSONSchema())
+	require.NoError(t, err, "failed to parse schema")
+
+	t.Run("json-schema", func(t *testing.T) {
+		// nothing to do here right now
+	})
 
 	t.Run("raw-schema", func(t *testing.T) {
 		t.Fatalf("no raw-schema test case defined for testcases/TestBasicSchemaToStruct.md")
@@ -173,16 +206,23 @@ func TestBasicSchemaToStruct(t *testing.T) {
 	})
 
 	t.Run("go-code", func(t *testing.T) {
-		tc := testcases.LoadAndParseTestCase("TestBasicSchemaToStruct")
 
-		got := mustLoadSchemaModel(t, tc.JSONSchema())
-
-		checkGoCode(t, got, tc.GoCode())
+		checkGoCode(t, schema, tc.GoCode())
 	})
 
 }
 
 func TestIntegerEnumSchemaToStruct(t *testing.T) {
+
+	tc := testcases.LoadAndParseTestCase("TestIntegerEnumSchemaToStruct")
+	require.Equal(t, testCasesHash, testcases.GetHash(), "test cases hash mismatch, please run 'go generate ./...' to update the test cases hash")
+
+	schema, err := generator.NewSchemaModel(tc.JSONSchema())
+	require.NoError(t, err, "failed to parse schema")
+
+	t.Run("json-schema", func(t *testing.T) {
+		// nothing to do here right now
+	})
 
 	t.Run("raw-schema", func(t *testing.T) {
 		t.Fatalf("no raw-schema test case defined for testcases/TestIntegerEnumSchemaToStruct.md")
@@ -193,16 +233,23 @@ func TestIntegerEnumSchemaToStruct(t *testing.T) {
 	})
 
 	t.Run("go-code", func(t *testing.T) {
-		tc := testcases.LoadAndParseTestCase("TestIntegerEnumSchemaToStruct")
 
-		got := mustLoadSchemaModel(t, tc.JSONSchema())
-
-		checkGoCode(t, got, tc.GoCode())
+		checkGoCode(t, schema, tc.GoCode())
 	})
 
 }
 
 func TestNestedObjectDeep(t *testing.T) {
+
+	tc := testcases.LoadAndParseTestCase("TestNestedObjectDeep")
+	require.Equal(t, testCasesHash, testcases.GetHash(), "test cases hash mismatch, please run 'go generate ./...' to update the test cases hash")
+
+	schema, err := generator.NewSchemaModel(tc.JSONSchema())
+	require.NoError(t, err, "failed to parse schema")
+
+	t.Run("json-schema", func(t *testing.T) {
+		// nothing to do here right now
+	})
 
 	t.Run("raw-schema", func(t *testing.T) {
 		t.Fatalf("no raw-schema test case defined for testcases/TestNestedObjectDeep.md")
@@ -213,16 +260,23 @@ func TestNestedObjectDeep(t *testing.T) {
 	})
 
 	t.Run("go-code", func(t *testing.T) {
-		tc := testcases.LoadAndParseTestCase("TestNestedObjectDeep")
 
-		got := mustLoadSchemaModel(t, tc.JSONSchema())
-
-		checkGoCode(t, got, tc.GoCode())
+		checkGoCode(t, schema, tc.GoCode())
 	})
 
 }
 
 func TestNestedObjectSimple(t *testing.T) {
+
+	tc := testcases.LoadAndParseTestCase("TestNestedObjectSimple")
+	require.Equal(t, testCasesHash, testcases.GetHash(), "test cases hash mismatch, please run 'go generate ./...' to update the test cases hash")
+
+	schema, err := generator.NewSchemaModel(tc.JSONSchema())
+	require.NoError(t, err, "failed to parse schema")
+
+	t.Run("json-schema", func(t *testing.T) {
+		// nothing to do here right now
+	})
 
 	t.Run("raw-schema", func(t *testing.T) {
 		t.Fatalf("no raw-schema test case defined for testcases/TestNestedObjectSimple.md")
@@ -233,16 +287,23 @@ func TestNestedObjectSimple(t *testing.T) {
 	})
 
 	t.Run("go-code", func(t *testing.T) {
-		tc := testcases.LoadAndParseTestCase("TestNestedObjectSimple")
 
-		got := mustLoadSchemaModel(t, tc.JSONSchema())
-
-		checkGoCode(t, got, tc.GoCode())
+		checkGoCode(t, schema, tc.GoCode())
 	})
 
 }
 
 func TestNestedObjectWithOptional(t *testing.T) {
+
+	tc := testcases.LoadAndParseTestCase("TestNestedObjectWithOptional")
+	require.Equal(t, testCasesHash, testcases.GetHash(), "test cases hash mismatch, please run 'go generate ./...' to update the test cases hash")
+
+	schema, err := generator.NewSchemaModel(tc.JSONSchema())
+	require.NoError(t, err, "failed to parse schema")
+
+	t.Run("json-schema", func(t *testing.T) {
+		// nothing to do here right now
+	})
 
 	t.Run("raw-schema", func(t *testing.T) {
 		t.Fatalf("no raw-schema test case defined for testcases/TestNestedObjectWithOptional.md")
@@ -253,16 +314,23 @@ func TestNestedObjectWithOptional(t *testing.T) {
 	})
 
 	t.Run("go-code", func(t *testing.T) {
-		tc := testcases.LoadAndParseTestCase("TestNestedObjectWithOptional")
 
-		got := mustLoadSchemaModel(t, tc.JSONSchema())
-
-		checkGoCode(t, got, tc.GoCode())
+		checkGoCode(t, schema, tc.GoCode())
 	})
 
 }
 
 func TestOneOfSchemaToStruct(t *testing.T) {
+
+	tc := testcases.LoadAndParseTestCase("TestOneOfSchemaToStruct")
+	require.Equal(t, testCasesHash, testcases.GetHash(), "test cases hash mismatch, please run 'go generate ./...' to update the test cases hash")
+
+	schema, err := generator.NewSchemaModel(tc.JSONSchema())
+	require.NoError(t, err, "failed to parse schema")
+
+	t.Run("json-schema", func(t *testing.T) {
+		// nothing to do here right now
+	})
 
 	t.Run("raw-schema", func(t *testing.T) {
 		t.Fatalf("no raw-schema test case defined for testcases/TestOneOfSchemaToStruct.md")
@@ -273,16 +341,23 @@ func TestOneOfSchemaToStruct(t *testing.T) {
 	})
 
 	t.Run("go-code", func(t *testing.T) {
-		tc := testcases.LoadAndParseTestCase("TestOneOfSchemaToStruct")
 
-		got := mustLoadSchemaModel(t, tc.JSONSchema())
-
-		checkGoCode(t, got, tc.GoCode())
+		checkGoCode(t, schema, tc.GoCode())
 	})
 
 }
 
 func TestPatternPropertiesSchemaToStruct(t *testing.T) {
+
+	tc := testcases.LoadAndParseTestCase("TestPatternPropertiesSchemaToStruct")
+	require.Equal(t, testCasesHash, testcases.GetHash(), "test cases hash mismatch, please run 'go generate ./...' to update the test cases hash")
+
+	schema, err := generator.NewSchemaModel(tc.JSONSchema())
+	require.NoError(t, err, "failed to parse schema")
+
+	t.Run("json-schema", func(t *testing.T) {
+		// nothing to do here right now
+	})
 
 	t.Run("raw-schema", func(t *testing.T) {
 		t.Fatalf("no raw-schema test case defined for testcases/TestPatternPropertiesSchemaToStruct.md")
@@ -293,16 +368,23 @@ func TestPatternPropertiesSchemaToStruct(t *testing.T) {
 	})
 
 	t.Run("go-code", func(t *testing.T) {
-		tc := testcases.LoadAndParseTestCase("TestPatternPropertiesSchemaToStruct")
 
-		got := mustLoadSchemaModel(t, tc.JSONSchema())
-
-		checkGoCode(t, got, tc.GoCode())
+		checkGoCode(t, schema, tc.GoCode())
 	})
 
 }
 
 func TestRequiredFieldsSchemaToStruct(t *testing.T) {
+
+	tc := testcases.LoadAndParseTestCase("TestRequiredFieldsSchemaToStruct")
+	require.Equal(t, testCasesHash, testcases.GetHash(), "test cases hash mismatch, please run 'go generate ./...' to update the test cases hash")
+
+	schema, err := generator.NewSchemaModel(tc.JSONSchema())
+	require.NoError(t, err, "failed to parse schema")
+
+	t.Run("json-schema", func(t *testing.T) {
+		// nothing to do here right now
+	})
 
 	t.Run("raw-schema", func(t *testing.T) {
 		t.Fatalf("no raw-schema test case defined for testcases/TestRequiredFieldsSchemaToStruct.md")
@@ -313,16 +395,23 @@ func TestRequiredFieldsSchemaToStruct(t *testing.T) {
 	})
 
 	t.Run("go-code", func(t *testing.T) {
-		tc := testcases.LoadAndParseTestCase("TestRequiredFieldsSchemaToStruct")
 
-		got := mustLoadSchemaModel(t, tc.JSONSchema())
-
-		checkGoCode(t, got, tc.GoCode())
+		checkGoCode(t, schema, tc.GoCode())
 	})
 
 }
 
 func TestSchemaDocumentation(t *testing.T) {
+
+	tc := testcases.LoadAndParseTestCase("TestSchemaDocumentation")
+	require.Equal(t, testCasesHash, testcases.GetHash(), "test cases hash mismatch, please run 'go generate ./...' to update the test cases hash")
+
+	schema, err := generator.NewSchemaModel(tc.JSONSchema())
+	require.NoError(t, err, "failed to parse schema")
+
+	t.Run("json-schema", func(t *testing.T) {
+		// nothing to do here right now
+	})
 
 	t.Run("raw-schema", func(t *testing.T) {
 		t.Fatalf("no raw-schema test case defined for testcases/TestSchemaDocumentation.md")
@@ -333,16 +422,23 @@ func TestSchemaDocumentation(t *testing.T) {
 	})
 
 	t.Run("go-code", func(t *testing.T) {
-		tc := testcases.LoadAndParseTestCase("TestSchemaDocumentation")
 
-		got := mustLoadSchemaModel(t, tc.JSONSchema())
-
-		checkGoCode(t, got, tc.GoCode())
+		checkGoCode(t, schema, tc.GoCode())
 	})
 
 }
 
 func TestStringEnumSchemaToStruct(t *testing.T) {
+
+	tc := testcases.LoadAndParseTestCase("TestStringEnumSchemaToStruct")
+	require.Equal(t, testCasesHash, testcases.GetHash(), "test cases hash mismatch, please run 'go generate ./...' to update the test cases hash")
+
+	schema, err := generator.NewSchemaModel(tc.JSONSchema())
+	require.NoError(t, err, "failed to parse schema")
+
+	t.Run("json-schema", func(t *testing.T) {
+		// nothing to do here right now
+	})
 
 	t.Run("raw-schema", func(t *testing.T) {
 		t.Fatalf("no raw-schema test case defined for testcases/TestStringEnumSchemaToStruct.md")
@@ -353,16 +449,23 @@ func TestStringEnumSchemaToStruct(t *testing.T) {
 	})
 
 	t.Run("go-code", func(t *testing.T) {
-		tc := testcases.LoadAndParseTestCase("TestStringEnumSchemaToStruct")
 
-		got := mustLoadSchemaModel(t, tc.JSONSchema())
-
-		checkGoCode(t, got, tc.GoCode())
+		checkGoCode(t, schema, tc.GoCode())
 	})
 
 }
 
 func TestTypeNamingConventions(t *testing.T) {
+
+	tc := testcases.LoadAndParseTestCase("TestTypeNamingConventions")
+	require.Equal(t, testCasesHash, testcases.GetHash(), "test cases hash mismatch, please run 'go generate ./...' to update the test cases hash")
+
+	schema, err := generator.NewSchemaModel(tc.JSONSchema())
+	require.NoError(t, err, "failed to parse schema")
+
+	t.Run("json-schema", func(t *testing.T) {
+		// nothing to do here right now
+	})
 
 	t.Run("raw-schema", func(t *testing.T) {
 		t.Fatalf("no raw-schema test case defined for testcases/TestTypeNamingConventions.md")
@@ -373,11 +476,8 @@ func TestTypeNamingConventions(t *testing.T) {
 	})
 
 	t.Run("go-code", func(t *testing.T) {
-		tc := testcases.LoadAndParseTestCase("TestTypeNamingConventions")
 
-		got := mustLoadSchemaModel(t, tc.JSONSchema())
-
-		checkGoCode(t, got, tc.GoCode())
+		checkGoCode(t, schema, tc.GoCode())
 	})
 
 }

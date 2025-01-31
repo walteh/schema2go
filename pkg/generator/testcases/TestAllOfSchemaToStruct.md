@@ -88,9 +88,10 @@ func (x AllOfExample) MarshalJSON() ([]byte, error) {
 
 ```go
 &jsonschema.Schema{
-		Title: ptr("AllOfExample"),
-		Type: typ("object"),
-		AllOf: ptr([]*jsonschema.Schema{
+	Schema: ptr("http://json-schema.org/draft-07/schema#"),
+	Title:  ptr("AllOfExample"),
+	Type:   typ("object"),
+	AllOf:  ptr([]*jsonschema.Schema{
 			{
 				Type: typ("object"),
 				Properties: &[]*jsonschema.NamedSchema{

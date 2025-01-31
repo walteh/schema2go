@@ -1,7 +1,9 @@
 package testcases
 
 import (
+	"crypto/sha256"
 	"embed"
+	"encoding/hex"
 	"path/filepath"
 	"strings"
 )
@@ -115,4 +117,20 @@ func parseTestCase(name string, text string) TestCase {
 		staticSchema: staticSchema,
 		rawSchema:    rawSchema,
 	}
+}
+
+func GetHash() string {
+	hash := sha256.New()
+	files, err := testCases.ReadDir(".")
+	if err != nil {
+		panic(err)
+	}
+	for _, file := range files {
+		content, err := testCases.ReadFile(filepath.Join(file.Name()))
+		if err != nil {
+			panic(err)
+		}
+		hash.Write(content)
+	}
+	return hex.EncodeToString(hash.Sum(nil))
 }
