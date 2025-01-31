@@ -150,38 +150,77 @@ func (b *StaticField) ValidationRules() []*ValidationRule {
 }
 
 func NewStaticSchema(impl Schema) *StaticSchema {
-	return &StaticSchema{
-		Package_: impl.Package(),
-		Structs_: impl.Structs(),
-		Enums_:   impl.Enums(),
-		Imports_: impl.Imports(),
+	stat := &StaticSchema{}
+
+	stat.Package_ = impl.Package()
+
+	// Handle slice of objects
+	var staticStructs_ []Struct
+	for _, item := range impl.Structs() {
+		staticStructs_ = append(staticStructs_, NewStaticStruct(item))
 	}
+	stat.Structs_ = staticStructs_
+
+	// Handle slice of objects
+	stat.Enums_ = impl.Enums()
+
+	// Handle slice of objects
+	stat.Imports_ = impl.Imports()
+
+	return stat
 }
 
 func NewStaticStruct(impl Struct) *StaticStruct {
-	return &StaticStruct{
-		Name_:                impl.Name(),
-		Description_:         impl.Description(),
-		Fields_:              impl.Fields(),
-		HasAllOf_:            impl.HasAllOf(),
-		HasCustomMarshaling_: impl.HasCustomMarshaling(),
-		HasDefaults_:         impl.HasDefaults(),
-		HasValidation_:       impl.HasValidation(),
+	stat := &StaticStruct{}
+
+	stat.Name_ = impl.Name()
+
+	stat.Description_ = impl.Description()
+
+	// Handle slice of objects
+	var staticFields_ []Field
+	for _, item := range impl.Fields() {
+		staticFields_ = append(staticFields_, NewStaticField(item))
 	}
+	stat.Fields_ = staticFields_
+
+	stat.HasAllOf_ = impl.HasAllOf()
+
+	stat.HasCustomMarshaling_ = impl.HasCustomMarshaling()
+
+	stat.HasDefaults_ = impl.HasDefaults()
+
+	stat.HasValidation_ = impl.HasValidation()
+
+	return stat
 }
 
 func NewStaticField(impl Field) *StaticField {
-	return &StaticField{
-		Name_:                impl.Name(),
-		JSONName_:            impl.JSONName(),
-		Description_:         impl.Description(),
-		IsRequired_:          impl.IsRequired(),
-		Type_:                impl.Type(),
-		IsEnum_:              impl.IsEnum(),
-		EnumTypeName_:        impl.EnumTypeName(),
-		EnumValues_:          impl.EnumValues(),
-		DefaultValue_:        impl.DefaultValue(),
-		DefaultValueComment_: impl.DefaultValueComment(),
-		ValidationRules_:     impl.ValidationRules(),
-	}
+	stat := &StaticField{}
+
+	stat.Name_ = impl.Name()
+
+	stat.JSONName_ = impl.JSONName()
+
+	stat.Description_ = impl.Description()
+
+	stat.IsRequired_ = impl.IsRequired()
+
+	stat.Type_ = impl.Type()
+
+	stat.IsEnum_ = impl.IsEnum()
+
+	stat.EnumTypeName_ = impl.EnumTypeName()
+
+	// Handle slice of objects
+	stat.EnumValues_ = impl.EnumValues()
+
+	stat.DefaultValue_ = impl.DefaultValue()
+
+	stat.DefaultValueComment_ = impl.DefaultValueComment()
+
+	// Handle slice of objects
+	stat.ValidationRules_ = impl.ValidationRules()
+
+	return stat
 }

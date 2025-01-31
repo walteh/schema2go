@@ -25,27 +25,27 @@ func LoadTestCases() ([]TestCase, error) {
 
 // TestCase represents a single schema to struct conversion test
 type TestCase struct {
-	name                      string
-	input                     string
-	wantGoCode                string
-	wantSchemaModelMockGoCode string
-	schema                    string
+	name         string
+	jsonSchema   string
+	goCode       string
+	staticSchema string
+	rawSchema    string
 }
 
-func (tc *TestCase) GenerateInput() string {
-	return tc.input
+func (tc *TestCase) JSONSchema() string {
+	return tc.jsonSchema
 }
 
-func (tc *TestCase) GenerateExpectedGoCode() string {
-	return tc.wantGoCode
+func (tc *TestCase) GoCode() string {
+	return tc.goCode
 }
 
-func (tc *TestCase) GenerateExpectedSchemaModelMockGoCode() string {
-	return tc.wantSchemaModelMockGoCode
+func (tc *TestCase) StaticSchema() string {
+	return tc.staticSchema
 }
 
-func (tc *TestCase) GenerateExpectedSchemaModel() string {
-	return tc.schema
+func (tc *TestCase) RawSchema() string {
+	return tc.rawSchema
 }
 
 func (tc *TestCase) Name() string {
@@ -70,7 +70,7 @@ func parseTestCase(name string, text string) TestCase {
 	// ```go
 	// <expected output>
 	// ```
-	var input, wantGoCode, wantSchemaModelMockGoCode, schema string
+	var jsonSchema, goCode, staticSchema, rawSchema string
 
 	parseJson := func(text string) string {
 		jsonStart := strings.Index(text, "```json\n")
@@ -97,22 +97,22 @@ func parseTestCase(name string, text string) TestCase {
 		blockName := strings.Split(split[strings.Index(split, "# ")+2:], "\n")[0]
 		blockContent := strings.TrimSpace(split[strings.Index(split, blockName)+len(blockName):])
 		switch blockName {
-		case "input":
-			input = parseJson(blockContent)
-		case "expected-output":
-			wantGoCode = parseGo(blockContent)
-		case "expected-schema-model-mock":
-			wantSchemaModelMockGoCode = parseGo(blockContent)
-		case "expected-raw-schema":
-			schema = parseGo(blockContent)
+		case "json-schema":
+			jsonSchema = parseJson(blockContent)
+		case "go-code":
+			goCode = parseGo(blockContent)
+		case "static-schema":
+			staticSchema = parseGo(blockContent)
+		case "raw-schema":
+			rawSchema = parseGo(blockContent)
 		}
 	}
 
 	return TestCase{
-		name:                      name,
-		input:                     input,
-		wantGoCode:                wantGoCode,
-		wantSchemaModelMockGoCode: wantSchemaModelMockGoCode,
-		schema:                    schema,
+		name:         name,
+		jsonSchema:   jsonSchema,
+		goCode:       goCode,
+		staticSchema: staticSchema,
+		rawSchema:    rawSchema,
 	}
 }

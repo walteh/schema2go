@@ -8,6 +8,7 @@ import (
 	"go/parser"
 	"go/token"
 	"os"
+	"strings"
 	"text/template"
 )
 
@@ -35,11 +36,29 @@ func (b *Static{{ $iface.Name }}) {{ $method.Name }}() {{ $method.ReturnType }} 
 
 {{ range $iface := .Interfaces }}
 func NewStatic{{ $iface.Name }}(impl {{ $iface.Name }}) *Static{{ $iface.Name }} {
-	return &Static{{ $iface.Name }}{
-		{{- range $method := $iface.Methods }}
-		{{ $method.Name }}_: impl.{{ $method.Name }}(),
-		{{- end }}
+	stat := &Static{{ $iface.Name }}{}
+
+	{{ range $method := $iface.Methods }}
+	{{- if eq (slice $method.ReturnType 0 2) "[]" }}
+	// Handle slice of objects
+	{{- if isKnownType (trimPrefix $method.ReturnType "[]") }}
+	var static{{ $method.Name }}_ []{{ trimPrefix $method.ReturnType "[]" }}
+	for _, item := range impl.{{ $method.Name }}() {
+		static{{ $method.Name }}_ = append(static{{ $method.Name }}_, NewStatic{{ trimPrefix $method.ReturnType "[]" }}(item))
 	}
+	stat.{{ $method.Name }}_ = static{{ $method.Name }}_
+	{{- else }}
+	stat.{{ $method.Name }}_ = impl.{{ $method.Name }}()
+	{{- end }}
+	{{- else if isKnownType $method.ReturnType }}
+	// Handle single object
+	stat.{{ $method.Name }}_ = NewStatic{{ $method.ReturnType }}(impl.{{ $method.Name }}())
+	{{- else }}
+	stat.{{ $method.Name }}_ = impl.{{ $method.Name }}()
+	{{- end }}
+	{{ end }}
+
+	return stat
 }
 {{ end }}
 `
@@ -105,8 +124,30 @@ func generateStaticTypes() {
 		}
 	}
 
+	// Create a map of interface names for the template
+	interfaceNames := make(map[string]bool)
+	for _, iface := range interfaces {
+		interfaceNames[iface.Name] = true
+	}
+
+	// Create template functions
+	funcMap := template.FuncMap{
+		"isKnownType": func(typeName string) bool {
+			return interfaceNames[typeName]
+		},
+		"trimPrefix": func(s, prefix string) string {
+			return strings.TrimPrefix(s, prefix)
+		},
+		"slice": func(s string, i, j int) string {
+			if j > len(s) {
+				j = len(s)
+			}
+			return s[i:j]
+		},
+	}
+
 	// Generate code using template
-	tmpl, err := template.New("staticTypes").Parse(staticTypesTemplate)
+	tmpl, err := template.New("staticTypes").Funcs(funcMap).Parse(staticTypesTemplate)
 	if err != nil {
 		panic(fmt.Errorf("parsing template: %w", err))
 	}

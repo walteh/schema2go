@@ -150,7 +150,7 @@ TODO(schema2go): Implementation phases:
 */
 
 // runTestCase is a helper function to run a single test case
-func checkGoCode(t *testing.T, input, expectedOutput string) {
+func checkGoCode(t *testing.T, model *generator.SchemaModel, expectedOutput string) {
 	t.Helper() // marks this as a helper function for better test output
 
 	ctx := context.Background()
@@ -163,11 +163,6 @@ func checkGoCode(t *testing.T, input, expectedOutput string) {
 	formattedWant, err := format.Source([]byte(expectedOutput))
 	if err != nil {
 		t.Fatalf("Failed to format expected code: %v", err)
-	}
-
-	model, err := generator.NewSchemaModel(input)
-	if err != nil {
-		t.Fatalf("Failed to parse schema: %v", err)
 	}
 
 	got, err := generator.GenerateWithFormatting(ctx, gen, model)
