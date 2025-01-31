@@ -85,11 +85,11 @@ func TestAllOfSchemaToStruct(t *testing.T) {
 func TestAllOfWithRefsSchemaToStruct(t *testing.T) {
 
 	t.Run("raw-schema", func(t *testing.T) {
-		t.Fatalf("no raw schema")
+		t.Fatalf("no raw-schema test case defined for testcases/TestAllOfWithRefsSchemaToStruct.md")
 	})
 
 	t.Run("static-schema", func(t *testing.T) {
-		t.Fatalf("no static schema")
+		t.Fatalf("no static-schema test case defined for testcases/TestAllOfWithRefsSchemaToStruct.md")
 	})
 
 	t.Run("go-code", func(t *testing.T) {
@@ -105,11 +105,11 @@ func TestAllOfWithRefsSchemaToStruct(t *testing.T) {
 func TestAnyOfSchemaToStruct(t *testing.T) {
 
 	t.Run("raw-schema", func(t *testing.T) {
-		t.Fatalf("no raw schema")
+		t.Fatalf("no raw-schema test case defined for testcases/TestAnyOfSchemaToStruct.md")
 	})
 
 	t.Run("static-schema", func(t *testing.T) {
-		t.Fatalf("no static schema")
+		t.Fatalf("no static-schema test case defined for testcases/TestAnyOfSchemaToStruct.md")
 	})
 
 	t.Run("go-code", func(t *testing.T) {
@@ -125,11 +125,11 @@ func TestAnyOfSchemaToStruct(t *testing.T) {
 func TestArrayOfReferencesSchemaToStruct(t *testing.T) {
 
 	t.Run("raw-schema", func(t *testing.T) {
-		t.Fatalf("no raw schema")
+		t.Fatalf("no raw-schema test case defined for testcases/TestArrayOfReferencesSchemaToStruct.md")
 	})
 
 	t.Run("static-schema", func(t *testing.T) {
-		t.Fatalf("no static schema")
+		t.Fatalf("no static-schema test case defined for testcases/TestArrayOfReferencesSchemaToStruct.md")
 	})
 
 	t.Run("go-code", func(t *testing.T) {
@@ -145,11 +145,11 @@ func TestArrayOfReferencesSchemaToStruct(t *testing.T) {
 func TestBasicRefSchemaToStruct(t *testing.T) {
 
 	t.Run("raw-schema", func(t *testing.T) {
-		t.Fatalf("no raw schema")
+		t.Fatalf("no raw-schema test case defined for testcases/TestBasicRefSchemaToStruct.md")
 	})
 
 	t.Run("static-schema", func(t *testing.T) {
-		t.Fatalf("no static schema")
+		t.Fatalf("no static-schema test case defined for testcases/TestBasicRefSchemaToStruct.md")
 	})
 
 	t.Run("go-code", func(t *testing.T) {
@@ -165,11 +165,11 @@ func TestBasicRefSchemaToStruct(t *testing.T) {
 func TestBasicSchemaToStruct(t *testing.T) {
 
 	t.Run("raw-schema", func(t *testing.T) {
-		t.Fatalf("no raw schema")
+		t.Fatalf("no raw-schema test case defined for testcases/TestBasicSchemaToStruct.md")
 	})
 
 	t.Run("static-schema", func(t *testing.T) {
-		t.Fatalf("no static schema")
+		t.Fatalf("no static-schema test case defined for testcases/TestBasicSchemaToStruct.md")
 	})
 
 	t.Run("go-code", func(t *testing.T) {
@@ -185,11 +185,11 @@ func TestBasicSchemaToStruct(t *testing.T) {
 func TestIntegerEnumSchemaToStruct(t *testing.T) {
 
 	t.Run("raw-schema", func(t *testing.T) {
-		t.Fatalf("no raw schema")
+		t.Fatalf("no raw-schema test case defined for testcases/TestIntegerEnumSchemaToStruct.md")
 	})
 
 	t.Run("static-schema", func(t *testing.T) {
-		t.Fatalf("no static schema")
+		t.Fatalf("no static-schema test case defined for testcases/TestIntegerEnumSchemaToStruct.md")
 	})
 
 	t.Run("go-code", func(t *testing.T) {
@@ -205,11 +205,11 @@ func TestIntegerEnumSchemaToStruct(t *testing.T) {
 func TestNestedObjectDeep(t *testing.T) {
 
 	t.Run("raw-schema", func(t *testing.T) {
-		t.Fatalf("no raw schema")
+		t.Fatalf("no raw-schema test case defined for testcases/TestNestedObjectDeep.md")
 	})
 
 	t.Run("static-schema", func(t *testing.T) {
-		t.Fatalf("no static schema")
+		t.Fatalf("no static-schema test case defined for testcases/TestNestedObjectDeep.md")
 	})
 
 	t.Run("go-code", func(t *testing.T) {
@@ -225,11 +225,11 @@ func TestNestedObjectDeep(t *testing.T) {
 func TestNestedObjectSimple(t *testing.T) {
 
 	t.Run("raw-schema", func(t *testing.T) {
-		t.Fatalf("no raw schema")
+		t.Fatalf("no raw-schema test case defined for testcases/TestNestedObjectSimple.md")
 	})
 
 	t.Run("static-schema", func(t *testing.T) {
-		t.Fatalf("no static schema")
+		t.Fatalf("no static-schema test case defined for testcases/TestNestedObjectSimple.md")
 	})
 
 	t.Run("go-code", func(t *testing.T) {
@@ -245,11 +245,11 @@ func TestNestedObjectSimple(t *testing.T) {
 func TestNestedObjectWithOptional(t *testing.T) {
 
 	t.Run("raw-schema", func(t *testing.T) {
-		t.Fatalf("no raw schema")
+		t.Fatalf("no raw-schema test case defined for testcases/TestNestedObjectWithOptional.md")
 	})
 
 	t.Run("static-schema", func(t *testing.T) {
-		t.Fatalf("no static schema")
+		t.Fatalf("no static-schema test case defined for testcases/TestNestedObjectWithOptional.md")
 	})
 
 	t.Run("go-code", func(t *testing.T) {
@@ -265,11 +265,11 @@ func TestNestedObjectWithOptional(t *testing.T) {
 func TestOneOfSchemaToStruct(t *testing.T) {
 
 	t.Run("raw-schema", func(t *testing.T) {
-		t.Fatalf("no raw schema")
+		t.Fatalf("no raw-schema test case defined for testcases/TestOneOfSchemaToStruct.md")
 	})
 
 	t.Run("static-schema", func(t *testing.T) {
-		t.Fatalf("no static schema")
+		t.Fatalf("no static-schema test case defined for testcases/TestOneOfSchemaToStruct.md")
 	})
 
 	t.Run("go-code", func(t *testing.T) {
@@ -285,11 +285,11 @@ func TestOneOfSchemaToStruct(t *testing.T) {
 func TestPatternPropertiesSchemaToStruct(t *testing.T) {
 
 	t.Run("raw-schema", func(t *testing.T) {
-		t.Fatalf("no raw schema")
+		t.Fatalf("no raw-schema test case defined for testcases/TestPatternPropertiesSchemaToStruct.md")
 	})
 
 	t.Run("static-schema", func(t *testing.T) {
-		t.Fatalf("no static schema")
+		t.Fatalf("no static-schema test case defined for testcases/TestPatternPropertiesSchemaToStruct.md")
 	})
 
 	t.Run("go-code", func(t *testing.T) {
@@ -305,11 +305,11 @@ func TestPatternPropertiesSchemaToStruct(t *testing.T) {
 func TestRequiredFieldsSchemaToStruct(t *testing.T) {
 
 	t.Run("raw-schema", func(t *testing.T) {
-		t.Fatalf("no raw schema")
+		t.Fatalf("no raw-schema test case defined for testcases/TestRequiredFieldsSchemaToStruct.md")
 	})
 
 	t.Run("static-schema", func(t *testing.T) {
-		t.Fatalf("no static schema")
+		t.Fatalf("no static-schema test case defined for testcases/TestRequiredFieldsSchemaToStruct.md")
 	})
 
 	t.Run("go-code", func(t *testing.T) {
@@ -325,11 +325,11 @@ func TestRequiredFieldsSchemaToStruct(t *testing.T) {
 func TestSchemaDocumentation(t *testing.T) {
 
 	t.Run("raw-schema", func(t *testing.T) {
-		t.Fatalf("no raw schema")
+		t.Fatalf("no raw-schema test case defined for testcases/TestSchemaDocumentation.md")
 	})
 
 	t.Run("static-schema", func(t *testing.T) {
-		t.Fatalf("no static schema")
+		t.Fatalf("no static-schema test case defined for testcases/TestSchemaDocumentation.md")
 	})
 
 	t.Run("go-code", func(t *testing.T) {
@@ -345,11 +345,11 @@ func TestSchemaDocumentation(t *testing.T) {
 func TestStringEnumSchemaToStruct(t *testing.T) {
 
 	t.Run("raw-schema", func(t *testing.T) {
-		t.Fatalf("no raw schema")
+		t.Fatalf("no raw-schema test case defined for testcases/TestStringEnumSchemaToStruct.md")
 	})
 
 	t.Run("static-schema", func(t *testing.T) {
-		t.Fatalf("no static schema")
+		t.Fatalf("no static-schema test case defined for testcases/TestStringEnumSchemaToStruct.md")
 	})
 
 	t.Run("go-code", func(t *testing.T) {
@@ -365,11 +365,11 @@ func TestStringEnumSchemaToStruct(t *testing.T) {
 func TestTypeNamingConventions(t *testing.T) {
 
 	t.Run("raw-schema", func(t *testing.T) {
-		t.Fatalf("no raw schema")
+		t.Fatalf("no raw-schema test case defined for testcases/TestTypeNamingConventions.md")
 	})
 
 	t.Run("static-schema", func(t *testing.T) {
-		t.Fatalf("no static schema")
+		t.Fatalf("no static-schema test case defined for testcases/TestTypeNamingConventions.md")
 	})
 
 	t.Run("go-code", func(t *testing.T) {

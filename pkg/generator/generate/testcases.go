@@ -24,7 +24,7 @@ func generateTestCases() {
 		if tc.JSONSchema() == "" {
 			funcNames = append(funcNames, `
 			func `+tc.Name()+`(t *testing.T) {
-				t.Skip("no json-schema")
+				t.Skip("no json-schema definition defined for testcases/`+tc.Name()+`.md")
 			}
 			`)
 			continue
@@ -107,7 +107,7 @@ func GenerateGoCodeTest(funcName string, tc *testcases.TestCase) (string, error)
 	if tc.GoCode() == "" {
 		return `
 		t.Run("go-code", func(t *testing.T) {
-			t.Fatalf("no go code")
+			t.Fatalf("no go-code test case defined for ` + tc.Name() + `.md")
 		})
 		`, nil
 	}
@@ -138,7 +138,7 @@ func GenerateStaticSchemaTest(tc *testcases.TestCase) (string, error) {
 	if tc.StaticSchema() == "" {
 		return `
 		t.Run("static-schema", func(t *testing.T) {
-			t.Fatalf("no static schema")
+			t.Fatalf("no static-schema test case defined for testcases/` + tc.Name() + `.md")
 		})
 		`, nil
 	}
@@ -174,7 +174,7 @@ func GenerateRawSchemaTest(tc *testcases.TestCase) (string, error) {
 	if tc.RawSchema() == "" {
 		return `
 		t.Run("raw-schema", func(t *testing.T) {
-			t.Fatalf("no raw schema")
+			t.Fatalf("no raw-schema test case defined for testcases/` + tc.Name() + `.md")
 		})
 		`, nil
 	}
