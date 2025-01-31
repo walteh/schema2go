@@ -12,13 +12,15 @@ import (
 	"gitlab.com/tozd/go/errors"
 )
 
+//go:generate go run ./generate/main.go
+
 //go:embed templates/schema.go.tmpl
 var schemaTemplate string
 
 // Generator is responsible for converting JSON Schema into Go code
 type Generator interface {
 	// Generate takes a JSON schema as input and returns the generated Go code
-	Generate(ctx context.Context, input string) (string, error)
+	Generate(ctx context.Context, model *SchemaModel) (string, error)
 }
 
 // Options configures the generator behavior
@@ -51,8 +53,8 @@ func New(opts Options) Generator {
 }
 
 // Generate implements the Generator interface
-func GenerateWithFormatting(ctx context.Context, g Generator, input string) (string, error) {
-	code, err := g.Generate(ctx, input)
+func GenerateWithFormatting(ctx context.Context, g Generator, model *SchemaModel) (string, error) {
+	code, err := g.Generate(ctx, model)
 	if err != nil {
 		return "", errors.Errorf("generating code: %w", err)
 	}
@@ -66,17 +68,18 @@ func GenerateWithFormatting(ctx context.Context, g Generator, input string) (str
 	return string(formatted), nil
 }
 
-func (g *generator) Generate(ctx context.Context, input string) (string, error) {
-	// 🔍 Parse the schema
-	schema, err := parser.Parse(input)
+func NewSchemaModel(schema string) (*SchemaModel, error) {
+	schemaData, err := parser.Parse(schema)
 	if err != nil {
-		return "", errors.Errorf("parsing schema: %w", err)
+		return nil, errors.Errorf("parsing schema: %w", err)
 	}
 
-	// 🏗️ Create our model
-	model := &SchemaModel{
-		SourceSchema: schema,
-	}
+	return &SchemaModel{
+		SourceSchema: schemaData,
+	}, nil
+}
+
+func (g *generator) Generate(ctx context.Context, model *SchemaModel) (string, error) {
 
 	// 📝 Execute template
 	var b strings.Builder

@@ -12,9 +12,26 @@ import (
 	"github.com/walteh/schema2go/pkg/parser"
 )
 
+type Schema interface {
+	Package() string
+	Structs() []Struct
+	Enums() []*EnumModel
+	Imports() []string
+}
+
 // SchemaModel represents a parsed JSON Schema ready for code generation
 type SchemaModel struct {
 	SourceSchema *jsonschema.Schema
+}
+
+type Struct interface {
+	Name() string
+	Description() string
+	Fields() []Field
+	HasAllOf() bool
+	HasCustomMarshaling() bool
+	HasDefaults() bool
+	HasValidation() bool
 }
 
 // StructModel represents a Go struct to generate
@@ -22,6 +39,22 @@ type StructModel struct {
 	SourceSchema *jsonschema.Schema
 	ParentSchema *jsonschema.Schema // Parent schema that contains this schema
 }
+
+type Field interface {
+	Name() string
+	JSONName() string
+	Description() string
+	IsRequired() bool
+	Type() string
+	IsEnum() bool
+	EnumTypeName() string
+	EnumValues() []*EnumValue
+	DefaultValue() *string
+	DefaultValueComment() *string
+	ValidationRules() []*ValidationRule
+}
+
+var _ Field = &FieldModel{}
 
 // FieldModel represents a Go struct field
 type FieldModel struct {
@@ -62,6 +95,15 @@ type EnumModel struct {
 	BaseType    string
 	Description string
 	Values      []*EnumValue
+}
+
+func (e *EnumModel) AddValue(name, value, description string) {
+	e.Values = append(e.Values, &EnumValue{
+		Name:        name,
+		Value:       value,
+		Description: description,
+		Parent:      e,
+	})
 }
 
 // FieldModel Methods

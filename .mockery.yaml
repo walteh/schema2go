@@ -9,31 +9,8 @@ issue-845-fix: true
 filename: "{{.InterfaceName}}.{{.PackageName}}.mockery.go"
 mockname: Mock{{.InterfaceName}}_{{.PackageName}}
 packages:
-    github.com/walteh/schema2go/cmd/copyrc-refactor-1/pkg/provider:
+    github.com/walteh/schema2go/pkg/generator:
         interfaces:
-            Provider: {}
-
-    github.com/walteh/schema2go/cmd/copyrc-refactor-1/pkg/status:
-        interfaces:
-            FileFormatter: {}
-
-    github.com/walteh/schema2go/pkg/remote:
-        interfaces:
-            FileFormatter: {}
-            GitHubClient: {}
-            Provider: {}
-            RawTextFile: {}
-            Release: {}
-            Repository: {}
-
-    github.com/walteh/schema2go/pkg/config:
-        interfaces:
-            Config: {}
-
-    github.com/walteh/schema2go/pkg/remote/github:
-        interfaces:
-            GitHubClient: {}
-
-    github.com/walteh/schema2go/pkg/state:
-        interfaces:
-            StateManager: {}
+            Schema: {}
+            Struct: {}
+            Field: {}

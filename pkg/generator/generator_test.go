@@ -1,15 +1,16 @@
-package generator
+package generator_test
 
 import (
 	"context"
-	"embed"
 	_ "embed"
 	"go/format"
-	"path/filepath"
 	"strings"
 	"testing"
 
+	"github.com/google/gnostic/jsonschema"
+	"github.com/stretchr/testify/assert"
 	"github.com/walteh/schema2go/pkg/diff"
+	"github.com/walteh/schema2go/pkg/generator"
 )
 
 /*
@@ -141,123 +142,33 @@ TODO(schema2go): Implementation phases:
 5. ⏳ Custom type mappings
 */
 
-// PROGRESS(passing): Basic type conversion with required fields and defaults
-func TestBasicSchemaToStruct(t *testing.T) {
-	runTestCase(t)
-}
-
-// PROGRESS(passing): Simple nested object with required fields
-func TestNestedObjectSimple(t *testing.T) {
-	runTestCase(t)
-}
-
-// PROGRESS(passing): String enum with default values
-func TestStringEnumSchemaToStruct(t *testing.T) {
-	runTestCase(t)
-}
-
-// PROGRESS(passing): Integer enum with validation
-func TestIntegerEnumSchemaToStruct(t *testing.T) {
-	runTestCase(t)
-}
-
-// PROGRESS(passing): Basic allOf merging
-func TestAllOfSchemaToStruct(t *testing.T) {
-	runTestCase(t)
-}
-
-// PROGRESS(untested): AllOf with referenced types
-func TestAllOfWithRefsSchemaToStruct(t *testing.T) {
-	runTestCase(t)
-}
-
-// PROGRESS(untested): OneOf type support
-func TestOneOfSchemaToStruct(t *testing.T) {
-	t.Skip("Implementation in progress")
-	runTestCase(t)
-}
-
-// PROGRESS(untested): AnyOf type support
-func TestAnyOfSchemaToStruct(t *testing.T) {
-	t.Skip("Implementation in progress")
-	runTestCase(t)
-}
-
-// PROGRESS(untested): Required fields validation
-func TestRequiredFieldsSchemaToStruct(t *testing.T) {
-	t.Skip("Implementation in progress")
-	runTestCase(t)
-}
-
-// PROGRESS(untested): Optional nested objects with defaults
-func TestNestedObjectWithOptional(t *testing.T) {
-	t.Skip("Implementation in progress")
-	runTestCase(t)
-}
-
-// PROGRESS(untested): Deep nested objects with validation
-func TestNestedObjectDeep(t *testing.T) {
-	t.Skip("Implementation in progress")
-	runTestCase(t)
-}
-
-// PROGRESS(untested): Documentation and comments
-func TestSchemaDocumentation(t *testing.T) {
-	t.Skip("Implementation in progress")
-	runTestCase(t)
-}
-
-// PROGRESS(untested): Array of referenced types
-func TestArrayOfReferencesSchemaToStruct(t *testing.T) {
-	t.Skip("Implementation in progress")
-	runTestCase(t)
-}
-
-// PROGRESS(untested): Pattern properties with dynamic fields
-func TestPatternPropertiesSchemaToStruct(t *testing.T) {
-	t.Skip("Implementation in progress")
-	runTestCase(t)
-}
-
-// PROGRESS(untested): Type naming conventions and references
-func TestTypeNamingConventions(t *testing.T) {
-	t.Skip("Implementation in progress")
-	runTestCase(t)
-}
-
-// PROGRESS(untested): Basic reference handling
-func TestBasicRefSchemaToStruct(t *testing.T) {
-	runTestCase(t)
-}
-
-// testCase represents a single schema to struct conversion test
-type testCase struct {
-	input          string
-	expectedOutput string
-}
-
 // runTestCase is a helper function to run a single test case
-func runTestCase(t *testing.T) {
+func checkGoCode(t *testing.T, input, expectedOutput string) {
 	t.Helper() // marks this as a helper function for better test output
 
-	tc := loadAndParseTestCase(t)
+	ctx := context.Background()
 
-	gen := New(Options{
+	gen := generator.New(generator.Options{
 		PackageName: "models",
 	})
 
 	// Format expected output
-	formattedWant, err := format.Source([]byte(tc.expectedOutput))
+	formattedWant, err := format.Source([]byte(expectedOutput))
 	if err != nil {
 		t.Fatalf("Failed to format expected code: %v", err)
 	}
 
-	got, err := GenerateWithFormatting(context.Background(), gen, tc.input)
+	model, err := generator.NewSchemaModel(input)
+	if err != nil {
+		t.Fatalf("Failed to parse schema: %v", err)
+	}
+
+	got, err := generator.GenerateWithFormatting(ctx, gen, model)
 	if err != nil {
 		if strings.Contains(err.Error(), "formatting code") {
 			t.Logf("Formatting failed, trying again without formatting to show prettier output, this test will fail")
 			// try again without formatting
-			got, err = gen.Generate(context.Background(), tc.input)
+			got, err = gen.Generate(ctx, model)
 			if err != nil {
 				t.Fatalf("Failed to generate code (without formatting): %v", err)
 			}
@@ -277,8 +188,7 @@ func normalizeCode(code string) string {
 
 	// Process each line
 	var result []string
-	var inMethod bool
-	var methodBraceCount int
+
 	for _, line := range lines {
 		// Skip empty lines and comment-only lines
 		if line == "" || strings.HasPrefix(line, "//") {
@@ -295,20 +205,6 @@ func normalizeCode(code string) string {
 			continue
 		}
 
-		// Track method blocks
-		if strings.Contains(line, "func (x *") {
-			inMethod = true
-			methodBraceCount = 0
-		}
-		if inMethod {
-			methodBraceCount += strings.Count(line, "{")
-			methodBraceCount -= strings.Count(line, "}")
-			if methodBraceCount == 0 {
-				inMethod = false
-			}
-			continue
-		}
-
 		result = append(result, line)
 	}
 
@@ -316,48 +212,34 @@ func normalizeCode(code string) string {
 	return strings.Join(result, "\n")
 }
 
-//go:embed testcases/Test*.md
-var embedTestCases embed.FS
-
-func loadAndParseTestCase(t *testing.T) testCase {
+func checkSchemaMock(t *testing.T, got generator.Schema, want generator.Schema) {
 	t.Helper()
-	content, err := embedTestCases.ReadFile(filepath.Join("testcases", t.Name()+".md"))
-	if err != nil {
-		t.Fatalf("Failed to read test case file: %v", err)
+	assert.Equal(t, got.Package(), want.Package())
+	assert.Equal(t, len(got.Structs()), len(want.Structs()))
+	assert.Equal(t, len(got.Enums()), len(want.Enums()))
+	assert.Equal(t, len(got.Imports()), len(want.Imports()))
+	for i, gotStruct := range got.Structs() {
+		wantStruct := want.Structs()[i]
+		assert.Equal(t, gotStruct.Description(), wantStruct.Description(), "Struct description mismatch")
+		assert.Equal(t, len(gotStruct.Fields()), len(wantStruct.Fields()), "Struct field count mismatch")
+		assert.Equal(t, gotStruct.HasAllOf(), wantStruct.HasAllOf(), "Struct HasAllOf mismatch")
+		assert.Equal(t, gotStruct.HasCustomMarshaling(), wantStruct.HasCustomMarshaling(), "Struct HasCustomMarshaling mismatch")
+		assert.Equal(t, gotStruct.HasDefaults(), wantStruct.HasDefaults(), "Struct HasDefaults mismatch")
+		assert.Equal(t, gotStruct.HasValidation(), wantStruct.HasValidation(), "Struct HasValidation mismatch")
+		for j, gotField := range gotStruct.Fields() {
+			wantField := wantStruct.Fields()[j]
+			assert.Equal(t, gotField.Description(), wantField.Description(), "Field description mismatch")
+			assert.Equal(t, gotField.Type(), wantField.Type(), "Field type mismatch")
+			assert.Equal(t, gotField.IsRequired(), wantField.IsRequired(), "Field IsRequired mismatch")
+			assert.Equal(t, gotField.DefaultValue(), wantField.DefaultValue(), "Field DefaultValue mismatch")
+			assert.Equal(t, gotField.ValidationRules(), wantField.ValidationRules(), "Field ValidationRules mismatch")
+			assert.Equal(t, gotField.IsEnum(), wantField.IsEnum(), "Field IsEnum mismatch")
+		}
 	}
-	return parseTestCase(t, string(content))
 }
 
-func parseTestCase(t *testing.T, text string) testCase {
-	t.Helper()
-	// Split the markdown into sections
-	// We expect:
-	// ```json
-	// <input schema>
-	// ```
-	//
-	// ```go
-	// <expected output>
-	// ```
+func checkRawSchema(t *testing.T, got, want *jsonschema.Schema) {
 
-	// Find the JSON section
-	jsonStart := strings.Index(text, "```json\n")
-	jsonEnd := strings.Index(text[jsonStart+7:], "\n```")
-	if jsonStart == -1 || jsonEnd == -1 {
-		panic("Could not find JSON section in test case markdown")
-	}
-	input := strings.TrimSpace(text[jsonStart+7 : jsonStart+7+jsonEnd])
-
-	// Find the Go section
-	goStart := strings.Index(text, "```go\n")
-	goEnd := strings.Index(text[goStart+5:], "\n```")
-	if goStart == -1 || goEnd == -1 {
-		panic("Could not find Go section in test case markdown")
-	}
-	expectedOutput := strings.TrimSpace(text[goStart+5 : goStart+5+goEnd])
-
-	return testCase{
-		input:          input,
-		expectedOutput: expectedOutput,
-	}
 }
+
+//go:genr

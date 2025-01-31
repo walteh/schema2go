@@ -87,5 +87,8 @@ func (x AllOfWithRefsExample) MarshalJSON() ([]byte, error) {
     return nil, nil // TODO: Implement custom marshaling for allOf fields
 }
 
+```
+
+```go
 
 ```
