@@ -10,14 +10,14 @@ import (
 var testCases embed.FS
 
 func LoadTestCases() ([]TestCase, error) {
-	files, err := testCases.ReadDir("testcases")
+	files, err := testCases.ReadDir(".")
 	if err != nil {
 		return nil, err
 	}
 	cases := []TestCase{}
 	for _, file := range files {
 		if strings.HasSuffix(file.Name(), ".md") {
-			cases = append(cases, LoadAndParseTestCase(file.Name()))
+			cases = append(cases, LoadAndParseTestCase(strings.TrimSuffix(file.Name(), ".md")))
 		}
 	}
 	return cases, nil
@@ -76,7 +76,7 @@ func parseTestCase(name string, text string) TestCase {
 		jsonStart := strings.Index(text, "```json\n")
 		jsonEnd := strings.Index(text[jsonStart+7:], "\n```")
 		if jsonStart == -1 || jsonEnd == -1 {
-			panic("Could not find JSON section in test case markdown")
+			panic("Could not find JSON section in test case markdown: " + text)
 		}
 		return strings.TrimSpace(text[jsonStart+7 : jsonStart+7+jsonEnd])
 	}
@@ -85,9 +85,10 @@ func parseTestCase(name string, text string) TestCase {
 		goStart := strings.Index(text, "```go\n")
 		goEnd := strings.Index(text[goStart+5:], "\n```")
 		if goStart == -1 || goEnd == -1 {
-			panic("Could not find Go section in test case markdown")
+			panic("Could not find Go section in test case markdown: " + text)
 		}
-		return strings.TrimSpace(text[goStart+5 : goStart+5+goEnd])
+		what := strings.TrimSpace(text[goStart+5 : goStart+5+goEnd])
+		return what
 	}
 
 	splits := strings.Split(text, "\n---\n")
@@ -100,10 +101,10 @@ func parseTestCase(name string, text string) TestCase {
 			input = parseJson(blockContent)
 		case "expected-output":
 			wantGoCode = parseGo(blockContent)
-		case "wantSchemaModelMockGoCode":
+		case "expected-schema-model-mock":
 			wantSchemaModelMockGoCode = parseGo(blockContent)
-		case "expected-schema-model":
-			schema = parseJson(blockContent)
+		case "expected-raw-schema":
+			schema = parseGo(blockContent)
 		}
 	}
 

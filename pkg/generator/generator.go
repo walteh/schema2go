@@ -12,8 +12,6 @@ import (
 	"gitlab.com/tozd/go/errors"
 )
 
-//go:generate go run ./generate/main.go
-
 //go:embed templates/schema.go.tmpl
 var schemaTemplate string
 

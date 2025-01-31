@@ -13,6 +13,14 @@ import (
 	"github.com/walteh/schema2go/pkg/generator"
 )
 
+func ptr[T any](v T) *T {
+	return &v
+}
+
+func typ(v string) *jsonschema.StringOrStringArray {
+	return jsonschema.NewStringOrStringArrayWithString(v)
+}
+
 /*
                      JSON Schema
                           |
@@ -214,6 +222,35 @@ func normalizeCode(code string) string {
 
 func checkSchemaMock(t *testing.T, got generator.Schema, want generator.Schema) {
 	t.Helper()
+
+	type mockField struct {
+		Description         string
+		Type                string
+		IsRequired          bool
+		IsEnum              bool
+		EnumTypeName        string
+		EnumValues          []*generator.EnumValue
+		DefaultValue        *string
+		DefaultValueComment *string
+		ValidationRules     []*generator.ValidationRule
+	}
+
+	type mockStruct struct {
+		Description         string
+		Fields              []mockField
+		HasAllOf            bool
+		HasCustomMarshaling bool
+		HasDefaults         bool
+		HasValidation       bool
+	}
+
+	type mockSchema struct {
+		Enums   []*generator.EnumModel
+		Imports []string
+		Package string
+		Structs []mockStruct
+	}
+
 	assert.Equal(t, got.Package(), want.Package())
 	assert.Equal(t, len(got.Structs()), len(want.Structs()))
 	assert.Equal(t, len(got.Enums()), len(want.Enums()))

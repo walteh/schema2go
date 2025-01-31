@@ -333,8 +333,8 @@ func (s *StructModel) Description() string {
 	return parser.GetDescription(s.SourceSchema)
 }
 
-func (s *StructModel) Fields() []*FieldModel {
-	var fields []*FieldModel
+func (s *StructModel) Fields() []Field {
+	var fields []Field
 	seen := make(map[string]bool)
 
 	// Helper function to add fields in order
@@ -417,8 +417,8 @@ func (s *SchemaModel) Package() string {
 	return "models" // TODO: Make configurable
 }
 
-func (s *SchemaModel) Structs() []*StructModel {
-	var structs []*StructModel
+func (s *SchemaModel) Structs() []Struct {
+	var structs []Struct
 	seen := make(map[string]bool)
 
 	// Helper function to recursively collect structs
@@ -552,7 +552,7 @@ func (s *SchemaModel) Structs() []*StructModel {
 	collectStructs(s.SourceSchema, nil)
 
 	// Sort structs by name for consistent output
-	slices.SortFunc(structs, func(a, b *StructModel) int {
+	slices.SortFunc(structs, func(a, b Struct) int {
 		return strings.Compare(a.Name(), b.Name())
 	})
 
