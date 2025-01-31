@@ -2,8 +2,12 @@ package parser
 
 import (
 	"github.com/google/gnostic/jsonschema"
+	"github.com/k0kubun/pp/v3"
 	"gopkg.in/yaml.v3"
 )
+
+// Store YAML nodes for each schema
+var schemaNodes = make(map[*jsonschema.Schema]*yaml.Node)
 
 func Ptr[T any](v T) *T {
 	return &v
@@ -17,7 +21,38 @@ func Parse(input string) (*jsonschema.Schema, error) {
 		return nil, err
 	}
 
+	pp.Printf("🔍 Parsing YAML node: %+v\n", node)
 	schema := jsonschema.NewSchemaFromObject(&node)
+	pp.Printf("📝 Created schema: %+v\n", schema)
+
+	// Store the root node
+	schemaNodes[schema] = &node
+
+	// Store nodes for properties
+	if schema.Properties != nil {
+		for _, prop := range *schema.Properties {
+			if prop.Value != nil {
+				for i := 0; i < len(node.Content[0].Content); i += 2 {
+					if i+1 >= len(node.Content[0].Content) {
+						break
+					}
+					if node.Content[0].Content[i].Value == "properties" {
+						propsNode := node.Content[0].Content[i+1]
+						for j := 0; j < len(propsNode.Content); j += 2 {
+							if j+1 >= len(propsNode.Content) {
+								break
+							}
+							if propsNode.Content[j].Value == prop.Name {
+								schemaNodes[prop.Value] = propsNode.Content[j+1]
+								break
+							}
+						}
+						break
+					}
+				}
+			}
+		}
+	}
 
 	// // Set the ID to "#" so that internal references work
 	// schema.ID = Ptr("#")
@@ -177,10 +212,60 @@ func GetArrayItems(schema *jsonschema.Schema) *jsonschema.SchemaOrSchemaArray {
 
 }
 
+// GetEnumFromNode returns the enum values from a YAML node or nil if none
+func GetEnumFromNode(node *yaml.Node) []jsonschema.SchemaEnumValue {
+	if node == nil {
+		return nil
+	}
+
+	// Find the enum field
+	var enumNode *yaml.Node
+	for i := 0; i < len(node.Content); i += 2 {
+		if i+1 >= len(node.Content) {
+			break
+		}
+		if node.Content[i].Value == "enum" {
+			enumNode = node.Content[i+1]
+			break
+		}
+	}
+
+	if enumNode == nil || enumNode.Kind != yaml.SequenceNode {
+		return nil
+	}
+
+	var result []jsonschema.SchemaEnumValue
+	for _, val := range enumNode.Content {
+		switch val.Tag {
+		case "!!str":
+			result = append(result, jsonschema.SchemaEnumValue{String: &val.Value})
+		case "!!bool":
+			boolVal := val.Value == "true"
+			result = append(result, jsonschema.SchemaEnumValue{Bool: &boolVal})
+		case "!!int":
+			result = append(result, jsonschema.SchemaEnumValue{String: &val.Value})
+		}
+	}
+
+	return result
+}
+
 // GetEnum returns the enum values from a schema or nil if none
 func GetEnum(schema *jsonschema.Schema) []jsonschema.SchemaEnumValue {
+	// Try to get enum values directly from the YAML node
+	if node := schemaNodes[schema]; node != nil {
+		if enums := GetEnumFromNode(node); len(enums) > 0 {
+			pp.Printf("🔢 Getting enum values from schema: %+v\n", schema)
+			pp.Printf("📊 Enum values: %+v\n", enums)
+			return enums
+		}
+	}
+
+	// Fallback to gnostic's enum values
 	if schema.Enumeration == nil {
 		return nil
 	}
+	pp.Printf("🔢 Getting enum values from schema: %+v\n", schema)
+	pp.Printf("📊 Enum values: %+v\n", *schema.Enumeration)
 	return *schema.Enumeration
 }

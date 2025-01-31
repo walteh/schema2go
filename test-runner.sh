@@ -3,9 +3,10 @@
 PASSING_TESTS=(
 	"TestNestedObjectSimple"
 	"TestBasicSchemaToStruct"
+	"TestStringEnumSchemaToStruct"
 )
 
-CURRENT_TARGET="TestStringEnumSchemaToStruct"
+CURRENT_TARGET="TestIntegerEnumSchemaToStruct"
 
 echo "----------------------------------------"
 echo "RUNNING PASSING TESTS FIRST"
@@ -28,3 +29,12 @@ echo "----------------------------------------"
 	IFS='|'
 	echo "$CURRENT_TARGET"
 )
+
+if [ $? -ne 0 ]; then
+	echo "----------------------------------------"
+	echo "IMPORTANT"
+	echo "THE TEST COULD HAVE INCORRECT EXPECTATIONS"
+	echo "TRY TO FIX THE SIMPLE PROBLEMS FIRST"
+	echo "----------------------------------------"
+	exit 1
+fi

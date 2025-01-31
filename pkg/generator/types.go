@@ -3,9 +3,11 @@ package generator
 import (
 	"fmt"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/google/gnostic/jsonschema"
+	"github.com/k0kubun/pp/v3"
 	"github.com/walteh/schema2go/pkg/parser"
 )
 
@@ -426,6 +428,10 @@ func (s *SchemaModel) Enums() []*EnumModel {
 		props := parser.GetProperties(schema)
 		for propName, prop := range props {
 			if enum := parser.GetEnum(prop); len(enum) > 0 {
+				pp.Printf("🔍 Processing enum for property %s\n", propName)
+				pp.Printf("📝 Schema type: %s\n", parser.GetTypeOrEmpty(prop))
+				pp.Printf("🔢 Enum values: %+v\n", enum)
+
 				// For enums, use property name as type name
 				enumName := toGoFieldName(propName)
 				if strings.HasSuffix(enumName, "Color") {
@@ -442,9 +448,18 @@ func (s *SchemaModel) Enums() []*EnumModel {
 				// Determine base type from first enum value
 				baseType := "string" // Default to string
 				if len(enum) > 0 {
+					pp.Printf("🎯 First enum value: %+v\n", enum[0])
 					if enum[0].Bool != nil {
 						baseType = "bool"
+					} else if enum[0].String != nil {
+						// Check if the string value represents an integer
+						if _, err := strconv.Atoi(*enum[0].String); err == nil {
+							baseType = "int"
+						}
+					} else if parser.GetTypeOrEmpty(prop) == "integer" {
+						baseType = "int"
 					}
+					pp.Printf("📊 Determined base type: %s\n", baseType)
 				}
 
 				// Create enum model
@@ -456,19 +471,41 @@ func (s *SchemaModel) Enums() []*EnumModel {
 
 				// Add enum values in the order they appear in the schema
 				for _, val := range enum {
+					pp.Printf("🔄 Processing enum value: %+v\n", val)
 					var enumValue string
 					if val.String != nil {
 						enumValue = *val.String
 					} else if val.Bool != nil {
 						enumValue = fmt.Sprintf("%v", *val.Bool)
+					} else if enumModel.BaseType == "int" {
+						// For integer enums, try to parse the string value as an integer
+						if val.String != nil {
+							if intVal, err := strconv.Atoi(*val.String); err == nil {
+								enumValue = fmt.Sprintf("%d", intVal)
+							} else {
+								continue // Skip invalid integer values
+							}
+						}
 					} else {
 						continue // Skip invalid values
 					}
 
 					valueName := fmt.Sprintf("%s%s", enumModel.Name, toTitleCase(enumValue))
+					value := enumValue
+					if enumModel.BaseType == "string" {
+						value = fmt.Sprintf("%q", enumValue)
+					} else if enumModel.BaseType == "int" {
+						// For integer enums, ensure we have a valid integer
+						if intVal, err := strconv.Atoi(enumValue); err == nil {
+							value = fmt.Sprintf("%d", intVal)
+						} else {
+							continue // Skip invalid integer values
+						}
+					}
+					pp.Printf("✨ Created enum value - Name: %s, Value: %s\n", valueName, value)
 					enumModel.Values = append(enumModel.Values, &EnumValue{
 						Name:   valueName,
-						Value:  fmt.Sprintf("%q", enumValue),
+						Value:  value,
 						Parent: enumModel,
 					})
 				}
