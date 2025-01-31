@@ -3,6 +3,7 @@ package generator_test
 import (
 	"github.com/google/gnostic/jsonschema"
 	"github.com/walteh/schema2go/gen/mockery"
+	"github.com/walteh/schema2go/pkg/diff"
 	"github.com/walteh/schema2go/pkg/generator"
 	"github.com/walteh/schema2go/pkg/generator/testcases"
 	"testing"
@@ -43,7 +44,7 @@ func TestAllOfSchemaToStruct_RawSchemaModel(t *testing.T) {
 
 	got := mustLoadSchemaModel(t, tc.GenerateInput())
 
-	checkRawSchema(t, want.SourceSchema, got.SourceSchema)
+	diff.RequireKnownValueEqual(t, want.SourceSchema, got.SourceSchema)
 }
 
 func TestAllOfSchemaToStruct_SchemaModelMock(t *testing.T) {
@@ -88,7 +89,11 @@ func TestAllOfSchemaToStruct_SchemaModelMock(t *testing.T) {
 
 	got := mustLoadSchemaModel(t, tc.GenerateInput())
 
-	checkSchemaMock(t, mockSchema, got)
+	staticGot := generator.NewStaticSchema(got)
+
+	staticWant := generator.NewStaticSchema(want)
+
+	diff.RequireKnownValueEqual(t, staticWant, staticGot)
 }
 
 func TestAllOfSchemaToStruct_GoCode(t *testing.T) {

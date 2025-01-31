@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	"go/format"
-	"html/template"
 	"os"
 	"path/filepath"
+	"text/template"
 
 	"github.com/walteh/schema2go/pkg/generator/testcases"
 )

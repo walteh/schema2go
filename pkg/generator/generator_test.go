@@ -8,7 +8,6 @@ import (
 	"testing"
 
 	"github.com/google/gnostic/jsonschema"
-	"github.com/stretchr/testify/assert"
 	"github.com/walteh/schema2go/pkg/diff"
 	"github.com/walteh/schema2go/pkg/generator"
 )
@@ -220,63 +219,70 @@ func normalizeCode(code string) string {
 	return strings.Join(result, "\n")
 }
 
-func checkSchemaMock(t *testing.T, got generator.Schema, want generator.Schema) {
-	t.Helper()
+// func checkSchemaMock(t *testing.T, got generator.Schema, want generator.Schema) {
+// 	t.Helper()
 
-	type mockField struct {
-		Description         string
-		Type                string
-		IsRequired          bool
-		IsEnum              bool
-		EnumTypeName        string
-		EnumValues          []*generator.EnumValue
-		DefaultValue        *string
-		DefaultValueComment *string
-		ValidationRules     []*generator.ValidationRule
-	}
+// 	type mockField struct {
+// 		Description         string
+// 		Type                string
+// 		IsRequired          bool
+// 		IsEnum              bool
+// 		EnumTypeName        string
+// 		EnumValues          []*generator.EnumValue
+// 		DefaultValue        *string
+// 		DefaultValueComment *string
+// 		ValidationRules     []*generator.ValidationRule
+// 	}
 
-	type mockStruct struct {
-		Description         string
-		Fields              []mockField
-		HasAllOf            bool
-		HasCustomMarshaling bool
-		HasDefaults         bool
-		HasValidation       bool
-	}
+// 	type mockStruct struct {
+// 		Description         string
+// 		Fields              []generator.Field
+// 		HasAllOf            bool
+// 		HasCustomMarshaling bool
+// 		HasDefaults         bool
+// 		HasValidation       bool
+// 	}
 
-	type mockSchema struct {
-		Enums   []*generator.EnumModel
-		Imports []string
-		Package string
-		Structs []mockStruct
-	}
+// 	type mockSchema struct {
+// 		Enums   []*generator.EnumModel
+// 		Imports []string
+// 		Package string
+// 		Structs []generator.Struct
+// 	}
 
-	assert.Equal(t, got.Package(), want.Package())
-	assert.Equal(t, len(got.Structs()), len(want.Structs()))
-	assert.Equal(t, len(got.Enums()), len(want.Enums()))
-	assert.Equal(t, len(got.Imports()), len(want.Imports()))
-	for i, gotStruct := range got.Structs() {
-		wantStruct := want.Structs()[i]
-		assert.Equal(t, gotStruct.Description(), wantStruct.Description(), "Struct description mismatch")
-		assert.Equal(t, len(gotStruct.Fields()), len(wantStruct.Fields()), "Struct field count mismatch")
-		assert.Equal(t, gotStruct.HasAllOf(), wantStruct.HasAllOf(), "Struct HasAllOf mismatch")
-		assert.Equal(t, gotStruct.HasCustomMarshaling(), wantStruct.HasCustomMarshaling(), "Struct HasCustomMarshaling mismatch")
-		assert.Equal(t, gotStruct.HasDefaults(), wantStruct.HasDefaults(), "Struct HasDefaults mismatch")
-		assert.Equal(t, gotStruct.HasValidation(), wantStruct.HasValidation(), "Struct HasValidation mismatch")
-		for j, gotField := range gotStruct.Fields() {
-			wantField := wantStruct.Fields()[j]
-			assert.Equal(t, gotField.Description(), wantField.Description(), "Field description mismatch")
-			assert.Equal(t, gotField.Type(), wantField.Type(), "Field type mismatch")
-			assert.Equal(t, gotField.IsRequired(), wantField.IsRequired(), "Field IsRequired mismatch")
-			assert.Equal(t, gotField.DefaultValue(), wantField.DefaultValue(), "Field DefaultValue mismatch")
-			assert.Equal(t, gotField.ValidationRules(), wantField.ValidationRules(), "Field ValidationRules mismatch")
-			assert.Equal(t, gotField.IsEnum(), wantField.IsEnum(), "Field IsEnum mismatch")
-		}
-	}
-}
+// 	gotComparable := mockSchema{
+// 		Enums:   got.Enums(),
+// 		Imports: got.Imports(),
+// 		Package: got.Package(),
+// 		Structs: got.Structs(),
+// 	}
 
-func checkRawSchema(t *testing.T, got, want *jsonschema.Schema) {
+// 	// assert.Equal(t, got.Package(), want.Package())
+// 	// assert.Equal(t, len(got.Structs()), len(want.Structs()))
+// 	// assert.Equal(t, len(got.Enums()), len(want.Enums()))
+// 	// assert.Equal(t, len(got.Imports()), len(want.Imports()))
+// 	// for i, gotStruct := range got.Structs() {
+// 	// 	wantStruct := want.Structs()[i]
+// 	// 	assert.Equal(t, gotStruct.Description(), wantStruct.Description(), "Struct description mismatch")
+// 	// 	assert.Equal(t, len(gotStruct.Fields()), len(wantStruct.Fields()), "Struct field count mismatch")
+// 	// 	assert.Equal(t, gotStruct.HasAllOf(), wantStruct.HasAllOf(), "Struct HasAllOf mismatch")
+// 	// 	assert.Equal(t, gotStruct.HasCustomMarshaling(), wantStruct.HasCustomMarshaling(), "Struct HasCustomMarshaling mismatch")
+// 	// 	assert.Equal(t, gotStruct.HasDefaults(), wantStruct.HasDefaults(), "Struct HasDefaults mismatch")
+// 	// 	assert.Equal(t, gotStruct.HasValidation(), wantStruct.HasValidation(), "Struct HasValidation mismatch")
+// 	// 	for j, gotField := range gotStruct.Fields() {
+// 	// 		wantField := wantStruct.Fields()[j]
+// 	// 		assert.Equal(t, gotField.Description(), wantField.Description(), "Field description mismatch")
+// 	// 		assert.Equal(t, gotField.Type(), wantField.Type(), "Field type mismatch")
+// 	// 		assert.Equal(t, gotField.IsRequired(), wantField.IsRequired(), "Field IsRequired mismatch")
+// 	// 		assert.Equal(t, gotField.DefaultValue(), wantField.DefaultValue(), "Field DefaultValue mismatch")
+// 	// 		assert.Equal(t, gotField.ValidationRules(), wantField.ValidationRules(), "Field ValidationRules mismatch")
+// 	// 		assert.Equal(t, gotField.IsEnum(), wantField.IsEnum(), "Field IsEnum mismatch")
+// 	// 	}
+// 	// }
+// }
 
-}
+// func checkRawSchema(t *testing.T, got, want *jsonschema.Schema) {
+
+// }
 
 //go:genr
