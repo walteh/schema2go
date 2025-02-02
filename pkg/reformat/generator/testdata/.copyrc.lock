@@ -1,0 +1,1182 @@
+{
+	"last_updated": "0001-01-01T00:00:00Z",
+	"commit_hash": "442a4c100c62a7d8543d1a7ab7052397057add86",
+	"license": {
+		"spdx": "MIT",
+		"permalink": "https://api.github.com/repos/omissis/go-jsonschema/contents/LICENSE?ref=442a4c100c62a7d8543d1a7ab7052397057add86",
+		"name": "MIT License"
+	},
+	"branch": "main",
+	"coppied_files": {
+		"core/additionalProperties/arrayAdditionalProperties.go": {
+			"file": "core/additionalProperties/arrayAdditionalProperties.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/additionalProperties/arrayAdditionalProperties.go",
+			"last_updated": "2025-02-02T20:19:23.927445Z",
+			"remote_hash": "5M6sLtWqHXQ46tUHvltkSOFjTlHPhtqEldIJZMGZj3M="
+		},
+		"core/additionalProperties/arrayAdditionalProperties.json": {
+			"file": "core/additionalProperties/arrayAdditionalProperties.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/additionalProperties/arrayAdditionalProperties.json",
+			"last_updated": "2025-02-02T19:38:43.562771Z",
+			"remote_hash": "0WGUWmiC5st1bQX6odnOp2RWSmeok96CpUHS_ZTVLNE="
+		},
+		"core/additionalProperties/boolAdditionalProperties.go": {
+			"file": "core/additionalProperties/boolAdditionalProperties.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/additionalProperties/boolAdditionalProperties.go",
+			"last_updated": "2025-02-02T20:19:23.980202Z",
+			"remote_hash": "h7Vi-gg1mOv5twVxX-GMcKFogP_CtlfYtKtYejlFF2k="
+		},
+		"core/additionalProperties/boolAdditionalProperties.json": {
+			"file": "core/additionalProperties/boolAdditionalProperties.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/additionalProperties/boolAdditionalProperties.json",
+			"last_updated": "2025-02-02T19:38:43.776561Z",
+			"remote_hash": "2AqZlqWsSq97otAAvFZzdza5hVbve833ROFmbuWeLUg="
+		},
+		"core/additionalProperties/intAdditionalProperties.go": {
+			"file": "core/additionalProperties/intAdditionalProperties.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/additionalProperties/intAdditionalProperties.go",
+			"last_updated": "2025-02-02T20:19:24.089738Z",
+			"remote_hash": "VqTRlbUIYAjjToYxY8O1DHvg-2_kaEexorvz0Df6o7g="
+		},
+		"core/additionalProperties/intAdditionalProperties.json": {
+			"file": "core/additionalProperties/intAdditionalProperties.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/additionalProperties/intAdditionalProperties.json",
+			"last_updated": "2025-02-02T19:38:43.999172Z",
+			"remote_hash": "IABfj2RvA62k_XmuJcqWCIo_tLvIPxkvXyEbYzN08FA="
+		},
+		"core/additionalProperties/numberAdditionalProperties.go": {
+			"file": "core/additionalProperties/numberAdditionalProperties.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/additionalProperties/numberAdditionalProperties.go",
+			"last_updated": "2025-02-02T20:19:24.14101Z",
+			"remote_hash": "g2KUeV8qVx28ib2GnKY08J0fpbxW5xMgNXOWcoyO4ig="
+		},
+		"core/additionalProperties/numberAdditionalProperties.json": {
+			"file": "core/additionalProperties/numberAdditionalProperties.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/additionalProperties/numberAdditionalProperties.json",
+			"last_updated": "2025-02-02T19:38:44.230091Z",
+			"remote_hash": "HqdsGWN1eOrgHhTzbtLQ8pmAxCD8PAEysx-GrEpGTjs="
+		},
+		"core/additionalProperties/objectAdditionalProperties.go": {
+			"file": "core/additionalProperties/objectAdditionalProperties.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/additionalProperties/objectAdditionalProperties.go",
+			"last_updated": "2025-02-02T20:19:24.202591Z",
+			"remote_hash": "E5LF8iHJPPcj6qrllTtsC4vkOUv0awnudoFGpItZky8="
+		},
+		"core/additionalProperties/objectAdditionalProperties.json": {
+			"file": "core/additionalProperties/objectAdditionalProperties.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/additionalProperties/objectAdditionalProperties.json",
+			"last_updated": "2025-02-02T19:38:44.461945Z",
+			"remote_hash": "x8dZ98eOC1ti1tJ-qEs-ke0zaf1XrsWlXPz5OE6yHWY="
+		},
+		"core/additionalProperties/objectWithPropsAdditionalProperties.go": {
+			"file": "core/additionalProperties/objectWithPropsAdditionalProperties.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/additionalProperties/objectWithPropsAdditionalProperties.go",
+			"last_updated": "2025-02-02T20:19:24.255151Z",
+			"remote_hash": "ViN4jQ-kCCpTNTaxZ6PI6-Uf2YsCrcOwtPs22pWe934="
+		},
+		"core/additionalProperties/objectWithPropsAdditionalProperties.json": {
+			"file": "core/additionalProperties/objectWithPropsAdditionalProperties.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/additionalProperties/objectWithPropsAdditionalProperties.json",
+			"last_updated": "2025-02-02T19:38:44.664275Z",
+			"remote_hash": "o1JxWqvVGREYHvSrX-5qWH2FlFy83i8KMaMIlh0i8eE="
+		},
+		"core/additionalProperties/stringAdditionalProperties.go": {
+			"file": "core/additionalProperties/stringAdditionalProperties.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/additionalProperties/stringAdditionalProperties.go",
+			"last_updated": "2025-02-02T20:19:24.307074Z",
+			"remote_hash": "_0yohhfWV0qPMRmj5VdkZjUlVQk-CzTl9DLOo2Zdxxo="
+		},
+		"core/additionalProperties/stringAdditionalProperties.json": {
+			"file": "core/additionalProperties/stringAdditionalProperties.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/additionalProperties/stringAdditionalProperties.json",
+			"last_updated": "2025-02-02T19:38:44.950063Z",
+			"remote_hash": "NA9BXBYpGAAsMir_xgkHxb_0GS9KAe7Cstk5gCzirTk="
+		},
+		"core/array/array.go": {
+			"file": "core/array/array.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/array/array.go",
+			"last_updated": "2025-02-02T20:19:24.361516Z",
+			"remote_hash": "U0akHjczBim9PRWehOUbDeOsDDD3yl6dfLpT40s-P9Y="
+		},
+		"core/array/array.json": {
+			"file": "core/array/array.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/array/array.json",
+			"last_updated": "2025-02-02T19:38:45.164735Z",
+			"remote_hash": "eqLCLHScJteJZ4KvqlDnnth2t-zWzaOVt01vvyxj2ek="
+		},
+		"core/date/date.go": {
+			"file": "core/date/date.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/date/date.go",
+			"last_updated": "2025-02-02T20:19:24.414858Z",
+			"remote_hash": "NNT8mM5cNG4cT6UGmZXEiPKJJc9tgfWLsSVwROl8uQU="
+		},
+		"core/date/date.json": {
+			"file": "core/date/date.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/date/date.json",
+			"last_updated": "2025-02-02T19:38:46.02458Z",
+			"remote_hash": "gX3sRZMoOMRlH957JV_yxLrCVElP-3V-TWF8PVrhM1A="
+		},
+		"core/dateTime/dateTime.go": {
+			"file": "core/dateTime/dateTime.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/dateTime/dateTime.go",
+			"last_updated": "2025-02-02T20:19:24.467786Z",
+			"remote_hash": "ODardbrAGZYbpr4lnX7y_tE_6si2lZHn-tTjvQMgiw8="
+		},
+		"core/dateTime/dateTime.json": {
+			"file": "core/dateTime/dateTime.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/dateTime/dateTime.json",
+			"last_updated": "2025-02-02T19:38:46.431732Z",
+			"remote_hash": "o5ciZkjOuonsQBqMq88WxEn74My44uFUwMD89ol8SMA="
+		},
+		"core/ip/ip.go": {
+			"file": "core/ip/ip.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/ip/ip.go",
+			"last_updated": "2025-02-02T20:19:24.520626Z",
+			"remote_hash": "d_8G0vf8H7kH7cz8H-bauilSgG1UouBVgFeMwZ3LavE="
+		},
+		"core/ip/ip.json": {
+			"file": "core/ip/ip.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/ip/ip.json",
+			"last_updated": "2025-02-02T19:38:46.94663Z",
+			"remote_hash": "Evtw6uUE-p4f4HXsyvzidjcEFZS1dunw2a3GUBchZ1o="
+		},
+		"core/nullableType/nullableType.go": {
+			"file": "core/nullableType/nullableType.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/nullableType/nullableType.go",
+			"last_updated": "2025-02-02T20:19:24.572073Z",
+			"remote_hash": "Z-eUySnh7tvrIJqWMREOrnAc9irWM7242LaX0Jz5Ad0="
+		},
+		"core/nullableType/nullableType.json": {
+			"file": "core/nullableType/nullableType.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/nullableType/nullableType.json",
+			"last_updated": "2025-02-02T19:38:47.28057Z",
+			"remote_hash": "-KMg-Wuo2LTUO3BMggzcYsPRRhBED3CZfxf9FRaT06c="
+		},
+		"core/object/object.go": {
+			"file": "core/object/object.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/object/object.go",
+			"last_updated": "2025-02-02T20:19:24.623758Z",
+			"remote_hash": "UoskOw5LoJGXEIxrLYt1ivTSJME5977503QpQYdmqlI="
+		},
+		"core/object/object.json": {
+			"file": "core/object/object.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/object/object.json",
+			"last_updated": "2025-02-02T19:38:47.682527Z",
+			"remote_hash": "SHtoZsyFsoNRoSrXN5LdcC4uGW7JD2cxlNENU-aBNIU="
+		},
+		"core/objectAdditionalProperties/objectAdditionalProperties.go": {
+			"file": "core/objectAdditionalProperties/objectAdditionalProperties.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/objectAdditionalProperties/objectAdditionalProperties.go",
+			"last_updated": "2025-02-02T20:19:24.676475Z",
+			"remote_hash": "DdXELH4cB1OffnU4vesRJHRXfSvC-OPJJ7QVUF9U5l4="
+		},
+		"core/objectAdditionalProperties/objectAdditionalProperties.json": {
+			"file": "core/objectAdditionalProperties/objectAdditionalProperties.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/objectAdditionalProperties/objectAdditionalProperties.json",
+			"last_updated": "2025-02-02T19:38:47.890685Z",
+			"remote_hash": "9veGp0qShr0K0hl3GN_GtFfFJAHdA4icgDPNmHC_poA="
+		},
+		"core/objectEmpty/objectEmpty.go": {
+			"file": "core/objectEmpty/objectEmpty.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/objectEmpty/objectEmpty.go",
+			"last_updated": "2025-02-02T20:19:24.727119Z",
+			"remote_hash": "vMz5-NwVljwyXBvNP2t3hPE_mXtU_991B7Hi-CQ_naQ="
+		},
+		"core/objectEmpty/objectEmpty.json": {
+			"file": "core/objectEmpty/objectEmpty.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/objectEmpty/objectEmpty.json",
+			"last_updated": "2025-02-02T19:38:48.094645Z",
+			"remote_hash": "74SpqI6kuGisKtZ8x2e0Q3bmLVOmXn2WDZSY1rFV_Lc="
+		},
+		"core/objectNested/objectNested.go": {
+			"file": "core/objectNested/objectNested.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/objectNested/objectNested.go",
+			"last_updated": "2025-02-02T20:19:24.78515Z",
+			"remote_hash": "zPcuZkWNWPtyjD5IzY8vjXrc2laaQqQcAIH74KSTBWY="
+		},
+		"core/objectNested/objectNested.json": {
+			"file": "core/objectNested/objectNested.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/objectNested/objectNested.json",
+			"last_updated": "2025-02-02T19:38:48.292318Z",
+			"remote_hash": "3NKrG9OJvvnkilU1C4gBxd0C-RaNebgvFjeZnXL5oIw="
+		},
+		"core/primitives/primitives.go": {
+			"file": "core/primitives/primitives.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/primitives/primitives.go",
+			"last_updated": "2025-02-02T20:19:24.836193Z",
+			"remote_hash": "Hvu5LNb9j7LTWp-9pRbA-wu2hwcRMatDxiRiNaMe2mo="
+		},
+		"core/primitives/primitives.json": {
+			"file": "core/primitives/primitives.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/primitives/primitives.json",
+			"last_updated": "2025-02-02T19:38:48.493082Z",
+			"remote_hash": "IlkuVSbB6Sg7GkcGL0NaL58oq4BbZ9zfY8FIKFZ-NBw="
+		},
+		"core/ref/ref.go": {
+			"file": "core/ref/ref.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/ref/ref.go",
+			"last_updated": "2025-02-02T20:19:24.892581Z",
+			"remote_hash": "uLDNDUcqnppeamIjyMF_zC4_CQgJG871QLWcPYO9pPQ="
+		},
+		"core/ref/ref.json": {
+			"file": "core/ref/ref.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/ref/ref.json",
+			"last_updated": "2025-02-02T19:38:48.833867Z",
+			"remote_hash": "YTkM2rYxmvGEaVzbu2Mf99hsmVhnVjLeYYqdY1wHcdY="
+		},
+		"core/refExternalFile/refExternalFile.go": {
+			"file": "core/refExternalFile/refExternalFile.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/refExternalFile/refExternalFile.go",
+			"last_updated": "2025-02-02T20:19:25.008804Z",
+			"remote_hash": "zeambGctvYSUQhCnxp_JMi5vtg9ivFyRzg3yTdB16sk="
+		},
+		"core/refExternalFile/refExternalFile.json": {
+			"file": "core/refExternalFile/refExternalFile.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/refExternalFile/refExternalFile.json",
+			"last_updated": "2025-02-02T19:38:49.071809Z",
+			"remote_hash": "79UyeoHaLH-_zm2wHFAWqu4CPGmUSQFjTdtvq9Vo7-g="
+		},
+		"core/refExternalFileWithDupe/refExternalFileWithDupe.go": {
+			"file": "core/refExternalFileWithDupe/refExternalFileWithDupe.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/refExternalFileWithDupe/refExternalFileWithDupe.go",
+			"last_updated": "2025-02-02T20:19:25.064799Z",
+			"remote_hash": "--vpesuEYRY5aNfrswRzgRHf0opuRwnLNPBobytcXR8="
+		},
+		"core/refExternalFileWithDupe/refExternalFileWithDupe.json": {
+			"file": "core/refExternalFileWithDupe/refExternalFileWithDupe.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/refExternalFileWithDupe/refExternalFileWithDupe.json",
+			"last_updated": "2025-02-02T19:38:49.267791Z",
+			"remote_hash": "aeEmfD88_9crpVXOEYvKLxXIE7E0Tn_cgLk9qfgma1g="
+		},
+		"core/refExternalFileWithScheme/refExternalFileWithScheme.go": {
+			"file": "core/refExternalFileWithScheme/refExternalFileWithScheme.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/refExternalFileWithScheme/refExternalFileWithScheme.go",
+			"last_updated": "2025-02-02T20:19:25.117003Z",
+			"remote_hash": "5yQiErkCqXIBrFydYRE9P8IRCGkvbo_-62e9LnMTiMk="
+		},
+		"core/refExternalFileWithScheme/refExternalFileWithScheme.json": {
+			"file": "core/refExternalFileWithScheme/refExternalFileWithScheme.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/refExternalFileWithScheme/refExternalFileWithScheme.json",
+			"last_updated": "2025-02-02T19:38:49.689276Z",
+			"remote_hash": "k60OIqiUlD-vrbsg5go6IInBja5pea0urpjlRajawGc="
+		},
+		"core/refExternalFileYaml/refExternalFile.go": {
+			"file": "core/refExternalFileYaml/refExternalFile.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/refExternalFileYaml/refExternalFile.go",
+			"last_updated": "2025-02-02T20:19:25.170557Z",
+			"remote_hash": "4OpPctaqnpgJlP7ab0b8xdbG0Z54bSNfYulxGgbiNz4="
+		},
+		"core/refExternalFileYaml/refExternalFile.json": {
+			"file": "core/refExternalFileYaml/refExternalFile.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/refExternalFileYaml/refExternalFile.json",
+			"last_updated": "2025-02-02T19:38:49.890255Z",
+			"remote_hash": "qxmowEHd0jaVxnl0jEpqGOyVtwyst0bdppB6asL0u0Q="
+		},
+		"core/refOld/refOld.go": {
+			"file": "core/refOld/refOld.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/refOld/refOld.go",
+			"last_updated": "2025-02-02T20:19:25.223754Z",
+			"remote_hash": "LbrRWMbFzSJWKnO1uzaG7G_Cap32YGDxEmqhfb4TdnY="
+		},
+		"core/refOld/refOld.json": {
+			"file": "core/refOld/refOld.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/refOld/refOld.json",
+			"last_updated": "2025-02-02T19:38:50.128435Z",
+			"remote_hash": "BqxeZYhMoq8jOi3yugzczJdhfGBEfahJRsRdLu5e5Xk="
+		},
+		"core/refToEnum/refToEnum.go": {
+			"file": "core/refToEnum/refToEnum.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/refToEnum/refToEnum.go",
+			"last_updated": "2025-02-02T20:19:25.275563Z",
+			"remote_hash": "pe-gtqK4VMjt_3v2i1RpDA52ly_HHLfREPJNaf1v_sM="
+		},
+		"core/refToEnum/refToEnum.json": {
+			"file": "core/refToEnum/refToEnum.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/refToEnum/refToEnum.json",
+			"last_updated": "2025-02-02T19:38:50.41182Z",
+			"remote_hash": "LppFcRX3nQv7YiKG6SRKmvoM2RXCThs5rD5YTX5cDBM="
+		},
+		"core/refToPrimitiveString/refToPrimitiveString.go": {
+			"file": "core/refToPrimitiveString/refToPrimitiveString.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/refToPrimitiveString/refToPrimitiveString.go",
+			"last_updated": "2025-02-02T20:19:25.333261Z",
+			"remote_hash": "APSdjmunRvnBpcMWxZXBB3PHRy5TrhUe2nlaUaGZYu0="
+		},
+		"core/refToPrimitiveString/refToPrimitiveString.json": {
+			"file": "core/refToPrimitiveString/refToPrimitiveString.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/refToPrimitiveString/refToPrimitiveString.json",
+			"last_updated": "2025-02-02T19:38:50.623017Z",
+			"remote_hash": "-8Sn18mrdljVIaySiT3XQUqwA8Qww2PeLwBzuM8V_kg="
+		},
+		"core/time/time.go": {
+			"file": "core/time/time.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/time/time.go",
+			"last_updated": "2025-02-02T20:19:25.385994Z",
+			"remote_hash": "c4UsDaQfoMVJJCtKOtjXJyCYa6xEWg6UuCL-9__Ab3A="
+		},
+		"core/time/time.json": {
+			"file": "core/time/time.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/core/time/time.json",
+			"last_updated": "2025-02-02T19:38:50.852712Z",
+			"remote_hash": "G09p68v7mx3HUWdErY_M4JyWaExq9TAiBhQCTK1e7oM="
+		},
+		"crossPackage/other/other.go": {
+			"file": "crossPackage/other/other.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/crossPackage/other/other.go",
+			"last_updated": "2025-02-02T20:17:49.268193Z",
+			"remote_hash": "MUHUBCXwLbx9NvBYtsHamgBtbijIuCzLl-2Vak6Cewk="
+		},
+		"crossPackage/other/other.json": {
+			"file": "crossPackage/other/other.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/crossPackage/other/other.json",
+			"last_updated": "2025-02-02T19:38:51.177716Z",
+			"remote_hash": "ywHYm0SniAVtx0Wt2Mfd4QVOAyoNfABkgSg5vRY8roA="
+		},
+		"crossPackage/schema/schema.go": {
+			"file": "crossPackage/schema/schema.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/crossPackage/schema/schema.go",
+			"last_updated": "2025-02-02T20:17:49.494309Z",
+			"remote_hash": "b4F14Y2sz2G82hydV7t-Q7_GKy3oCsmbqGxtDlr32m0="
+		},
+		"crossPackage/schema/schema.json": {
+			"file": "crossPackage/schema/schema.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/crossPackage/schema/schema.json",
+			"last_updated": "2025-02-02T19:38:51.431227Z",
+			"remote_hash": "Q_j9V7Vd1eQ4fPjlVAMrkEzYgd1AikQAms1-sFUMwVc="
+		},
+		"crossPackageNoOutput/other/other.go": {
+			"file": "crossPackageNoOutput/other/other.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/crossPackageNoOutput/other/other.go",
+			"last_updated": "2025-02-02T20:19:25.545166Z",
+			"remote_hash": "Hb3WRvPV2zo7SoHD1C-oi714NyUKxhf5AVYJbkrhXTY="
+		},
+		"crossPackageNoOutput/other/other.json": {
+			"file": "crossPackageNoOutput/other/other.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/crossPackageNoOutput/other/other.json",
+			"last_updated": "2025-02-02T19:38:51.737249Z",
+			"remote_hash": "ywHYm0SniAVtx0Wt2Mfd4QVOAyoNfABkgSg5vRY8roA="
+		},
+		"crossPackageNoOutput/schema/schema.go": {
+			"file": "crossPackageNoOutput/schema/schema.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/crossPackageNoOutput/schema/schema.go",
+			"last_updated": "2025-02-02T20:17:50.390611Z",
+			"remote_hash": "LWiWw9ymcHtHx3JMEN9PQQ67QlzceE0J6SunlYoP-Dw="
+		},
+		"crossPackageNoOutput/schema/schema.json": {
+			"file": "crossPackageNoOutput/schema/schema.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/crossPackageNoOutput/schema/schema.json",
+			"last_updated": "2025-02-02T19:38:51.973147Z",
+			"remote_hash": "Q_j9V7Vd1eQ4fPjlVAMrkEzYgd1AikQAms1-sFUMwVc="
+		},
+		"extraImports/gopkgYAMLv3/gopkgYAMLv3.go": {
+			"file": "extraImports/gopkgYAMLv3/gopkgYAMLv3.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/extraImports/gopkgYAMLv3/gopkgYAMLv3.go",
+			"last_updated": "2025-02-02T20:19:25.660157Z",
+			"remote_hash": "l2pqcDZsc6DTso2itGsjgCs5MjnxRwkdf9RcEUEnWVo="
+		},
+		"extraImports/gopkgYAMLv3/gopkgYAMLv3.json": {
+			"file": "extraImports/gopkgYAMLv3/gopkgYAMLv3.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/extraImports/gopkgYAMLv3/gopkgYAMLv3.json",
+			"last_updated": "2025-02-02T19:38:52.214572Z",
+			"remote_hash": "1lFU6mvy4znUtlU4lg_f0H8fgn4PosfwpsEP_NksC2U="
+		},
+		"extraImports/gopkgYAMLv3/gopkgYAMLv3.yaml": {
+			"file": "extraImports/gopkgYAMLv3/gopkgYAMLv3.yaml",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/extraImports/gopkgYAMLv3/gopkgYAMLv3.yaml",
+			"last_updated": "2025-02-02T20:31:06.717261Z",
+			"remote_hash": "oQmOWwSMfgwQSsDvL0j0_U1KejtsOS29JA5HLRADSlE="
+		},
+		"extraImports/gopkgYAMLv3AdditionalProperties/gopkgYAMLv3AdditionalProperties.go": {
+			"file": "extraImports/gopkgYAMLv3AdditionalProperties/gopkgYAMLv3AdditionalProperties.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/extraImports/gopkgYAMLv3AdditionalProperties/gopkgYAMLv3AdditionalProperties.go",
+			"last_updated": "2025-02-02T20:19:25.713404Z",
+			"remote_hash": "3SWRuTzn_KXSMWIZPDRLRIBCKlYJdeI3HclZT4N_U1I="
+		},
+		"extraImports/gopkgYAMLv3AdditionalProperties/gopkgYAMLv3AdditionalProperties.json": {
+			"file": "extraImports/gopkgYAMLv3AdditionalProperties/gopkgYAMLv3AdditionalProperties.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/extraImports/gopkgYAMLv3AdditionalProperties/gopkgYAMLv3AdditionalProperties.json",
+			"last_updated": "2025-02-02T19:38:52.570073Z",
+			"remote_hash": "qYUDyFTotGWGVqi9zsjb7aaA0TQLUKEWX4HMLJJ0haw="
+		},
+		"extraImports/gopkgYAMLv3AdditionalProperties/gopkgYAMLv3AdditionalProperties.yaml": {
+			"file": "extraImports/gopkgYAMLv3AdditionalProperties/gopkgYAMLv3AdditionalProperties.yaml",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/extraImports/gopkgYAMLv3AdditionalProperties/gopkgYAMLv3AdditionalProperties.yaml",
+			"last_updated": "2025-02-02T20:31:06.912931Z",
+			"remote_hash": "xaOhqkOWGHnbLwQrQFntuA9rjGcVMuX9gZIpONcxAWg="
+		},
+		"extraImports/gopkgYAMLv3invalidEnum/gopkgYAMLv3invalidEnum.yaml": {
+			"file": "extraImports/gopkgYAMLv3invalidEnum/gopkgYAMLv3invalidEnum.yaml",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/extraImports/gopkgYAMLv3invalidEnum/gopkgYAMLv3invalidEnum.yaml",
+			"last_updated": "2025-02-02T20:31:07.060917Z",
+			"remote_hash": "n9fdREb6syYd7AigQeNu0PlQ1rG3AjjJyNyjoEuFDNg="
+		},
+		"minSizedInts/arrays/exact.go": {
+			"file": "minSizedInts/arrays/exact.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/minSizedInts/arrays/exact.go",
+			"last_updated": "2025-02-02T20:19:25.767567Z",
+			"remote_hash": "M1YzRQivCqkyDkOfVoBOT_zTzo_ba85XgazGjW_vmwM="
+		},
+		"minSizedInts/arrays/exact.json": {
+			"file": "minSizedInts/arrays/exact.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/minSizedInts/arrays/exact.json",
+			"last_updated": "2025-02-02T19:38:52.831952Z",
+			"remote_hash": "xzrEc5XvT1OszfNPNsaYc6IeBsuxzxQIRnhgQn8Eeio="
+		},
+		"minSizedInts/exactReferences/exact.go": {
+			"file": "minSizedInts/exactReferences/exact.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/minSizedInts/exactReferences/exact.go",
+			"last_updated": "2025-02-02T20:19:25.818422Z",
+			"remote_hash": "pQ_bFfmAUJTLv8kMziQlVpo1wjRMuEDtUcBI_c5fZZA="
+		},
+		"minSizedInts/exactReferences/exact.json": {
+			"file": "minSizedInts/exactReferences/exact.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/minSizedInts/exactReferences/exact.json",
+			"last_updated": "2025-02-02T19:38:53.041646Z",
+			"remote_hash": "vv-Grn4oZFNxOaaHjRdQaMeS7WtXGAI09TU7qVRstX0="
+		},
+		"minSizedInts/exactSizes/exact.go": {
+			"file": "minSizedInts/exactSizes/exact.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/minSizedInts/exactSizes/exact.go",
+			"last_updated": "2025-02-02T20:19:25.874801Z",
+			"remote_hash": "vYYc82HnUwYBz_22j1hg7PXpJACJqLfP2P3n9sr2e9Y="
+		},
+		"minSizedInts/exactSizes/exact.json": {
+			"file": "minSizedInts/exactSizes/exact.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/minSizedInts/exactSizes/exact.json",
+			"last_updated": "2025-02-02T19:38:53.280306Z",
+			"remote_hash": "7vE2z88eC2UbDfxndibUZ-DjF1eYQJNx5f0zZvB8KpM="
+		},
+		"minSizedInts/exactSizesExclusiveBool/exact.go": {
+			"file": "minSizedInts/exactSizesExclusiveBool/exact.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/minSizedInts/exactSizesExclusiveBool/exact.go",
+			"last_updated": "2025-02-02T20:19:25.932996Z",
+			"remote_hash": "vYYc82HnUwYBz_22j1hg7PXpJACJqLfP2P3n9sr2e9Y="
+		},
+		"minSizedInts/exactSizesExclusiveBool/exact.json": {
+			"file": "minSizedInts/exactSizesExclusiveBool/exact.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/minSizedInts/exactSizesExclusiveBool/exact.json",
+			"last_updated": "2025-02-02T19:38:53.504325Z",
+			"remote_hash": "jfzG5Sh9Y2g9vpR5X2Nx-BiQZ6wRcZF9YEIRsk4UkYc="
+		},
+		"minSizedInts/exactSizesExclusiveNum/exact.go": {
+			"file": "minSizedInts/exactSizesExclusiveNum/exact.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/minSizedInts/exactSizesExclusiveNum/exact.go",
+			"last_updated": "2025-02-02T20:19:25.986028Z",
+			"remote_hash": "vYYc82HnUwYBz_22j1hg7PXpJACJqLfP2P3n9sr2e9Y="
+		},
+		"minSizedInts/exactSizesExclusiveNum/exact.json": {
+			"file": "minSizedInts/exactSizesExclusiveNum/exact.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/minSizedInts/exactSizesExclusiveNum/exact.json",
+			"last_updated": "2025-02-02T19:38:53.75511Z",
+			"remote_hash": "MGLx3Wik-vI5puNumELeMwEqmS5SFRPGY1mB6uC0uGM="
+		},
+		"minSizedInts/largerSizes/larger.go": {
+			"file": "minSizedInts/largerSizes/larger.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/minSizedInts/largerSizes/larger.go",
+			"last_updated": "2025-02-02T20:19:26.039049Z",
+			"remote_hash": "OEaH06nkhTL6tPpj34Z6wjW9v2HdRuhADs--9faS-04="
+		},
+		"minSizedInts/largerSizes/larger.json": {
+			"file": "minSizedInts/largerSizes/larger.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/minSizedInts/largerSizes/larger.json",
+			"last_updated": "2025-02-02T19:38:53.959176Z",
+			"remote_hash": "IwSPAc4pjWz42wtAIgWqOYbCW2qns2-QiRH9kYzgPac="
+		},
+		"minSizedInts/restrictedSizes/restricted.go": {
+			"file": "minSizedInts/restrictedSizes/restricted.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/minSizedInts/restrictedSizes/restricted.go",
+			"last_updated": "2025-02-02T20:19:26.091873Z",
+			"remote_hash": "okFjPxXwDyOm1XVg0HCS2jihIGU2rAYYhltehO-G5s4="
+		},
+		"minSizedInts/restrictedSizes/restricted.json": {
+			"file": "minSizedInts/restrictedSizes/restricted.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/minSizedInts/restrictedSizes/restricted.json",
+			"last_updated": "2025-02-02T19:38:54.170245Z",
+			"remote_hash": "HD4tFoK3gO8IkAyx9lnfQrjwkDuTQPTbjiEZ1KuexkA="
+		},
+		"minSizedInts/restrictedSizesReferences/restricted.go": {
+			"file": "minSizedInts/restrictedSizesReferences/restricted.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/minSizedInts/restrictedSizesReferences/restricted.go",
+			"last_updated": "2025-02-02T20:19:26.145742Z",
+			"remote_hash": "E-tk735NenHtWCAYgwvmTns-YMqdPyOR8gGZt8liAic="
+		},
+		"minSizedInts/restrictedSizesReferences/restricted.json": {
+			"file": "minSizedInts/restrictedSizesReferences/restricted.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/minSizedInts/restrictedSizesReferences/restricted.json",
+			"last_updated": "2025-02-02T19:38:54.384868Z",
+			"remote_hash": "4eaAb4vg0iWZqc5kGNV_44F2u5aDq85jtUj_1P-eNK4="
+		},
+		"misc/booleanAsSchema/booleanAsSchema.go": {
+			"file": "misc/booleanAsSchema/booleanAsSchema.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/misc/booleanAsSchema/booleanAsSchema.go",
+			"last_updated": "2025-02-02T20:19:26.197257Z",
+			"remote_hash": "8UPo7CUTolYgNm3SRxAYAFFQRy3BXN3y2fpsu8_XKds="
+		},
+		"misc/booleanAsSchema/booleanAsSchema.json": {
+			"file": "misc/booleanAsSchema/booleanAsSchema.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/misc/booleanAsSchema/booleanAsSchema.json",
+			"last_updated": "2025-02-02T19:38:54.596591Z",
+			"remote_hash": "4VVKGJGt5rbPUfwBLBgBzISbw-3xW3NbrmeOAofdJyc="
+		},
+		"misc/capitalization/capitalization.go": {
+			"file": "misc/capitalization/capitalization.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/misc/capitalization/capitalization.go",
+			"last_updated": "2025-02-02T20:19:26.360833Z",
+			"remote_hash": "wd7iflmPwxYpmD4_vPN7JevKhokTiSXbQzUovwcFGEs="
+		},
+		"misc/capitalization/capitalization.json": {
+			"file": "misc/capitalization/capitalization.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/misc/capitalization/capitalization.json",
+			"last_updated": "2025-02-02T19:38:54.824285Z",
+			"remote_hash": "P7N5bGYr4rlAvrpXj2VxhI_y6PcZOUEydRa71vp_Hbo="
+		},
+		"misc/onlyModels/onlyModels.go": {
+			"file": "misc/onlyModels/onlyModels.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/misc/onlyModels/onlyModels.go",
+			"last_updated": "2025-02-02T20:19:26.422115Z",
+			"remote_hash": "Cal73i8rvIl9k_R7dfYV3AA4bLCrLI27DPx_4QXMU1M="
+		},
+		"misc/onlyModels/onlyModels.json": {
+			"file": "misc/onlyModels/onlyModels.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/misc/onlyModels/onlyModels.json",
+			"last_updated": "2025-02-02T19:38:55.146203Z",
+			"remote_hash": "1lFU6mvy4znUtlU4lg_f0H8fgn4PosfwpsEP_NksC2U="
+		},
+		"misc/specialCharacters/specialCharacters.go": {
+			"file": "misc/specialCharacters/specialCharacters.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/misc/specialCharacters/specialCharacters.go",
+			"last_updated": "2025-02-02T20:19:26.478085Z",
+			"remote_hash": "_9zcS_U0HtTQ3w_Ev-3jQPeAakfkkJJsQkz0m0bW2SU="
+		},
+		"misc/specialCharacters/specialCharacters.json": {
+			"file": "misc/specialCharacters/specialCharacters.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/misc/specialCharacters/specialCharacters.json",
+			"last_updated": "2025-02-02T19:38:55.345528Z",
+			"remote_hash": "thPOM53uv-0sbxFYxO6S7s-gtsN7ezpV7uyXQlnBNEA="
+		},
+		"misc/tags/tags.go": {
+			"file": "misc/tags/tags.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/misc/tags/tags.go",
+			"last_updated": "2025-02-02T20:19:26.551133Z",
+			"remote_hash": "bdtegcCkVo6IuPogldU_TnwogC9HnHS6UZEeJCBmbR0="
+		},
+		"misc/tags/tags.json": {
+			"file": "misc/tags/tags.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/misc/tags/tags.json",
+			"last_updated": "2025-02-02T19:38:55.558713Z",
+			"remote_hash": "qNL9GZLWxytKbfIVlHAH2KpZVW1wLMFn-xrVWV0SMJs="
+		},
+		"miscWithDefaults/case/case.go": {
+			"file": "miscWithDefaults/case/case.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/miscWithDefaults/case/case.go",
+			"last_updated": "2025-02-02T20:19:26.604537Z",
+			"remote_hash": "3_k4a2P9zZmXHm_GqlyQ41z2Yt3XYgeEmXA3WUJk9xI="
+		},
+		"miscWithDefaults/case/case.json": {
+			"file": "miscWithDefaults/case/case.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/miscWithDefaults/case/case.json",
+			"last_updated": "2025-02-02T19:38:55.770755Z",
+			"remote_hash": "OowAp2RkbiyT1gpADWtYokZaFq2Hb1joQEDfYFYnwdE="
+		},
+		"miscWithDefaults/caseDupes/caseDupes.go": {
+			"file": "miscWithDefaults/caseDupes/caseDupes.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/miscWithDefaults/caseDupes/caseDupes.go",
+			"last_updated": "2025-02-02T20:19:26.656633Z",
+			"remote_hash": "A4DuwBOvS0OT6okO0X_TOqWZpSus55zraiVE-xxxPYM="
+		},
+		"miscWithDefaults/caseDupes/caseDupes.json": {
+			"file": "miscWithDefaults/caseDupes/caseDupes.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/miscWithDefaults/caseDupes/caseDupes.json",
+			"last_updated": "2025-02-02T19:38:55.980308Z",
+			"remote_hash": "_nQyjuxzO7AOqQLVv8GjDZLsvTYA0pzoe361LWtOiOA="
+		},
+		"miscWithDefaults/cyclic/cyclic.go": {
+			"file": "miscWithDefaults/cyclic/cyclic.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/miscWithDefaults/cyclic/cyclic.go",
+			"last_updated": "2025-02-02T20:19:26.708431Z",
+			"remote_hash": "Q2LpxpSi38tQQmzLtKhgWrX8W9WBBiQn1vApGRvgpxg="
+		},
+		"miscWithDefaults/cyclic/cyclic.json": {
+			"file": "miscWithDefaults/cyclic/cyclic.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/miscWithDefaults/cyclic/cyclic.json",
+			"last_updated": "2025-02-02T19:38:56.210766Z",
+			"remote_hash": "ZBAvrN-46geZh2hQDGjIRVAOZFwTuY58p3GJhBP6Ko0="
+		},
+		"miscWithDefaults/cyclicAndRequired1/cyclicAndRequired1.go": {
+			"file": "miscWithDefaults/cyclicAndRequired1/cyclicAndRequired1.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/miscWithDefaults/cyclicAndRequired1/cyclicAndRequired1.go",
+			"last_updated": "2025-02-02T20:19:26.846798Z",
+			"remote_hash": "xoDDqky0uMAG9P_rsbRh3HJfnBj7aN2aTASxDxwEeNQ="
+		},
+		"miscWithDefaults/cyclicAndRequired1/cyclicAndRequired1.json": {
+			"file": "miscWithDefaults/cyclicAndRequired1/cyclicAndRequired1.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/miscWithDefaults/cyclicAndRequired1/cyclicAndRequired1.json",
+			"last_updated": "2025-02-02T19:38:56.613102Z",
+			"remote_hash": "7z1eKiYZ4W65d7i_FKODVAS43tNjRdf57D6Xu1_Bqlc="
+		},
+		"miscWithDefaults/rootEmptyJustDefinitions/rootEmptyJustDefinitions.go": {
+			"file": "miscWithDefaults/rootEmptyJustDefinitions/rootEmptyJustDefinitions.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/miscWithDefaults/rootEmptyJustDefinitions/rootEmptyJustDefinitions.go",
+			"last_updated": "2025-02-02T20:19:26.898655Z",
+			"remote_hash": "rH41iyKes79Q4ADXr4JxjGKXH9rHYEeJWHIKmtrrVkk="
+		},
+		"miscWithDefaults/rootEmptyJustDefinitions/rootEmptyJustDefinitions.json": {
+			"file": "miscWithDefaults/rootEmptyJustDefinitions/rootEmptyJustDefinitions.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/miscWithDefaults/rootEmptyJustDefinitions/rootEmptyJustDefinitions.json",
+			"last_updated": "2025-02-02T19:38:56.82981Z",
+			"remote_hash": "GN6hgeOKFidI_YtEGjpalWLFq2Oidgae2MC628tMTAw="
+		},
+		"miscWithDefaults/rootIsArrayOfString/rootIsArrayOfString.go": {
+			"file": "miscWithDefaults/rootIsArrayOfString/rootIsArrayOfString.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/miscWithDefaults/rootIsArrayOfString/rootIsArrayOfString.go",
+			"last_updated": "2025-02-02T20:19:26.951743Z",
+			"remote_hash": "cCIsrIlAAKsyx_gN9AOpJSPNvfOfIXXnmE2-mOxIdSs="
+		},
+		"miscWithDefaults/rootIsArrayOfString/rootIsArrayOfString.json": {
+			"file": "miscWithDefaults/rootIsArrayOfString/rootIsArrayOfString.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/miscWithDefaults/rootIsArrayOfString/rootIsArrayOfString.json",
+			"last_updated": "2025-02-02T19:38:57.130578Z",
+			"remote_hash": "wyHIDq2lO7M0P5rYVBYyb6C9HoWRL1QjVMmAauuYjzg="
+		},
+		"nameFromTitle/ref/ref.go": {
+			"file": "nameFromTitle/ref/ref.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/nameFromTitle/ref/ref.go",
+			"last_updated": "2025-02-02T20:19:27.004957Z",
+			"remote_hash": "fhc9dl8Dq6BCJtsEfHLcuA8jeTep0vAYSfW31HzcSQ0="
+		},
+		"nameFromTitle/ref/ref.json": {
+			"file": "nameFromTitle/ref/ref.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/nameFromTitle/ref/ref.json",
+			"last_updated": "2025-02-02T19:38:57.357102Z",
+			"remote_hash": "yDkVe055-J0Tobgg5DSlAoUWy1HCIHr1jYH4K8jqank="
+		},
+		"nameFromTitle/refExternalFile/refExternalFile.go": {
+			"file": "nameFromTitle/refExternalFile/refExternalFile.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/nameFromTitle/refExternalFile/refExternalFile.go",
+			"last_updated": "2025-02-02T20:19:27.056905Z",
+			"remote_hash": "zppUNnBs7GAppbuxvsTHt-AZzi9vm4K538EF4ftS0VE="
+		},
+		"nameFromTitle/refExternalFile/refExternalFile.json": {
+			"file": "nameFromTitle/refExternalFile/refExternalFile.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/nameFromTitle/refExternalFile/refExternalFile.json",
+			"last_updated": "2025-02-02T19:38:57.671124Z",
+			"remote_hash": "zyflpMf9l3OdXx0q7WXQ8FQdY6BJvNlzP1NYLr5wN_8="
+		},
+		"regressions/issue32/issue32.go": {
+			"file": "regressions/issue32/issue32.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/regressions/issue32/issue32.go",
+			"last_updated": "2025-02-02T20:19:27.109234Z",
+			"remote_hash": "Lw83W6R1tn79fMAhWkSAkpcvrcU7kVBFGW1pZh83bjo="
+		},
+		"regressions/issue32/issue32.json": {
+			"file": "regressions/issue32/issue32.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/regressions/issue32/issue32.json",
+			"last_updated": "2025-02-02T19:38:57.906226Z",
+			"remote_hash": "wqkzTK_bz-XlCb51Wf5A78_R_zepnxIGavk5YRX3Xn4="
+		},
+		"regressions/issue51/issue51.go": {
+			"file": "regressions/issue51/issue51.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/regressions/issue51/issue51.go",
+			"last_updated": "2025-02-02T20:19:27.161727Z",
+			"remote_hash": "7EgSg4GycnrskmiosoCLBoPbIoRA4X9gSHKvQQ_rWgs="
+		},
+		"regressions/issue51/issue51.json": {
+			"file": "regressions/issue51/issue51.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/regressions/issue51/issue51.json",
+			"last_updated": "2025-02-02T19:38:58.14624Z",
+			"remote_hash": "r15o3PpPG2CVejDkjUgylSaLK_VeVdlmQx5jOWs9JoQ="
+		},
+		"schemaExtensions/nillable/nillability.go": {
+			"file": "schemaExtensions/nillable/nillability.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/schemaExtensions/nillable/nillability.go",
+			"last_updated": "2025-02-02T20:19:27.212898Z",
+			"remote_hash": "5jWbg-3dJl8ZeU0UbpuI_5e-Eayz5E7ivoSolSvlye4="
+		},
+		"schemaExtensions/nillable/nillability.json": {
+			"file": "schemaExtensions/nillable/nillability.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/schemaExtensions/nillable/nillability.json",
+			"last_updated": "2025-02-02T19:38:58.363657Z",
+			"remote_hash": "CHrLLmtnBq1y2q4lLNHaluvnBBEgXF59NJ6wvVK0T9o="
+		},
+		"schemaExtensions/nonNillable/nillability.go": {
+			"file": "schemaExtensions/nonNillable/nillability.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/schemaExtensions/nonNillable/nillability.go",
+			"last_updated": "2025-02-02T20:19:27.266331Z",
+			"remote_hash": "No0WkyytbIfhrb3_Y9SJSqolg2a3lHRzTTQzxa_0Sqg="
+		},
+		"schemaExtensions/nonNillable/nillability.json": {
+			"file": "schemaExtensions/nonNillable/nillability.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/schemaExtensions/nonNillable/nillability.json",
+			"last_updated": "2025-02-02T19:38:58.572339Z",
+			"remote_hash": "OMwJzo8apmOpAuJdDc9si79TqV3myI6wsP75jx-u_ds="
+		},
+		"validation/description/description.go": {
+			"file": "validation/description/description.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/description/description.go",
+			"last_updated": "2025-02-02T20:19:27.318619Z",
+			"remote_hash": "y-lFP4_Zk-Y_M_eytn2T1rSkiSeiQeUNPeM998OVMXE="
+		},
+		"validation/description/description.json": {
+			"file": "validation/description/description.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/description/description.json",
+			"last_updated": "2025-02-02T19:38:58.788083Z",
+			"remote_hash": "RvqExR30y1E3DHFPSSYlw4jLEe9RFsuYU5eDD5dU8Ec="
+		},
+		"validation/enum/enum.go": {
+			"file": "validation/enum/enum.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/enum/enum.go",
+			"last_updated": "2025-02-02T20:19:27.373543Z",
+			"remote_hash": "SKsIwb1XjrGoTz8JsrUiS7WNkd-oLW9lhjUs39ss8JM="
+		},
+		"validation/enum/enum.json": {
+			"file": "validation/enum/enum.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/enum/enum.json",
+			"last_updated": "2025-02-02T19:38:58.996093Z",
+			"remote_hash": "Ppg4bslS9gQPh4stgFU32r_nP4eRQkBf3oC17F1goH8="
+		},
+		"validation/exclusiveMaximum/exclusiveMaximum.go": {
+			"file": "validation/exclusiveMaximum/exclusiveMaximum.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/exclusiveMaximum/exclusiveMaximum.go",
+			"last_updated": "2025-02-02T20:19:27.424654Z",
+			"remote_hash": "wWv6AWYOKBrU_7cTInVknq0d4UXW3ktcdP6EmHCcYfw="
+		},
+		"validation/exclusiveMaximum/exclusiveMaximum.json": {
+			"file": "validation/exclusiveMaximum/exclusiveMaximum.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/exclusiveMaximum/exclusiveMaximum.json",
+			"last_updated": "2025-02-02T19:38:59.202359Z",
+			"remote_hash": "u2d1vKCwqSdEDcQ5poVK8slayDZApJhtah7Hr2ZQWwE="
+		},
+		"validation/exclusiveMaximum/exclusiveMaximumOld.go": {
+			"file": "validation/exclusiveMaximum/exclusiveMaximumOld.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/exclusiveMaximum/exclusiveMaximumOld.go",
+			"last_updated": "2025-02-02T20:19:27.475816Z",
+			"remote_hash": "a3-OLQGUAcuvu6eZNWiw8DsM4nNFzm_lnFVq0tz57l8="
+		},
+		"validation/exclusiveMaximum/exclusiveMaximumOld.json": {
+			"file": "validation/exclusiveMaximum/exclusiveMaximumOld.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/exclusiveMaximum/exclusiveMaximumOld.json",
+			"last_updated": "2025-02-02T19:38:59.426089Z",
+			"remote_hash": "QGsr7YHWSS4UYjQxs62ZkPN5ShsrLxYugqCSyLPoGlE="
+		},
+		"validation/exclusiveMinimum/exclusiveMinimum.go": {
+			"file": "validation/exclusiveMinimum/exclusiveMinimum.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/exclusiveMinimum/exclusiveMinimum.go",
+			"last_updated": "2025-02-02T20:19:27.527767Z",
+			"remote_hash": "ti5DMxxdFB4bfpDCBS_NphzgfldGkBS8Hv9wNlUCvCI="
+		},
+		"validation/exclusiveMinimum/exclusiveMinimum.json": {
+			"file": "validation/exclusiveMinimum/exclusiveMinimum.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/exclusiveMinimum/exclusiveMinimum.json",
+			"last_updated": "2025-02-02T19:38:59.652484Z",
+			"remote_hash": "AuTywP8U12uKUGhAtCrC5QDd2b_rDn0AcEdgxXh8BKo="
+		},
+		"validation/exclusiveMinimum/exclusiveMinimumOld.go": {
+			"file": "validation/exclusiveMinimum/exclusiveMinimumOld.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/exclusiveMinimum/exclusiveMinimumOld.go",
+			"last_updated": "2025-02-02T20:19:27.58082Z",
+			"remote_hash": "zW9hvn2tUM-bvMVkv5-PXvQbtf4MbI516dFAHKonbsY="
+		},
+		"validation/exclusiveMinimum/exclusiveMinimumOld.json": {
+			"file": "validation/exclusiveMinimum/exclusiveMinimumOld.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/exclusiveMinimum/exclusiveMinimumOld.json",
+			"last_updated": "2025-02-02T19:38:59.840724Z",
+			"remote_hash": "OGBQ2Ix7jNAr1kiU42AYmKRnGFACR76L-IZiZ_lnXGs="
+		},
+		"validation/maxItems/maxItems.go": {
+			"file": "validation/maxItems/maxItems.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/maxItems/maxItems.go",
+			"last_updated": "2025-02-02T20:19:27.634076Z",
+			"remote_hash": "YNRXYM6vV3ru3DPUUpqxFGId3J1zHUbyEzJMvm2MO28="
+		},
+		"validation/maxItems/maxItems.json": {
+			"file": "validation/maxItems/maxItems.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/maxItems/maxItems.json",
+			"last_updated": "2025-02-02T19:39:00.072347Z",
+			"remote_hash": "VpYdKWPg93XDWg7FqGDtKcQfIcU0r5CdLdHicIgNL20="
+		},
+		"validation/maxLength/maxLength.go": {
+			"file": "validation/maxLength/maxLength.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/maxLength/maxLength.go",
+			"last_updated": "2025-02-02T20:19:27.744623Z",
+			"remote_hash": "v3viUH1NlU8NLKDQ0FEfqL_JJPfPSlelIVyj5qmCIwA="
+		},
+		"validation/maxLength/maxLength.json": {
+			"file": "validation/maxLength/maxLength.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/maxLength/maxLength.json",
+			"last_updated": "2025-02-02T19:39:00.426834Z",
+			"remote_hash": "keTJ8jJT5gVmC9jqiuqMexE1UUiMkHBlbMFrEpwR7LM="
+		},
+		"validation/maximum/maximum.go": {
+			"file": "validation/maximum/maximum.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/maximum/maximum.go",
+			"last_updated": "2025-02-02T20:19:27.797372Z",
+			"remote_hash": "sipE1e9InGJoHKLRgc_rsZTpKbWis84tTKopuXJFMqQ="
+		},
+		"validation/maximum/maximum.json": {
+			"file": "validation/maximum/maximum.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/maximum/maximum.json",
+			"last_updated": "2025-02-02T19:39:00.644136Z",
+			"remote_hash": "Fcut-oiNnJXBEB2aWCLRvCOirSgcBn32XSDOk_GeE-c="
+		},
+		"validation/minItems/minItems.go": {
+			"file": "validation/minItems/minItems.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/minItems/minItems.go",
+			"last_updated": "2025-02-02T20:19:27.849315Z",
+			"remote_hash": "703vGgxMuO7BubhspsCJZtH8MM_WjNmn4N34SJ8bNLQ="
+		},
+		"validation/minItems/minItems.json": {
+			"file": "validation/minItems/minItems.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/minItems/minItems.json",
+			"last_updated": "2025-02-02T19:39:00.840419Z",
+			"remote_hash": "bmvKWHSJAiQw0eZuAmdC8sveVLTzWNELNDRt8TZTmEE="
+		},
+		"validation/minLength/minLength.go": {
+			"file": "validation/minLength/minLength.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/minLength/minLength.go",
+			"last_updated": "2025-02-02T20:19:27.903309Z",
+			"remote_hash": "zeEnpOBNBNAw0ae3GXOwnJR7OrZSwTKPjteq4fh78I8="
+		},
+		"validation/minLength/minLength.json": {
+			"file": "validation/minLength/minLength.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/minLength/minLength.json",
+			"last_updated": "2025-02-02T19:39:01.090393Z",
+			"remote_hash": "fpDGwUDGmsfbY-I_a6akX6F8bKI-QyLwSCIO63qIrG4="
+		},
+		"validation/minMaxItems/minMaxItems.go": {
+			"file": "validation/minMaxItems/minMaxItems.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/minMaxItems/minMaxItems.go",
+			"last_updated": "2025-02-02T20:19:27.960485Z",
+			"remote_hash": "tDpHAwedo_0tlY3yoQMV314I5zGQFxJ7Z4hhDQeSqqU="
+		},
+		"validation/minMaxItems/minMaxItems.json": {
+			"file": "validation/minMaxItems/minMaxItems.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/minMaxItems/minMaxItems.json",
+			"last_updated": "2025-02-02T19:39:01.319299Z",
+			"remote_hash": "CWsmBDOQcr4lI7aMrbZNXn-rj6GA2qoJ_7pIxWwycPM="
+		},
+		"validation/minimum/minimum.go": {
+			"file": "validation/minimum/minimum.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/minimum/minimum.go",
+			"last_updated": "2025-02-02T20:19:28.01725Z",
+			"remote_hash": "JsaPDsVq8521fsdj-x5vezC3wmRn3qHv6JZij49vN9Q="
+		},
+		"validation/minimum/minimum.json": {
+			"file": "validation/minimum/minimum.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/minimum/minimum.json",
+			"last_updated": "2025-02-02T19:39:01.647705Z",
+			"remote_hash": "Q6LqtuwHB1JdohjIJawlMicjLFzu8olrOiK62pnU5h4="
+		},
+		"validation/multipleOf/multipleOf.go": {
+			"file": "validation/multipleOf/multipleOf.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/multipleOf/multipleOf.go",
+			"last_updated": "2025-02-02T20:19:28.080735Z",
+			"remote_hash": "J_AiRVg1Aa8rzPB864ic0iVgHyO7m3pkab5iqRxwU6Y="
+		},
+		"validation/multipleOf/multipleOf.json": {
+			"file": "validation/multipleOf/multipleOf.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/multipleOf/multipleOf.json",
+			"last_updated": "2025-02-02T19:39:01.861192Z",
+			"remote_hash": "M73D1MlkvLxTCiRDSTi9Vj3wHslp-3CfXO7D0pevg2g="
+		},
+		"validation/pattern/pattern.go": {
+			"file": "validation/pattern/pattern.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/pattern/pattern.go",
+			"last_updated": "2025-02-02T20:19:28.133265Z",
+			"remote_hash": "R-1Rb91BkDo3u_EQzATIIWx_xQNPnkiEgptcvntf4tU="
+		},
+		"validation/pattern/pattern.json": {
+			"file": "validation/pattern/pattern.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/pattern/pattern.json",
+			"last_updated": "2025-02-02T19:39:02.069847Z",
+			"remote_hash": "pD4DtVd1hZOHUBT3UA-eqhriAJmS5SQrsurDf1MaQMA="
+		},
+		"validation/primitive_defs/primitive_defs.go": {
+			"file": "validation/primitive_defs/primitive_defs.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/primitive_defs/primitive_defs.go",
+			"last_updated": "2025-02-02T20:19:28.187391Z",
+			"remote_hash": "5Q2uWbuC6pi1Wsq1240xw2FZe39Qmg-6vXOvlOgiD7U="
+		},
+		"validation/primitive_defs/primitive_defs.json": {
+			"file": "validation/primitive_defs/primitive_defs.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/primitive_defs/primitive_defs.json",
+			"last_updated": "2025-02-02T19:39:02.289079Z",
+			"remote_hash": "kKtqDM1k4sl_SphJSGase13oy3ukphOdbNc_cFSLhuk="
+		},
+		"validation/requiredFields/requiredFields.go": {
+			"file": "validation/requiredFields/requiredFields.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/requiredFields/requiredFields.go",
+			"last_updated": "2025-02-02T20:19:28.241025Z",
+			"remote_hash": "_eRbN6Ny9RuQPvR94MP16-prH9a6OOXWqHpPwpXk_sc="
+		},
+		"validation/requiredFields/requiredFields.json": {
+			"file": "validation/requiredFields/requiredFields.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/requiredFields/requiredFields.json",
+			"last_updated": "2025-02-02T19:39:02.544767Z",
+			"remote_hash": "3KRz6-2vXMIv-wd3RCAt9X664WxF-yryqRws6Qp5_8w="
+		},
+		"validation/requiredFields/requiredNullable.go": {
+			"file": "validation/requiredFields/requiredNullable.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/requiredFields/requiredNullable.go",
+			"last_updated": "2025-02-02T20:19:28.291695Z",
+			"remote_hash": "KJt5gywkxoALY_v3MD3axx_khEM8HgGZnqELrjY0WDs="
+		},
+		"validation/requiredFields/requiredNullable.json": {
+			"file": "validation/requiredFields/requiredNullable.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/requiredFields/requiredNullable.json",
+			"last_updated": "2025-02-02T19:39:03.086532Z",
+			"remote_hash": "gSD70-s6iWQiEaq5hm4nI1R7AE6RnhoumehrOsb9se8="
+		},
+		"validation/typeMultiple/typeMultiple.go": {
+			"file": "validation/typeMultiple/typeMultiple.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/typeMultiple/typeMultiple.go",
+			"last_updated": "2025-02-02T20:19:28.345066Z",
+			"remote_hash": "y3Sc6FcVxc9ljkix50GHBnrNFr2ZnpCR5qIiKOAUPI8="
+		},
+		"validation/typeMultiple/typeMultiple.json": {
+			"file": "validation/typeMultiple/typeMultiple.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/typeMultiple/typeMultiple.json",
+			"last_updated": "2025-02-02T19:39:03.425945Z",
+			"remote_hash": "jaLRt0zvDDd8xC833RrXCPNaRuGhJcV-fQPam0F1NPo="
+		},
+		"validation/typed_default/typed_default.go": {
+			"file": "validation/typed_default/typed_default.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/typed_default/typed_default.go",
+			"last_updated": "2025-02-02T20:19:28.39824Z",
+			"remote_hash": "SirWcujoU7_p1VSrPruPB_pqMcbJwQg5cIOQ0jkB6MU="
+		},
+		"validation/typed_default/typed_default.json": {
+			"file": "validation/typed_default/typed_default.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/typed_default/typed_default.json",
+			"last_updated": "2025-02-02T19:39:03.652635Z",
+			"remote_hash": "ZeHl-SdSCVQpMt5PWikDMGBkk8bmkfRUl5sJ0jLvxq0="
+		},
+		"validation/typed_default_empty/typed_default_empty.go": {
+			"file": "validation/typed_default_empty/typed_default_empty.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/typed_default_empty/typed_default_empty.go",
+			"last_updated": "2025-02-02T20:19:28.449876Z",
+			"remote_hash": "ZTHqHi42PR2mu-lQhvpSTW4rWkfRPLleJ-gAZc2-2N0="
+		},
+		"validation/typed_default_empty/typed_default_empty.json": {
+			"file": "validation/typed_default_empty/typed_default_empty.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/typed_default_empty/typed_default_empty.json",
+			"last_updated": "2025-02-02T19:39:03.877091Z",
+			"remote_hash": "8azI6fIZpdaBe4tyvkoHKnmeiXGfo4qoaw62M_bJHXM="
+		},
+		"validation/typed_default_enums/typed_default_enums.go": {
+			"file": "validation/typed_default_enums/typed_default_enums.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/typed_default_enums/typed_default_enums.go",
+			"last_updated": "2025-02-02T20:19:28.502163Z",
+			"remote_hash": "2S4PF6NfIA2Zr7zLPjMxcVlieaYvFMmPTad4N5mXXmg="
+		},
+		"validation/typed_default_enums/typed_default_enums.json": {
+			"file": "validation/typed_default_enums/typed_default_enums.json",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/validation/typed_default_enums/typed_default_enums.json",
+			"last_updated": "2025-02-02T19:39:04.249965Z",
+			"remote_hash": "q-1k1bYNMxJ6WpiB7YBRB-p5B9osrUGXUrVwIC7TGjk="
+		},
+		"yaml/yamlMultilineDescriptions/yamlMultilineDescriptions.go": {
+			"file": "yaml/yamlMultilineDescriptions/yamlMultilineDescriptions.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/yaml/yamlMultilineDescriptions/yamlMultilineDescriptions.go",
+			"last_updated": "2025-02-02T20:19:28.558135Z",
+			"remote_hash": "UxEiDM5uB-fl_nlXabFeNsb8nWVZ7OfjlCuB583It6M="
+		},
+		"yaml/yamlMultilineDescriptions/yamlMultilineDescriptions.yaml": {
+			"file": "yaml/yamlMultilineDescriptions/yamlMultilineDescriptions.yaml",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/yaml/yamlMultilineDescriptions/yamlMultilineDescriptions.yaml",
+			"last_updated": "2025-02-02T20:31:09.972982Z",
+			"remote_hash": "w9_UkkbrphodziqsKjfd8L3oJeTvSzjGBofnkSyTMJA="
+		},
+		"yaml/yamlStructNameFromFile/yamlStructNameFromFile.go": {
+			"file": "yaml/yamlStructNameFromFile/yamlStructNameFromFile.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/yaml/yamlStructNameFromFile/yamlStructNameFromFile.go",
+			"last_updated": "2025-02-02T20:19:28.583967Z",
+			"remote_hash": "htDQEAU3YJQw6y7AbQmCBJUR8pMOmmHS7M0AMJOJ550="
+		},
+		"yaml/yamlStructNameFromFile/yamlStructNameFromFile.yaml": {
+			"file": "yaml/yamlStructNameFromFile/yamlStructNameFromFile.yaml",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/data/yaml/yamlStructNameFromFile/yamlStructNameFromFile.yaml",
+			"last_updated": "2025-02-02T20:31:10.188318Z",
+			"remote_hash": "ioHTb0D-xSmyHn0Wql8ZzoW0E4QiI2l_CT4OIb2tImA="
+		}
+	},
+	"generated_files": {},
+	"args": {
+		"src_repo": "github.com/omissis/go-jsonschema",
+		"src_ref": "main",
+		"src_path": "tests/data",
+		"copy_args": {
+			"file_patterns": [
+				"**/*.go",
+				"**/*.json",
+				"**/*.yaml"
+			],
+			"recursive": true,
+			"no_header_comments": true
+		}
+	}
+}

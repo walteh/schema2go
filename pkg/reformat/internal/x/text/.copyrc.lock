@@ -1,13 +1,19 @@
 {
 	"last_updated": "0001-01-01T00:00:00Z",
 	"commit_hash": "442a4c100c62a7d8543d1a7ab7052397057add86",
+	"license": {
+		"spdx": "MIT",
+		"permalink": "https://api.github.com/repos/omissis/go-jsonschema/contents/LICENSE?ref=442a4c100c62a7d8543d1a7ab7052397057add86",
+		"name": "MIT License"
+	},
 	"branch": "main",
 	"coppied_files": {
-		"cases.copy.go": {
-			"file": "cases.copy.go",
+		"cases.go": {
+			"file": "cases.go",
 			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
 			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/internal/x/text/cases.go",
-			"last_updated": "2025-02-02T13:12:28.459628Z"
+			"last_updated": "2025-02-02T19:37:15.860459Z",
+			"remote_hash": "6MMxCap24DAmZ35h6iwScnZaLdDp5GycRiMWkx2uK0w="
 		}
 	},
 	"generated_files": {},
@@ -16,9 +22,9 @@
 		"src_ref": "main",
 		"src_path": "internal/x/text",
 		"copy_args": {
-			"replacements": [],
-			"ignore_files": null,
-			"file_patterns": null
+			"file_patterns": [
+				"**/*.go"
+			]
 		}
 	}
 }
