@@ -1,0 +1,118 @@
+{
+	"last_updated": "0001-01-01T00:00:00Z",
+	"commit_hash": "442a4c100c62a7d8543d1a7ab7052397057add86",
+	"branch": "main",
+	"coppied_files": {
+		"config.copy.go": {
+			"file": "config.copy.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/pkg/generator/config.go",
+			"last_updated": "2025-02-02T13:09:26.403942Z",
+			"changes": [
+				"Line 5: Replaced 'package generator' with 'package reformat'"
+			]
+		},
+		"formatter.copy.go": {
+			"file": "formatter.copy.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/pkg/generator/formatter.go",
+			"last_updated": "2025-02-02T13:09:26.723078Z",
+			"changes": [
+				"Line 5: Replaced 'package generator' with 'package reformat'"
+			]
+		},
+		"generate.copy.go": {
+			"file": "generate.copy.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/pkg/generator/generate.go",
+			"last_updated": "2025-02-02T13:12:26.728699Z",
+			"changes": [
+				"Line 5: Replaced 'package generator' with 'package reformat'",
+				"Line 14: Replaced '\"github.com/atombender/go-jsonschema/internal/x/text\"' with '\"github.com/walteh/schema2go/pkg/reformat/internal/x/text\"'"
+			]
+		},
+		"json_formatter.copy.go": {
+			"file": "json_formatter.copy.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/pkg/generator/json_formatter.go",
+			"last_updated": "2025-02-02T13:09:27.54699Z",
+			"changes": [
+				"Line 5: Replaced 'package generator' with 'package reformat'"
+			]
+		},
+		"name_scope.copy.go": {
+			"file": "name_scope.copy.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/pkg/generator/name_scope.go",
+			"last_updated": "2025-02-02T13:09:27.958299Z",
+			"changes": [
+				"Line 5: Replaced 'package generator' with 'package reformat'"
+			]
+		},
+		"output.copy.go": {
+			"file": "output.copy.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/pkg/generator/output.go",
+			"last_updated": "2025-02-02T13:09:28.43333Z",
+			"changes": [
+				"Line 5: Replaced 'package generator' with 'package reformat'"
+			]
+		},
+		"schema_generator.copy.go": {
+			"file": "schema_generator.copy.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/pkg/generator/schema_generator.go",
+			"last_updated": "2025-02-02T13:09:28.781955Z",
+			"changes": [
+				"Line 5: Replaced 'package generator' with 'package reformat'"
+			]
+		},
+		"utils.copy.go": {
+			"file": "utils.copy.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/pkg/generator/utils.go",
+			"last_updated": "2025-02-02T13:09:29.191316Z",
+			"changes": [
+				"Line 5: Replaced 'package generator' with 'package reformat'"
+			]
+		},
+		"validator.copy.go": {
+			"file": "validator.copy.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/pkg/generator/validator.go",
+			"last_updated": "2025-02-02T13:09:29.668991Z",
+			"changes": [
+				"Line 5: Replaced 'package generator' with 'package reformat'"
+			]
+		},
+		"yaml_formatter.copy.go": {
+			"file": "yaml_formatter.copy.go",
+			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
+			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/pkg/generator/yaml_formatter.go",
+			"last_updated": "2025-02-02T13:09:30.288588Z",
+			"changes": [
+				"Line 5: Replaced 'package generator' with 'package reformat'"
+			]
+		}
+	},
+	"generated_files": {},
+	"args": {
+		"src_repo": "github.com/omissis/go-jsonschema",
+		"src_ref": "main",
+		"src_path": "pkg/generator",
+		"copy_args": {
+			"replacements": [
+				{
+					"old": "package generator",
+					"new": "package reformat"
+				},
+				{
+					"old": "\"github.com/atombender/go-jsonschema/internal/x/text\"",
+					"new": "\"github.com/walteh/schema2go/pkg/reformat/internal/x/text\""
+				}
+			],
+			"ignore_files": null,
+			"file_patterns": null
+		}
+	}
+}

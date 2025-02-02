@@ -21,6 +21,7 @@ import (
 	_ "github.com/srikrsna/protoc-gen-gotag"
 	_ "github.com/uber-go/gopatch"
 	_ "github.com/vektra/mockery/v2"
+	_ "github.com/walteh/copyrc/cmd/copyrc"
 	_ "github.com/walteh/retab/v2/cmd/retab"
 	_ "gotest.tools/gotestsum"
 )

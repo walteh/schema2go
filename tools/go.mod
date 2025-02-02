@@ -24,6 +24,7 @@ require (
 	github.com/srikrsna/protoc-gen-gotag v1.0.2
 	github.com/uber-go/gopatch v0.4.0
 	github.com/vektra/mockery/v2 v2.51.0
+	github.com/walteh/copyrc v0.0.10
 	github.com/walteh/retab/v2 v2.1.0
 	gotest.tools/gotestsum v1.12.0
 )
