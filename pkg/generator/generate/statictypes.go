@@ -89,6 +89,15 @@ func generateStaticTypes() {
 		"isKnownType": func(typeName string) bool {
 			return interfaceNames[typeName]
 		},
+		"getSliceBaseType": func(typeName string) string {
+			if strings.HasPrefix(typeName, "[]") {
+				return strings.TrimPrefix(typeName, "[]")
+			}
+			return ""
+		},
+		"isSliceType": func(typeName string) bool {
+			return strings.HasPrefix(typeName, "[]")
+		},
 		"trimPrefix": func(s, prefix string) string {
 			return strings.TrimPrefix(s, prefix)
 		},

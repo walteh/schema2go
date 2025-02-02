@@ -1,7 +1,9 @@
 package generator
 
 import (
+	"encoding/json"
 	"fmt"
+	"regexp"
 	"slices"
 	"sort"
 	"strconv"
@@ -22,6 +24,35 @@ type Schema interface {
 // SchemaModel represents a parsed JSON Schema ready for code generation
 type SchemaModel struct {
 	SourceSchema *jsonschema.Schema
+}
+
+func (s *SchemaModel) RemoveYamlLineNumbers() {
+	var err error
+	s.SourceSchema, err = removeYamlLineNumbers(s.SourceSchema)
+	if err != nil {
+		panic(err)
+	}
+}
+
+var lregex = regexp.MustCompile(`"Line":\d+`)
+var cregex = regexp.MustCompile(`"Column":\d+`)
+
+func removeYamlLineNumbers(schema *jsonschema.Schema) (*jsonschema.Schema, error) {
+	// marshal it to json , set all the line and column numbers to zero and unmarshal it back
+	jsonData, err := json.Marshal(schema)
+	if err != nil {
+		return nil, err
+	}
+
+	jsonData = lregex.ReplaceAll(jsonData, []byte("\"Line\":0"))
+	jsonData = cregex.ReplaceAll(jsonData, []byte("\"Column\":0"))
+
+	var unmarshalled jsonschema.Schema
+	if err := json.Unmarshal(jsonData, &unmarshalled); err != nil {
+		return nil, err
+	}
+
+	return &unmarshalled, nil
 }
 
 type Struct interface {
@@ -77,8 +108,8 @@ const (
 type ValidationRule struct {
 	Type    ValidationRuleType
 	Message string
-	Parent  Field
-	Values  string
+	// Parent  Field
+	Values string
 }
 
 // EnumValue represents a single enum value
@@ -265,7 +296,7 @@ func (f *FieldModel) ValidationRules() []ValidationRule {
 		rules = append(rules, ValidationRule{
 			Type:    ValidationRequired,
 			Message: fmt.Sprintf("%s is required", f.JSONName()),
-			Parent:  f,
+			// Parent:  f,
 		})
 	}
 
@@ -278,8 +309,8 @@ func (f *FieldModel) ValidationRules() []ValidationRule {
 		rules = append(rules, ValidationRule{
 			Type:    ValidationEnum,
 			Message: fmt.Sprintf("invalid %s", f.JSONName()),
-			Parent:  f,
-			Values:  strings.Join(values, ", "),
+			// Parent:  f,
+			Values: strings.Join(values, ", "),
 		})
 	}
 
@@ -288,7 +319,7 @@ func (f *FieldModel) ValidationRules() []ValidationRule {
 		rules = append(rules, ValidationRule{
 			Type:    ValidationNested,
 			Message: fmt.Sprintf("validating %s", f.JSONName()),
-			Parent:  f,
+			// Parent:  f,
 		})
 	}
 

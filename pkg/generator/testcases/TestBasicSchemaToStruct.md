@@ -122,6 +122,7 @@ func (x BasicExample) MarshalJSON() ([]byte, error) {
 				Default: &yaml.Node{
 					Kind: yaml.ScalarNode,
 					Value: "0",
+					Tag:   "!!int",
 				},
 			},
 		},
@@ -132,6 +133,7 @@ func (x BasicExample) MarshalJSON() ([]byte, error) {
 				Default: &yaml.Node{
 					Kind: yaml.ScalarNode,
 					Value: "false",
+					Tag:   "!!bool",
 				},
 			},
 		},
@@ -211,7 +213,10 @@ f4 := &generator.StaticField{
 					ValidationRules_: nil,
 				}
 
-s1 := &generator.StaticStruct{Name_: "BasicExample", Fields_: []generator.Field{f1, f2, f3, f4}}
+s1 := &generator.StaticStruct{Name_: "BasicExample", Fields_: []generator.Field{f1, f2, f3, f4},
+HasDefaults_: true,
+					HasValidation_: true,
+					HasCustomMarshaling_: true,}
 
 staticWant := &generator.StaticSchema{
 	Package_: "models",

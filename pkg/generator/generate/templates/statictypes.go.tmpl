@@ -24,8 +24,14 @@ func NewStatic{{ $iface.Name }}(impl {{ $iface.Name }}) *Static{{ $iface.Name }}
 	stat := &Static{{ $iface.Name }}{}
 
 	{{ range $method := $iface.Methods }}
+		{{- $baseType := getSliceBaseType $method.ReturnType }}
 		{{- if isKnownType $method.ReturnType }}
 			stat.{{ $method.Name }}_ = NewStatic{{ $method.ReturnType }}(impl.{{ $method.Name }}())
+		{{- else if and (isSliceType $method.ReturnType) (isKnownType $baseType) }}
+			stat.{{ $method.Name }}_ = make([]{{ $baseType }}, len(impl.{{ $method.Name }}()))
+			for i, item := range impl.{{ $method.Name }}() {
+				stat.{{ $method.Name }}_[i] = NewStatic{{ $baseType }}(item)
+			}
 		{{- else }}
 			stat.{{ $method.Name }}_ = impl.{{ $method.Name }}()
 		{{- end }}

@@ -25,7 +25,7 @@ func generateTestCases() {
 		if tc.JSONSchema() == "" {
 			buf.WriteString("	t.Fatalf(\"no json-schema definition defined for testcases/" + tc.Name() + ".md\")\n")
 		}
-		buf.WriteString("	tc := testcases.LoadAndParseTestCase(\"" + tc.Name() + "\")\n")
+		buf.WriteString("	tc := testcases.LoadTestCase(\"" + tc.Name() + "\")\n")
 		buf.WriteString("	require.Equal(t, testCasesHash, testcases.GetHash(), \"test cases hash mismatch, please run 'go generate ./...' to update the test cases hash\")\n\n")
 		buf.WriteString("	schema, err := generator.NewSchemaModel(tc.JSONSchema())\n")
 		buf.WriteString("	require.NoError(t, err, \"failed to parse schema\")\n")
@@ -87,7 +87,7 @@ func generateTestCases() {
 	buf.WriteString("\"gopkg.in/yaml.v3\"\n")
 	buf.WriteString(")\n\n")
 
-	buf.WriteString("const testCasesHash = \"" + testcases.GetHash() + "\"\n\n")
+	// buf.WriteString("const testCasesHash = \"" + testcases.GetHash() + "\"\n\n")
 
 	for _, rawSchemaModelFunc := range funcNames {
 		buf.WriteString(rawSchemaModelFunc)
@@ -146,7 +146,7 @@ func GenerateGoCodeTest(funcName string, tc *testcases.TestCase) (string, error)
 
 func GenerateStaticSchemaTest(tc *testcases.TestCase) (string, error) {
 
-	if tc.StaticSchema() == "" {
+	if tc.StaticSchema() == nil {
 		return `
 		t.Run("static-schema", func(t *testing.T) {
 			t.Fatalf("no static-schema test case defined for testcases/` + tc.Name() + `.md")
@@ -157,7 +157,7 @@ func GenerateStaticSchemaTest(tc *testcases.TestCase) (string, error) {
 	tmpl := `
 		t.Run("static-schema", func(t *testing.T) {
 
-			{{ .StaticSchema }}
+			staticWant := tc.StaticSchema()
 
 			staticGot := generator.NewStaticSchema(schema)
 
@@ -178,7 +178,7 @@ func GenerateStaticSchemaTest(tc *testcases.TestCase) (string, error) {
 }
 
 func GenerateRawSchemaTest(tc *testcases.TestCase) (string, error) {
-	if tc.RawSchema() == "" {
+	if tc.RawSchema() == nil {
 		return `
 		t.Run("raw-schema", func(t *testing.T) {
 			t.Fatalf("no raw-schema test case defined for testcases/` + tc.Name() + `.md")
@@ -190,8 +190,10 @@ func GenerateRawSchemaTest(tc *testcases.TestCase) (string, error) {
 		t.Run("raw-schema", func(t *testing.T) {
 
 			want := &generator.SchemaModel{
-				SourceSchema: {{ .RawSchema }},
+				SourceSchema: tc.RawSchema(),
 			}
+
+			schema.RemoveYamlLineNumbers()
 
 			diff.RequireKnownValueEqual(t, want.SourceSchema, schema.SourceSchema)
 		})

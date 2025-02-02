@@ -154,7 +154,10 @@ func NewStaticSchema(impl Schema) *StaticSchema {
 
 	stat.Package_ = impl.Package()
 
-	stat.Structs_ = impl.Structs()
+	stat.Structs_ = make([]Struct, len(impl.Structs()))
+	for i, item := range impl.Structs() {
+		stat.Structs_[i] = NewStaticStruct(item)
+	}
 
 	stat.Enums_ = impl.Enums()
 
@@ -170,7 +173,10 @@ func NewStaticStruct(impl Struct) *StaticStruct {
 
 	stat.Description_ = impl.Description()
 
-	stat.Fields_ = impl.Fields()
+	stat.Fields_ = make([]Field, len(impl.Fields()))
+	for i, item := range impl.Fields() {
+		stat.Fields_[i] = NewStaticField(item)
+	}
 
 	stat.HasAllOf_ = impl.HasAllOf()
 
@@ -207,9 +213,6 @@ func NewStaticField(impl Field) *StaticField {
 	stat.DefaultValueComment_ = impl.DefaultValueComment()
 
 	stat.ValidationRules_ = impl.ValidationRules()
-	for i := range stat.ValidationRules_ {
-		stat.ValidationRules_[i].Parent = stat
-	}
 
 	return stat
 }

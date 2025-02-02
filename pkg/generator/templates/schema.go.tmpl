@@ -88,22 +88,23 @@ func (x *{{ .Name }}) UnmarshalJSON(data []byte) error {
 // Validate ensures all required fields are present and valid
 func (x *{{ .Name }}) Validate() error {
 	{{- range .Fields }}
-	{{- range .ValidationRules }}
+	{{- $field := . }}
+	{{- range $field.ValidationRules }}
 	{{- if eq .Type "required" }}
-	if x.{{ .Field.Name }} == "" {
+	if x.{{ $field.Name }} == "" {
 		return errors.New("{{ .Message }}")
 	}
 	{{- else if eq .Type "enum" }}
-	if x.{{ .Field.Name }} != nil {
-		switch *x.{{ .Field.Name }} {
-		case {{ .Values }}:
+	if x.{{ $field.Name }} != nil {
+		switch *x.{{ $field.Name }} {
+		case {{ $field.Values }}:
 		default:
 			return errors.New("{{ .Message }}")
 		}
 	}
 	{{- else if eq .Type "nested" }}
-	if x.{{ .Field.Name }} != nil {
-		if err := x.{{ .Field.Name }}.Validate(); err != nil {
+	if x.{{ $field.Name }} != nil {
+		if err := x.{{ $field.Name }}.Validate(); err != nil {
 			return errors.Errorf("{{ .Message }}: %w", err)
 		}
 	}
