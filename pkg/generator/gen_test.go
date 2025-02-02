@@ -6,10 +6,11 @@ import (
 	"github.com/walteh/schema2go/pkg/diff"
 	"github.com/walteh/schema2go/pkg/generator"
 	"github.com/walteh/schema2go/pkg/generator/testcases"
+	"gopkg.in/yaml.v3"
 	"testing"
 )
 
-const testCasesHash = "71c3efbc7d5d6ebcf4d120ee9150f8a7feb98bea88887371bcd3125a8d32c69d"
+const testCasesHash = "6fa60fb8fa188ada872d2141f39f84cce11f12546e62be56feda50f028370c79"
 
 func TestAllOfSchemaToStruct(t *testing.T) {
 
@@ -52,16 +53,14 @@ func TestAllOfSchemaToStruct(t *testing.T) {
 
 	t.Run("static-schema", func(t *testing.T) {
 
+		f1 := &generator.StaticField{Name_: "Name_AllOf", JSONName_: "name", Type_: "string"}
+		f2 := &generator.StaticField{Name_: "Age_AllOf", JSONName_: "age", Type_: "int"}
+		s1 := &generator.StaticStruct{Name_: "AllOfExample", Fields_: []generator.Field{f1, f2}}
+
 		staticWant := &generator.StaticSchema{
 			Package_: "models",
 			Structs_: []generator.Struct{
-				&generator.StaticStruct{
-					Name_: "AllOfExample",
-					Fields_: []generator.Field{
-						&generator.StaticField{Name_: "Name_AllOf", JSONName_: "name", Type_: "string"},
-						&generator.StaticField{Name_: "Age_AllOf", JSONName_: "age", Type_: "int"},
-					},
-				},
+				s1,
 			},
 		}
 
@@ -198,11 +197,132 @@ func TestBasicSchemaToStruct(t *testing.T) {
 	})
 
 	t.Run("raw-schema", func(t *testing.T) {
-		t.Fatalf("no raw-schema test case defined for testcases/TestBasicSchemaToStruct.md")
+
+		want := &generator.SchemaModel{
+			SourceSchema: &jsonschema.Schema{
+				Schema: ptr("http://json-schema.org/draft-07/schema#"),
+				Title:  ptr("BasicExample"),
+				Type:   typ("object"),
+				Properties: &[]*jsonschema.NamedSchema{
+					{
+						Name: "id",
+						Value: &jsonschema.Schema{
+							Type: typ("string"),
+						},
+					},
+					{
+						Name: "count",
+						Value: &jsonschema.Schema{
+							Type: typ("integer"),
+							Default: &yaml.Node{
+								Kind:  yaml.ScalarNode,
+								Value: "0",
+							},
+						},
+					},
+					{
+						Name: "enabled",
+						Value: &jsonschema.Schema{
+							Type: typ("boolean"),
+							Default: &yaml.Node{
+								Kind:  yaml.ScalarNode,
+								Value: "false",
+							},
+						},
+					},
+					{
+						Name: "ratio",
+						Value: &jsonschema.Schema{
+							Type: typ("number"),
+						},
+					},
+				},
+				Required: &[]string{"id"},
+			},
+		}
+
+		diff.RequireKnownValueEqual(t, want.SourceSchema, schema.SourceSchema)
 	})
 
 	t.Run("static-schema", func(t *testing.T) {
-		t.Fatalf("no static-schema test case defined for testcases/TestBasicSchemaToStruct.md")
+
+		f1 := &generator.StaticField{
+			Name_:                "ID",
+			JSONName_:            "id",
+			Description_:         "",
+			IsRequired_:          true,
+			Type_:                "string",
+			IsEnum_:              false,
+			EnumTypeName_:        "IDType",
+			EnumValues_:          nil,
+			DefaultValue_:        nil,
+			DefaultValueComment_: nil,
+			ValidationRules_: []generator.ValidationRule{
+				{
+					Type:    generator.ValidationRequired,
+					Message: "id is required",
+					// Parnet: will be injected by the test case
+					Values: "",
+				},
+			},
+		}
+		f2 := &generator.StaticField{
+			Name_:                "Count",
+			JSONName_:            "count",
+			Description_:         "",
+			IsRequired_:          false,
+			Type_:                "*int",
+			IsEnum_:              false,
+			EnumTypeName_:        "CountType",
+			EnumValues_:          nil,
+			DefaultValue_:        ptr("0"),
+			DefaultValueComment_: ptr("0"),
+			ValidationRules_:     nil,
+		}
+		f3 := &generator.StaticField{
+			Name_:                "Enabled",
+			JSONName_:            "enabled",
+			Description_:         "",
+			IsRequired_:          false,
+			Type_:                "*bool",
+			IsEnum_:              false,
+			EnumTypeName_:        "EnabledType",
+			EnumValues_:          nil,
+			DefaultValue_:        ptr("false"),
+			DefaultValueComment_: ptr("false"),
+			ValidationRules_:     nil,
+		}
+		f4 := &generator.StaticField{
+			Name_:                "Ratio",
+			JSONName_:            "ratio",
+			Description_:         "",
+			IsRequired_:          false,
+			Type_:                "*float64",
+			IsEnum_:              false,
+			EnumTypeName_:        "RatioType",
+			EnumValues_:          nil,
+			DefaultValue_:        nil,
+			DefaultValueComment_: nil,
+			ValidationRules_:     nil,
+		}
+
+		s1 := &generator.StaticStruct{Name_: "BasicExample", Fields_: []generator.Field{f1, f2, f3, f4}}
+
+		staticWant := &generator.StaticSchema{
+			Package_: "models",
+			Structs_: []generator.Struct{
+				s1,
+			},
+			Enums_: nil,
+			Imports_: []string{
+				"encoding/json",
+				"gitlab.com/tozd/go/errors",
+			},
+		}
+
+		staticGot := generator.NewStaticSchema(schema)
+
+		diff.RequireKnownValueEqual(t, staticWant, staticGot)
 	})
 
 	t.Run("go-code", func(t *testing.T) {

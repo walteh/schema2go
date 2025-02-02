@@ -7,7 +7,7 @@ var _ Schema = &StaticSchema{}
 type StaticSchema struct {
 	Package_ string
 	Structs_ []Struct
-	Enums_   []*EnumModel
+	Enums_   []EnumModel
 	Imports_ []string
 }
 
@@ -22,7 +22,7 @@ func (b *StaticSchema) Structs() []Struct {
 }
 
 // Enums implements Schema.
-func (b *StaticSchema) Enums() []*EnumModel {
+func (b *StaticSchema) Enums() []EnumModel {
 	return b.Enums_
 }
 
@@ -88,10 +88,10 @@ type StaticField struct {
 	Type_                string
 	IsEnum_              bool
 	EnumTypeName_        string
-	EnumValues_          []*EnumValue
+	EnumValues_          []EnumValue
 	DefaultValue_        *string
 	DefaultValueComment_ *string
-	ValidationRules_     []*ValidationRule
+	ValidationRules_     []ValidationRule
 }
 
 // Name implements Field.
@@ -130,7 +130,7 @@ func (b *StaticField) EnumTypeName() string {
 }
 
 // EnumValues implements Field.
-func (b *StaticField) EnumValues() []*EnumValue {
+func (b *StaticField) EnumValues() []EnumValue {
 	return b.EnumValues_
 }
 
@@ -145,7 +145,7 @@ func (b *StaticField) DefaultValueComment() *string {
 }
 
 // ValidationRules implements Field.
-func (b *StaticField) ValidationRules() []*ValidationRule {
+func (b *StaticField) ValidationRules() []ValidationRule {
 	return b.ValidationRules_
 }
 
@@ -154,17 +154,10 @@ func NewStaticSchema(impl Schema) *StaticSchema {
 
 	stat.Package_ = impl.Package()
 
-	// Handle slice of objects
-	var staticStructs_ []Struct
-	for _, item := range impl.Structs() {
-		staticStructs_ = append(staticStructs_, NewStaticStruct(item))
-	}
-	stat.Structs_ = staticStructs_
+	stat.Structs_ = impl.Structs()
 
-	// Handle slice of objects
 	stat.Enums_ = impl.Enums()
 
-	// Handle slice of objects
 	stat.Imports_ = impl.Imports()
 
 	return stat
@@ -177,12 +170,7 @@ func NewStaticStruct(impl Struct) *StaticStruct {
 
 	stat.Description_ = impl.Description()
 
-	// Handle slice of objects
-	var staticFields_ []Field
-	for _, item := range impl.Fields() {
-		staticFields_ = append(staticFields_, NewStaticField(item))
-	}
-	stat.Fields_ = staticFields_
+	stat.Fields_ = impl.Fields()
 
 	stat.HasAllOf_ = impl.HasAllOf()
 
@@ -212,15 +200,16 @@ func NewStaticField(impl Field) *StaticField {
 
 	stat.EnumTypeName_ = impl.EnumTypeName()
 
-	// Handle slice of objects
 	stat.EnumValues_ = impl.EnumValues()
 
 	stat.DefaultValue_ = impl.DefaultValue()
 
 	stat.DefaultValueComment_ = impl.DefaultValueComment()
 
-	// Handle slice of objects
 	stat.ValidationRules_ = impl.ValidationRules()
+	for i := range stat.ValidationRules_ {
+		stat.ValidationRules_[i].Parent = stat
+	}
 
 	return stat
 }

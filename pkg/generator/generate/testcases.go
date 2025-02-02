@@ -84,6 +84,7 @@ func generateTestCases() {
 	// buf.WriteString("\"github.com/walteh/schema2go/gen/mockery\"\n")
 	buf.WriteString("\"github.com/google/gnostic/jsonschema\"\n")
 	buf.WriteString("\"github.com/walteh/schema2go/pkg/diff\"\n")
+	buf.WriteString("\"gopkg.in/yaml.v3\"\n")
 	buf.WriteString(")\n\n")
 
 	buf.WriteString("const testCasesHash = \"" + testcases.GetHash() + "\"\n\n")
@@ -156,7 +157,7 @@ func GenerateStaticSchemaTest(tc *testcases.TestCase) (string, error) {
 	tmpl := `
 		t.Run("static-schema", func(t *testing.T) {
 
-			staticWant := {{ .StaticSchema }}
+			{{ .StaticSchema }}
 
 			staticGot := generator.NewStaticSchema(schema)
 

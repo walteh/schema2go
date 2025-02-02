@@ -98,6 +98,39 @@ func generateStaticTypes() {
 			}
 			return s[i:j]
 		},
+		"hasParentField": func(returnType, parentType string) bool {
+			fmt.Printf("returnType: %s\n", returnType)
+			fmt.Printf("parentType: %s\n", parentType)
+			// Check if the type has a Parent field by looking for it in the AST
+			for _, decl := range node.Decls {
+				if genDecl, ok := decl.(*ast.GenDecl); ok {
+					for _, spec := range genDecl.Specs {
+						if typeSpec, ok := spec.(*ast.TypeSpec); ok {
+							fmt.Printf("typeSpec.Name.Name: %s\n", typeSpec.Name.Name)
+							if structType, ok := typeSpec.Type.(*ast.StructType); ok {
+								// If this is the type we're looking for
+								if "[]"+typeSpec.Name.Name == returnType || "[]*"+typeSpec.Name.Name == returnType {
+									// Look for a Parent field
+									fmt.Printf("structType.Fields.List: %v\n", structType.Fields.List)
+									for _, field := range structType.Fields.List {
+										fmt.Printf("field.Names: %v\n", field.Names)
+										if len(field.Names) > 0 && field.Names[0].Name == "Parent" {
+											// Check if the field type matches our parent type
+											if ident, ok := field.Type.(*ast.Ident); ok {
+												fmt.Printf("ident.Name == parentType: %v\n", ident.Name == parentType)
+												fmt.Printf("ident.Name: %s\n", ident.Name)
+												return ident.Name == parentType
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			return false
+		},
 	}
 
 	// Generate code using template

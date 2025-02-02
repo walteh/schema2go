@@ -98,3 +98,130 @@ func (x BasicExample) MarshalJSON() ([]byte, error) {
 	return json.Marshal((*Alias)(&x))
 }
 ```
+
+---
+
+# raw-schema
+
+```go
+&jsonschema.Schema{
+	Schema: ptr("http://json-schema.org/draft-07/schema#"),
+	Title:  ptr("BasicExample"),
+	Type:   typ("object"),
+	Properties: &[]*jsonschema.NamedSchema{
+		{
+			Name: "id",
+			Value: &jsonschema.Schema{
+				Type: typ("string"),
+			},
+		},
+		{
+			Name: "count",
+			Value: &jsonschema.Schema{
+				Type: typ("integer"),
+				Default: &yaml.Node{
+					Kind: yaml.ScalarNode,
+					Value: "0",
+				},
+			},
+		},
+		{
+			Name: "enabled",
+			Value: &jsonschema.Schema{
+				Type: typ("boolean"),
+				Default: &yaml.Node{
+					Kind: yaml.ScalarNode,
+					Value: "false",
+				},
+			},
+		},
+		{
+			Name: "ratio",
+			Value: &jsonschema.Schema{
+				Type: typ("number"),
+			},
+		},
+	},
+	Required: &[]string{"id"},
+}
+```
+
+---
+
+# static-schema
+
+```go
+f1 := &generator.StaticField{
+					Name_: "ID",
+					JSONName_: "id",
+					Description_: "",
+					IsRequired_: true,
+					Type_: "string",
+					IsEnum_: false,
+					EnumTypeName_: "IDType",
+					EnumValues_: nil,
+					DefaultValue_: nil,
+					DefaultValueComment_: nil,
+					ValidationRules_: []generator.ValidationRule{
+						{
+							Type: generator.ValidationRequired,
+							Message: "id is required",
+							// Parnet: will be injected by the test case
+							Values: "",
+						},
+					},
+				}
+f2 := &generator.StaticField{
+	Name_: "Count",
+	JSONName_: "count",
+	Description_: "",
+	IsRequired_: false,
+	Type_: "*int",
+	IsEnum_: false,
+	EnumTypeName_: "CountType",
+	EnumValues_: nil,
+	DefaultValue_: ptr("0"),
+	DefaultValueComment_: ptr("0"),
+	ValidationRules_: nil,
+}
+f3 := &generator.StaticField{
+					Name_: "Enabled",
+					JSONName_: "enabled",
+					Description_: "",
+					IsRequired_: false,
+					Type_: "*bool",
+					IsEnum_: false,
+					EnumTypeName_: "EnabledType",
+					EnumValues_: nil,
+					DefaultValue_: ptr("false"),
+					DefaultValueComment_: ptr("false"),
+					ValidationRules_: nil,
+				}
+f4 := &generator.StaticField{
+					Name_: "Ratio",
+					JSONName_: "ratio",
+					Description_: "",
+					IsRequired_: false,
+					Type_: "*float64",
+					IsEnum_: false,
+					EnumTypeName_: "RatioType",
+					EnumValues_: nil,
+					DefaultValue_: nil,
+					DefaultValueComment_: nil,
+					ValidationRules_: nil,
+				}
+
+s1 := &generator.StaticStruct{Name_: "BasicExample", Fields_: []generator.Field{f1, f2, f3, f4}}
+
+staticWant := &generator.StaticSchema{
+	Package_: "models",
+	Structs_: []generator.Struct{
+		s1,
+	},
+	Enums_: nil,
+	Imports_: []string{
+		"encoding/json",
+		"gitlab.com/tozd/go/errors",
+	},
+}
+```

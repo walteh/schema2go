@@ -113,16 +113,14 @@ func (x AllOfExample) MarshalJSON() ([]byte, error) {
 # static-schema
 
 ```go
-&generator.StaticSchema{
+f1 := &generator.StaticField{Name_: "Name_AllOf", JSONName_: "name", Type_: "string"}
+f2 := &generator.StaticField{Name_: "Age_AllOf", JSONName_: "age", Type_: "int"}
+s1 := &generator.StaticStruct{Name_: "AllOfExample", Fields_: []generator.Field{f1, f2}}
+
+staticWant := &generator.StaticSchema{
 	Package_: "models",
 	Structs_: []generator.Struct{
-		&generator.StaticStruct{
-			Name_: "AllOfExample",
-			Fields_: []generator.Field{
-				&generator.StaticField{Name_: "Name_AllOf", JSONName_: "name", Type_: "string"},
-				&generator.StaticField{Name_: "Age_AllOf", JSONName_: "age", Type_: "int"},
-			},
-		},
+		s1,
 	},
 }
 ```

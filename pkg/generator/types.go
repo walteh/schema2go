@@ -15,7 +15,7 @@ import (
 type Schema interface {
 	Package() string
 	Structs() []Struct
-	Enums() []*EnumModel
+	Enums() []EnumModel
 	Imports() []string
 }
 
@@ -48,10 +48,10 @@ type Field interface {
 	Type() string
 	IsEnum() bool
 	EnumTypeName() string
-	EnumValues() []*EnumValue
+	EnumValues() []EnumValue
 	DefaultValue() *string
 	DefaultValueComment() *string
-	ValidationRules() []*ValidationRule
+	ValidationRules() []ValidationRule
 }
 
 var _ Field = &FieldModel{}
@@ -77,7 +77,7 @@ const (
 type ValidationRule struct {
 	Type    ValidationRuleType
 	Message string
-	Field   *FieldModel
+	Parent  Field
 	Values  string
 }
 
@@ -94,11 +94,11 @@ type EnumModel struct {
 	Name        string
 	BaseType    string
 	Description string
-	Values      []*EnumValue
+	Values      []EnumValue
 }
 
 func (e *EnumModel) AddValue(name, value, description string) {
-	e.Values = append(e.Values, &EnumValue{
+	e.Values = append(e.Values, EnumValue{
 		Name:        name,
 		Value:       value,
 		Description: description,
@@ -156,7 +156,7 @@ func (f *FieldModel) Type() string {
 
 	// Get base type
 	baseType := parser.GetTypeOrEmpty(f.SourceSchema)
-	goType := ""
+	var goType string
 
 	// Map JSON Schema types to Go types
 	switch baseType {
@@ -210,19 +210,19 @@ func (f *FieldModel) EnumTypeName() string {
 	return enumName + "Type"
 }
 
-func (f *FieldModel) EnumValues() []*EnumValue {
+func (f *FieldModel) EnumValues() []EnumValue {
 	if !f.IsEnum() {
 		return nil
 	}
 
 	enum := parser.GetEnum(f.SourceSchema)
-	values := make([]*EnumValue, 0, len(enum))
+	values := make([]EnumValue, 0, len(enum))
 
 	for _, val := range enum {
 		if val.String == nil {
 			continue
 		}
-		values = append(values, &EnumValue{
+		values = append(values, EnumValue{
 			Name:        fmt.Sprintf("%s%s", f.EnumTypeName(), toTitleCase(*val.String)),
 			Value:       fmt.Sprintf("%q", *val.String),
 			Description: fmt.Sprintf("Enum value %q", *val.String),
@@ -257,15 +257,15 @@ func (f *FieldModel) DefaultValueComment() *string {
 	return &v
 }
 
-func (f *FieldModel) ValidationRules() []*ValidationRule {
-	var rules []*ValidationRule
+func (f *FieldModel) ValidationRules() []ValidationRule {
+	var rules []ValidationRule
 
 	// Required validation
 	if f.IsRequired() && parser.GetTypeOrEmpty(f.SourceSchema) != "object" {
-		rules = append(rules, &ValidationRule{
+		rules = append(rules, ValidationRule{
 			Type:    ValidationRequired,
 			Message: fmt.Sprintf("%s is required", f.JSONName()),
-			Field:   f,
+			Parent:  f,
 		})
 	}
 
@@ -275,20 +275,20 @@ func (f *FieldModel) ValidationRules() []*ValidationRule {
 		for _, v := range f.EnumValues() {
 			values = append(values, v.Name)
 		}
-		rules = append(rules, &ValidationRule{
+		rules = append(rules, ValidationRule{
 			Type:    ValidationEnum,
 			Message: fmt.Sprintf("invalid %s", f.JSONName()),
-			Field:   f,
+			Parent:  f,
 			Values:  strings.Join(values, ", "),
 		})
 	}
 
 	// Nested validation
 	if parser.GetTypeOrEmpty(f.SourceSchema) == "object" || f.SourceSchema.Ref != nil {
-		rules = append(rules, &ValidationRule{
+		rules = append(rules, ValidationRule{
 			Type:    ValidationNested,
 			Message: fmt.Sprintf("validating %s", f.JSONName()),
-			Field:   f,
+			Parent:  f,
 		})
 	}
 
@@ -559,8 +559,8 @@ func (s *SchemaModel) Structs() []Struct {
 	return structs
 }
 
-func (s *SchemaModel) Enums() []*EnumModel {
-	var enums []*EnumModel
+func (s *SchemaModel) Enums() []EnumModel {
+	var enums []EnumModel
 	seen := make(map[string]bool)
 
 	// Helper function to collect enums from a schema
@@ -610,7 +610,7 @@ func (s *SchemaModel) Enums() []*EnumModel {
 				}
 
 				// Create enum model
-				enumModel := &EnumModel{
+				enumModel := EnumModel{
 					Name:        enumName,
 					BaseType:    baseType,
 					Description: parser.GetDescription(prop),
@@ -650,10 +650,10 @@ func (s *SchemaModel) Enums() []*EnumModel {
 						}
 					}
 					pp.Printf("✨ Created enum value - Name: %s, Value: %s\n", valueName, value)
-					enumModel.Values = append(enumModel.Values, &EnumValue{
+					enumModel.Values = append(enumModel.Values, EnumValue{
 						Name:   valueName,
 						Value:  value,
-						Parent: enumModel,
+						Parent: &enumModel,
 					})
 				}
 
@@ -696,7 +696,7 @@ func (s *SchemaModel) Enums() []*EnumModel {
 	collectEnums(s.SourceSchema, "")
 
 	// Sort enums by name for consistent output
-	slices.SortFunc(enums, func(a, b *EnumModel) int {
+	slices.SortFunc(enums, func(a, b EnumModel) int {
 		return strings.Compare(a.Name, b.Name)
 	})
 
