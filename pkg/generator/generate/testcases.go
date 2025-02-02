@@ -30,12 +30,12 @@ func generateTestCases() {
 		buf.WriteString("	schema, err := generator.NewSchemaModel(tc.JSONSchema())\n")
 		buf.WriteString("	require.NoError(t, err, \"failed to parse schema\")\n")
 
-		rawSchemaModelFunc, err := GenerateRawSchemaTest(&tc)
+		rawSchemaModelFunc, err := GenerateRawSchemaTest(tc)
 		if err != nil {
 			panic(err)
 		}
 
-		jsonSchemaFunc, err := GenerateJSONSchemaTest(tc.Name(), &tc)
+		jsonSchemaFunc, err := GenerateJSONSchemaTest(tc.Name(), tc)
 		if err != nil {
 			panic(err)
 		}
@@ -50,7 +50,7 @@ func generateTestCases() {
 			buf.WriteString("\n")
 		}
 
-		staticSchemaFunc, err := GenerateStaticSchemaTest(&tc)
+		staticSchemaFunc, err := GenerateStaticSchemaTest(tc)
 		if err != nil {
 			panic(err)
 		}
@@ -59,7 +59,7 @@ func generateTestCases() {
 			buf.WriteString("\n")
 		}
 
-		goCodeFunc, err := GenerateGoCodeTest("checkGoCode", &tc)
+		goCodeFunc, err := GenerateGoCodeTest("checkGoCode", tc)
 		if err != nil {
 			panic(err)
 		}
@@ -107,7 +107,7 @@ func generateTestCases() {
 	}
 }
 
-func GenerateJSONSchemaTest(funcName string, tc *testcases.TestCase) (string, error) {
+func GenerateJSONSchemaTest(funcName string, tc testcases.TestCase) (string, error) {
 
 	tmpl := `
 		t.Run("json-schema", func(t *testing.T) {
@@ -117,7 +117,7 @@ func GenerateJSONSchemaTest(funcName string, tc *testcases.TestCase) (string, er
 	return tmpl, nil
 }
 
-func GenerateGoCodeTest(funcName string, tc *testcases.TestCase) (string, error) {
+func GenerateGoCodeTest(funcName string, tc testcases.TestCase) (string, error) {
 	if tc.GoCode() == "" {
 		return `
 		t.Run("go-code", func(t *testing.T) {
@@ -144,7 +144,7 @@ func GenerateGoCodeTest(funcName string, tc *testcases.TestCase) (string, error)
 	return buf.String(), nil
 }
 
-func GenerateStaticSchemaTest(tc *testcases.TestCase) (string, error) {
+func GenerateStaticSchemaTest(tc testcases.TestCase) (string, error) {
 
 	if tc.StaticSchema() == nil {
 		return `
@@ -177,7 +177,7 @@ func GenerateStaticSchemaTest(tc *testcases.TestCase) (string, error) {
 
 }
 
-func GenerateRawSchemaTest(tc *testcases.TestCase) (string, error) {
+func GenerateRawSchemaTest(tc testcases.TestCase) (string, error) {
 	if tc.RawSchema() == nil {
 		return `
 		t.Run("raw-schema", func(t *testing.T) {

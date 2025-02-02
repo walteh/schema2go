@@ -1,6 +1,7 @@
 package testcases
 
 import (
+	"path/filepath"
 	"runtime"
 	"strings"
 
@@ -10,7 +11,7 @@ import (
 
 func myfilename() string {
 	_, file, _, _ := runtime.Caller(1)
-	return file
+	return strings.TrimSuffix(filepath.Base(file), ".go")
 }
 
 func ptr[T any](v T) *T {
@@ -24,8 +25,7 @@ func typ(v string) *jsonschema.StringOrStringArray {
 var registeredTestCases = map[string]TestCase{}
 
 func registerTestCase(tc TestCase) {
-	tc.goCode = strings.ReplaceAll(tc.goCode, "$$$", "`")
-	registeredTestCases[tc.name] = tc
+	registeredTestCases[tc.Name()] = tc
 }
 
 func LoadTestCases() ([]TestCase, error) {
@@ -38,30 +38,10 @@ func LoadTestCases() ([]TestCase, error) {
 }
 
 // TestCase represents a single schema to struct conversion test
-type TestCase struct {
-	name         string
-	jsonSchema   string
-	goCode       string
-	staticSchema *generator.StaticSchema
-	rawSchema    *jsonschema.Schema
-}
-
-func (tc *TestCase) JSONSchema() string {
-	return tc.jsonSchema
-}
-
-func (tc *TestCase) GoCode() string {
-	return tc.goCode
-}
-
-func (tc *TestCase) StaticSchema() *generator.StaticSchema {
-	return tc.staticSchema
-}
-
-func (tc *TestCase) RawSchema() *jsonschema.Schema {
-	return tc.rawSchema
-}
-
-func (tc *TestCase) Name() string {
-	return tc.name
+type TestCase interface {
+	JSONSchema() string
+	GoCode() string
+	StaticSchema() *generator.StaticSchema
+	RawSchema() *jsonschema.Schema
+	Name() string
 }

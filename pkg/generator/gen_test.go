@@ -1,6 +1,7 @@
 package generator_test
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -48,7 +49,8 @@ func TestAll(t *testing.T) {
 			})
 
 			t.Run("go-code", func(t *testing.T) {
-				checkGoCode(t, schema, tc.GoCode())
+				replaced := strings.ReplaceAll(tc.GoCode(), "$$$", "`")
+				checkGoCode(t, schema, replaced)
 			})
 		})
 	}
