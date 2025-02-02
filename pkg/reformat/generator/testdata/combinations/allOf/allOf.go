@@ -9,22 +9,19 @@ type Root struct {
 }
 
 // Role represents the user role enum
-type Role string
+type UserRole string
 
 const (
-	RoleAdmin Role = "admin"
-	RoleUser  Role = "user"
-	RoleGuest Role = "guest"
+	UserRoleAdmin UserRole = "admin"
+	UserRoleUser  UserRole = "user"
+	UserRoleGuest UserRole = "guest"
 )
 
-// User represents a user with both basic info and authentication details
-// This type is generated from an allOf combination of basic info and auth details
+
 type User struct {
 	// Basic Info
 	ID   int64   `json:"id"`           // Required
 	Name *string `json:"name,omitempty"`
-
-	// Auth Details
 	Email string  `json:"email"`          // Required
-	Role  *Role   `json:"role,omitempty"` // Optional role
+	Role  *UserRole   `json:"role,omitempty"` // Optional role
 } 

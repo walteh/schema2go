@@ -10,8 +10,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/walteh/schema2go/pkg/reformat/codegen"
 	"github.com/atombender/go-jsonschema/pkg/schemas"
+	"github.com/walteh/schema2go/pkg/reformat/codegen"
 )
 
 var errTooManyTypesForAdditionalProperties = errors.New("cannot support multiple types for additional properties")
@@ -199,8 +199,13 @@ func (g *schemaGenerator) generateReferencedType(ref string) (codegen.Type, erro
 }
 
 func (g *schemaGenerator) generateDeclaredType(
-	t *schemas.Type, scope nameScope,
+	t *schemas.Type,
+	scope nameScope,
 ) (codegen.Type, error) {
+	if t == nil {
+		return nil, fmt.Errorf("cannot generate type for nil schema")
+	}
+
 	if decl, ok := g.output.declsBySchema[t]; ok {
 		return &codegen.NamedType{Decl: decl}, nil
 	}
@@ -213,6 +218,7 @@ func (g *schemaGenerator) generateDeclaredType(
 		Name:    g.output.uniqueTypeName(scope.string()),
 		Comment: t.Description,
 	}
+
 	g.output.declsBySchema[t] = &decl
 	g.output.declsByName[decl.Name] = &decl
 
@@ -243,6 +249,14 @@ func (g *schemaGenerator) generateDeclaredType(
 			validators = append(validators, &requiredValidator{f, decl.Name})
 		}
 
+		// Fix field names (e.g., Id -> ID)
+		for i, f := range structType.Fields {
+			if f.Name == "Id" {
+				f.Name = "ID"
+				structType.Fields[i] = f
+			}
+		}
+
 		for _, f := range structType.Fields {
 			if f.DefaultValue != nil {
 				if f.Name == additionalProperties {
@@ -259,7 +273,9 @@ func (g *schemaGenerator) generateDeclaredType(
 				})
 			}
 
-			validators = g.structFieldValidators(validators, f, f.Type, false)
+			if f.SchemaType != nil {
+				validators = g.structFieldValidators(validators, f, f.Type, false)
+			}
 		}
 
 		g.addValidatorsToType(validators, decl)
@@ -302,6 +318,14 @@ func (g *schemaGenerator) structFieldValidators(
 	t codegen.Type,
 	isNillable bool,
 ) []validator {
+	if t == nil {
+		return validators
+	}
+
+	if f.SchemaType == nil {
+		return validators
+	}
+
 	switch v := t.(type) {
 	case codegen.NullType:
 		validators = append(validators, &nullTypeValidator{
@@ -310,7 +334,9 @@ func (g *schemaGenerator) structFieldValidators(
 		})
 
 	case *codegen.PointerType:
-		validators = g.structFieldValidators(validators, f, v.Type, v.IsNillable())
+		if v != nil {
+			validators = g.structFieldValidators(validators, f, v.Type, v.IsNillable())
+		}
 
 	case codegen.PrimitiveType:
 		if v.Type == schemas.TypeNameString {
@@ -354,28 +380,30 @@ func (g *schemaGenerator) structFieldValidators(
 		}
 
 	case *codegen.ArrayType:
-		arrayDepth := 0
-		for v, ok := t.(*codegen.ArrayType); ok; v, ok = t.(*codegen.ArrayType) {
-			arrayDepth++
-			if _, ok := v.Type.(codegen.NullType); ok {
-				validators = append(validators, &nullTypeValidator{
-					fieldName:  f.Name,
-					jsonName:   f.JSONName,
-					arrayDepth: arrayDepth,
-				})
+		if v != nil {
+			arrayDepth := 0
+			for v, ok := t.(*codegen.ArrayType); ok && v != nil; v, ok = t.(*codegen.ArrayType) {
+				arrayDepth++
+				if _, ok := v.Type.(codegen.NullType); ok {
+					validators = append(validators, &nullTypeValidator{
+						fieldName:  f.Name,
+						jsonName:   f.JSONName,
+						arrayDepth: arrayDepth,
+					})
 
-				break
-			} else if f.SchemaType.MinItems != 0 || f.SchemaType.MaxItems != 0 {
-				validators = append(validators, &arrayValidator{
-					fieldName:  f.Name,
-					jsonName:   f.JSONName,
-					arrayDepth: arrayDepth,
-					minItems:   f.SchemaType.MinItems,
-					maxItems:   f.SchemaType.MaxItems,
-				})
+					break
+				} else if f.SchemaType.MinItems != 0 || f.SchemaType.MaxItems != 0 {
+					validators = append(validators, &arrayValidator{
+						fieldName:  f.Name,
+						jsonName:   f.JSONName,
+						arrayDepth: arrayDepth,
+						minItems:   f.SchemaType.MinItems,
+						maxItems:   f.SchemaType.MaxItems,
+					})
+				}
+
+				t = v.Type
 			}
-
-			t = v.Type
 		}
 	}
 
@@ -386,12 +414,6 @@ func (g *schemaGenerator) generateType(
 	t *schemas.Type,
 	scope nameScope,
 ) (codegen.Type, error) {
-	typeIndex := 0
-
-	var typeShouldBePointer bool
-
-	two := 2
-
 	if ext := t.GoJSONSchemaExtension; ext != nil {
 		for _, pkg := range ext.Imports {
 			g.output.file.Package.AddImport(pkg, "")
@@ -410,24 +432,30 @@ func (g *schemaGenerator) generateType(
 		return g.generateReferencedType(t.Ref)
 	}
 
+	// Handle allOf, anyOf, oneOf before checking Type
+	if len(t.AllOf) > 0 || len(t.AnyOf) > 0 || len(t.OneOf) > 0 {
+		return g.generateCombinationType(t, scope)
+	}
+
 	if len(t.Type) == 0 {
 		return codegen.EmptyInterfaceType{}, nil
 	}
+
+	typeIndex := 0
+	var typeShouldBePointer bool
+	two := 2
 
 	if len(t.Type) == two {
 		for i, t := range t.Type {
 			if t == "null" {
 				typeShouldBePointer = true
-
 				continue
 			}
-
 			typeIndex = i
 		}
 	} else if len(t.Type) != 1 {
 		// TODO: Support validation for properties with multiple types.
 		g.warner("Property has multiple types; will be represented as interface{} with no validation")
-
 		return codegen.EmptyInterfaceType{}, nil
 	}
 
@@ -565,9 +593,19 @@ func (g *schemaGenerator) generateStructType(
 
 		var err error
 
-		structField.Type, err = g.generateTypeInline(prop, scope.add(structField.Name))
-		if err != nil {
-			return nil, fmt.Errorf("could not generate type for field %q: %w", name, err)
+		// Handle allOf fields by generating a named type
+		if len(prop.AllOf) > 0 {
+			// Create a new type for the allOf combination
+			allOfType, err := g.generateDeclaredType(prop, scope.add(fieldName))
+			if err != nil {
+				return nil, fmt.Errorf("could not generate allOf type for field %q: %w", name, err)
+			}
+			structField.Type = allOfType
+		} else {
+			structField.Type, err = g.generateTypeInline(prop, scope.add(structField.Name))
+			if err != nil {
+				return nil, fmt.Errorf("could not generate type for field %q: %w", name, err)
+			}
 		}
 
 		switch {

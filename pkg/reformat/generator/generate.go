@@ -12,9 +12,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/walteh/schema2go/pkg/reformat/internal/x/text"
-	"github.com/walteh/schema2go/pkg/reformat/codegen"
 	"github.com/atombender/go-jsonschema/pkg/schemas"
+	"github.com/walteh/schema2go/pkg/reformat/codegen"
+	"github.com/walteh/schema2go/pkg/reformat/internal/x/text"
 )
 
 const (

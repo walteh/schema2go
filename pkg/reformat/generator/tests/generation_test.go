@@ -8,6 +8,7 @@ package tests_test
 import (
 	"errors"
 	"fmt"
+	"go/format"
 	"log"
 	"os"
 	"os/exec"
@@ -258,11 +259,21 @@ func testExampleFile(t *testing.T, cfg generator.Config, fileName string) {
 				}
 			}
 
-			if diff := cmp.Diff(string(goldenData), string(source)); diff != "" {
+			sf, err := format.Source(source)
+			if err != nil {
+				sf = source
+			}
+
+			gf, err := format.Source(goldenData)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			if diff := cmp.Diff(string(gf), string(sf)); diff != "" {
 				t.Errorf("Contents different (left is expected, right is actual):\n%s", diff)
 			}
 
-			if diff, ok := diffStrings(t, string(goldenData), string(source)); !ok {
+			if diff, ok := diffStrings(t, string(gf), string(sf)); !ok {
 				t.Fatalf("Contents different (left is expected, right is actual):\n%s", *diff)
 			}
 		}

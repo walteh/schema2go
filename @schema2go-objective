@@ -1,0 +1,397 @@
+# last composer notes
+
+# Schema2Go Project Overview
+
+## Core Objective
+
+Building a Go code generator that converts JSON Schema to Go structs, with special focus on handling advanced JSON Schema features (allOf, oneOf, anyOf) that existing tools don't handle well.
+
+## Current Codebase Structure
+
+```ascii
+pkg/reformat/
+├── codegen/          # Code generation primitives
+│   ├── types.go      # Type definitions (StructType, ArrayType, etc)
+│   └── package.go    # Package level code generation
+├── generator/        # Main generation logic
+│   ├── schema_generator.go   # Core generation logic
+│   ├── name_scope.go        # Name generation/scoping system
+│   └── combination_types.go  # Handles allOf/oneOf/anyOf
+└── tests/           # Test cases and golden files
+```
+
+## Key Components Understanding
+
+### Name Scoping System (name_scope.go)
+
+-   Uses a slice of strings to build qualified type names
+-   Concatenates scope parts to create full type names
+-   Example: `["Root", "User", "Role"]` -> `"RootUserRole"`
+-   Currently being misused with hard-coded overrides
+
+### Type Generation (schema_generator.go)
+
+-   Main entry point: `generateDeclaredType`
+-   Handles basic types, enums, and references
+-   Current issue: Hard-coding type names instead of using scope system
+
+### Combination Types (combination_types.go)
+
+-   Handles allOf/oneOf/anyOf schemas
+-   Currently not fully implemented
+-   Need to implement proper type generation for these cases
+
+## Implementation Strategy for Combination Types
+
+### 1. AllOf Implementation
+
+```go
+// Input JSON Schema
+{
+    "title": "AllOfExample",
+    "allOf": [
+        {
+            "properties": {
+                "name": { "type": "string" }
+            }
+        },
+        {
+            "properties": {
+                "age": { "type": "integer" }
+            }
+        }
+    ]
+}
+
+// Should Generate
+type AllOfExample struct {
+    Name_AllOf *string `json:"name,omitempty"`
+    Age_AllOf  *int    `json:"age,omitempty"`
+}
+
+// With Marshaling Methods
+func (x *AllOfExample) UnmarshalJSON(data []byte) error {
+    type Alias AllOfExample
+    aux := &struct{ *Alias }{Alias: (*Alias)(x)}
+    if err := json.Unmarshal(data, &aux); err != nil {
+        return errors.Errorf("unmarshaling allOf fields: %w", err)
+    }
+    return x.Validate()
+}
+
+func (x AllOfExample) MarshalJSON() ([]byte, error) {
+    type Alias AllOfExample
+    return json.Marshal((*Alias)(&x))
+}
+```
+
+### 2. OneOf Implementation
+
+```go
+// Input JSON Schema
+{
+    "title": "OneOfExample",
+    "properties": {
+        "identifier": {
+            "oneOf": [
+                { "type": "string" },
+                { "type": "integer" }
+            ]
+        },
+        "status": {
+            "oneOf": [
+                { "type": "boolean" },
+                { "type": "string", "enum": ["pending", "failed"] }
+            ]
+        }
+    }
+}
+
+// Should Generate
+type OneOfExample struct {
+    Identifier OneOfExample_Identifier_OneOf `json:"identifier,omitempty"`
+    Status     OneOfExample_Status_OneOf     `json:"status,omitempty"`
+}
+
+type OneOfExample_Identifier_OneOf struct {
+    StringValue  *string `json:"string_value,omitempty"`
+    IntegerValue *int    `json:"integer_value,omitempty"`
+}
+
+type OneOfExample_Status_OneOf struct {
+    BooleanValue *bool                        `json:"boolean_value,omitempty"`
+    EnumValue    *OneOfExample_Status_OneOf_Enum `json:"enum_value,omitempty"`
+}
+
+type OneOfExample_Status_OneOf_Enum string
+
+const (
+    OneOfExample_Status_OneOf_Enum_Pending OneOfExample_Status_OneOf_Enum = "pending"
+    OneOfExample_Status_OneOf_Enum_Failed  OneOfExample_Status_OneOf_Enum = "failed"
+)
+```
+
+### 3. AnyOf Implementation
+
+```go
+// Input JSON Schema
+{
+    "title": "AnyOfExample",
+    "properties": {
+        "value": {
+            "anyOf": [
+                { "type": "string" },
+                { "type": "number" },
+                { "type": "boolean" }
+            ]
+        },
+        "nested": {
+            "properties": {
+                "field": {
+                    "anyOf": [
+                        { "$ref": "#/definitions/RefType" },
+                        { "type": "string" }
+                    ]
+                }
+            }
+        }
+    }
+}
+
+// Should Generate
+type AnyOfExample struct {
+    Value  AnyOfExample_Value   `json:"value,omitempty"`
+    Nested *AnyOfExample_Nested `json:"nested,omitempty"`
+}
+
+type AnyOfExample_Value struct {
+    StringValue_AnyOf  *string  `json:"string_value,omitempty"`
+    NumberValue_AnyOf  *float64 `json:"number_value,omitempty"`
+    BooleanValue_AnyOf *bool    `json:"boolean_value,omitempty"`
+}
+
+type AnyOfExample_Nested_Field struct {
+    RefValue_AnyOf    *RefType `json:"ref_value,omitempty"`
+    StringValue_AnyOf *string  `json:"string_value,omitempty"`
+}
+```
+
+## Naming Conventions
+
+1. Base Types:
+
+    - Use schema title or property name as base
+    - Example: `AllOfExample`, `OneOfExample`
+
+2. Combination Fields:
+
+    - Suffix with type of combination: `_AllOf`, `_OneOf`, `_AnyOf`
+    - Example: `Name_AllOf`, `Age_AllOf`
+
+3. Nested Types:
+
+    - Parent_FieldName_CombinationType
+    - Example: `OneOfExample_Identifier_OneOf`
+
+4. Enum Types:
+
+    - Parent_Field_OneOf_Enum
+    - Example: `OneOfExample_Status_OneOf_Enum`
+
+5. Value Types in Combinations:
+    - Suffix with type and combination: `StringValue_AnyOf`
+    - Example: `StringValue_OneOf`, `BooleanValue_AnyOf`
+
+## JSON Marshaling Requirements
+
+1. AllOf Types:
+
+    - Simple alias-based marshaling
+    - Validation on unmarshal
+
+2. OneOf Types:
+
+    - Must validate only one field is set
+    - Custom marshaling to handle type discrimination
+
+3. AnyOf Types:
+    - Allow multiple fields to be set
+    - Custom marshaling to handle multiple valid types
+
+## Error Handling
+
+1. Use `gitlab.com/tozd/go/errors` package
+2. Wrap errors with context:
+    ```go
+    return errors.Errorf("unmarshaling allOf fields: %w", err)
+    ```
+3. Validate after unmarshaling:
+    ```go
+    if err := x.Validate(); err != nil {
+        return errors.Errorf("validating after unmarshal: %w", err)
+    }
+    ```
+
+## Additional Features
+
+### 1. Pattern Properties
+
+```go
+// Input JSON Schema
+{
+    "title": "DynamicConfig",
+    "patternProperties": {
+        "^S_": { "type": "string" },
+        "^N_": { "type": "number" }
+    },
+    "additionalProperties": false
+}
+
+// Should Generate
+type DynamicConfig struct {
+    StringFields_Pattern map[string]string   `json:"-"`
+    NumberFields_Pattern map[string]float64  `json:"-"`
+}
+
+// With custom marshaling
+func (d *DynamicConfig) UnmarshalJSON(data []byte) error {
+    // Pattern-based unmarshaling
+    return nil
+}
+
+func (d DynamicConfig) MarshalJSON() ([]byte, error) {
+    // Pattern-based marshaling
+    return nil, nil
+}
+```
+
+### 2. Array Handling with OneOf
+
+```go
+// Input JSON Schema
+{
+    "properties": {
+        "mixedArray": {
+            "type": "array",
+            "items": {
+                "oneOf": [
+                    { "$ref": "#/definitions/ReferencedType" },
+                    {
+                        "type": "object",
+                        "properties": { "inline": { "type": "string" } }
+                    }
+                ]
+            }
+        }
+    }
+}
+
+// Should Generate
+type Config struct {
+    MixedArray []Config_MixedArray `json:"mixedArray,omitempty"`
+}
+
+type Config_MixedArray struct {
+    RefValue_OneOf    *ReferencedType `json:"ref_value,omitempty"`
+    InlineValue_OneOf *struct {
+        Inline string `json:"inline"`
+    } `json:"inline_value,omitempty"`
+}
+```
+
+## Extended Naming Conventions
+
+1. Base Types (unchanged)
+
+2. Combination Fields (unchanged)
+
+3. Nested Types:
+
+    - For inline objects: `Parent_FieldName`
+    - For combination types: `Parent_FieldName_CombinationType`
+    - For array items: `Parent_ArrayField_Item`
+    - Example: `Config_Inline`, `Config_Inline_Value_OneOf`
+
+4. Pattern Properties:
+
+    - Suffix field maps with `_Pattern`
+    - Example: `StringFields_Pattern`, `NumberFields_Pattern`
+
+5. Referenced Types:
+    - Keep original name from definitions
+    - Nested combinations use parent name
+    - Example: `ReferencedType`, `ReferencedType_Value_OneOf`
+
+## Validation Requirements
+
+1. AllOf Types:
+
+    - Validate all fields according to their schemas
+    - Run after unmarshaling
+
+2. OneOf Types:
+
+    - Validate exactly one field is set
+    - Type-specific validation for set field
+
+3. AnyOf Types:
+
+    - Validate at least one field is set
+    - Type-specific validation for each set field
+
+4. Pattern Properties:
+    - Validate key patterns
+    - Validate value types
+    - Example:
+        ```go
+        if !strings.HasPrefix(key, "S_") {
+            return errors.Errorf("invalid string field key %q: must start with S_", key)
+        }
+        ```
+
+## Implementation Priority
+
+1. ✅ Fix name generation system
+2. 🔄 Implement allOf property merging with proper naming
+3. ⏳ Implement oneOf with type discrimination
+4. ⏳ Implement anyOf with multiple value support
+5. ⏳ Add pattern properties support
+6. ⏳ Add array type combinations
+7. ⏳ Add comprehensive validation
+8. ⏳ Add proper error wrapping
+9. ⏳ Add comprehensive tests for each case
+
+## Testing Strategy
+
+1. Basic Types:
+
+    - Simple property types
+    - Required vs optional fields
+    - Field name conventions
+
+2. Combination Types:
+
+    - AllOf property merging
+    - OneOf type discrimination
+    - AnyOf multiple values
+    - Nested combinations
+
+3. Special Cases:
+
+    - Pattern properties
+    - Array combinations
+    - Referenced types
+    - Mixed combinations
+
+4. Validation:
+
+    - Required fields
+    - Pattern validation
+    - Type validation
+    - Combination rules
+
+5. Error Cases:
+    - Invalid combinations
+    - Pattern violations
+    - Type mismatches
+    - Missing required fields
