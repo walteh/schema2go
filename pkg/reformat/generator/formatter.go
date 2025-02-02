@@ -6,7 +6,7 @@
 package generator
 
 import (
-	"github.com/atombender/go-jsonschema/pkg/codegen"
+	"github.com/walteh/schema2go/pkg/reformat/codegen"
 )
 
 type formatter interface {

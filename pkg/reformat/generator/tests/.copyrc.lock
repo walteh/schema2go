@@ -12,7 +12,7 @@
 			"file": "generation_test.go",
 			"source": "github.com/omissis/go-jsonschema@442a4c100c62a7d8543d1a7ab7052397057add86",
 			"permalink": "https://raw.githubusercontent.com/omissis/go-jsonschema/442a4c100c62a7d8543d1a7ab7052397057add86/tests/generation_test.go",
-			"last_updated": "2025-02-02T20:30:11.674152Z",
+			"last_updated": "2025-02-02T21:13:25.184024Z",
 			"changes": [
 				"Line 43: Replaced './data' with '../testdata'",
 				"Line 49: Replaced './data' with '../testdata'",
@@ -35,6 +35,7 @@
 				"Line 324: Replaced './data' with '../testdata'",
 				"Line 20: Replaced 'github.com/atombender/go-jsonschema/pkg/generator' with 'github.com/walteh/schema2go/pkg/reformat/generator'"
 			],
+			"diff_delta": "=514\t-1\t=51\t-1\t=28\t-1\t=50\t-1\t=25\t-1\t=52\t-1\t=25\t-29\t=7107",
 			"remote_hash": "9etQM4lYMGJlmMJ5NaaI0O43PFHbGEmwcsq_2Ts7kT4="
 		}
 	},

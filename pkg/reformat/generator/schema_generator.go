@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/atombender/go-jsonschema/pkg/codegen"
+	"github.com/walteh/schema2go/pkg/reformat/codegen"
 	"github.com/atombender/go-jsonschema/pkg/schemas"
 )
 

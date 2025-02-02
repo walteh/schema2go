@@ -24,12 +24,13 @@ var (
 	exitErr *exec.ExitError
 
 	basicConfig = generator.Config{
-		SchemaMappings:     []generator.SchemaMapping{},
-		ExtraImports:       false,
-		DefaultPackageName: "github.com/example/test",
-		DefaultOutputName:  "-",
-		ResolveExtensions:  []string{".json", ".yaml"},
-		YAMLExtensions:     []string{".yaml", ".yml"},
+		SchemaMappings:      []generator.SchemaMapping{},
+		ExtraImports:        false,
+		DefaultPackageName:  "github.com/example/test",
+		DefaultOutputName:   "-",
+		ResolveExtensions:   []string{".json", ".yaml"},
+		YAMLExtensions:      []string{".yaml", ".yml"},
+		StructNameFromTitle: true,
 		Warner: func(message string) {
 			log.Printf("[from warner] %s", message)
 		},

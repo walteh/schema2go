@@ -1,0 +1,28 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"type": "object",
+	"properties": {
+		"identifier": {
+			"anyOf": [{ "type": "string" }, { "type": "integer" }],
+			"description": "An identifier that can be either a string or an integer"
+		},
+		"status": {
+			"anyOf": [
+				{
+					"type": "object",
+					"properties": {
+						"code": { "type": "integer" },
+						"message": { "type": "string" }
+					},
+					"required": ["code"]
+				},
+				{
+					"type": "string",
+					"enum": ["pending", "active", "inactive"]
+				}
+			],
+			"description": "Status can be either a complex object or a simple string enum"
+		}
+	},
+	"required": ["identifier"]
+}
