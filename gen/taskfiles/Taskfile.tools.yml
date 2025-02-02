@@ -69,6 +69,10 @@ tasks:
     desc: run mockery - built from github.com/vektra/mockery/v2
     cmds:
       - ./scripts/run-tool.sh mockery {{.CLI_ARGS}}
+  copyrc:
+    desc: run copyrc - built from github.com/walteh/copyrc/cmd/copyrc
+    cmds:
+      - ./scripts/run-tool.sh copyrc {{.CLI_ARGS}}
   retab:
     desc: run retab - built from github.com/walteh/retab/v2/cmd/retab
     cmds:
