@@ -994,6 +994,8 @@ github.com/vmihailenco/tagparser/v2 v2.0.0 h1:y09buUbR+b5aycVFQs/g70pqKVZNBmxwAh
 github.com/vmihailenco/tagparser/v2 v2.0.0/go.mod h1:Wri+At7QHww0WTrCBeu4J6bNtoV6mEfg5OIWRZA9qds=
 github.com/walteh/copyrc v0.0.11 h1:UrnGa61nPucri0K2vGgN3L+bdIq0h5N1lXSfI2ZjepI=
 github.com/walteh/copyrc v0.0.11/go.mod h1:ABbiE75e1QGeQJNBD7Ah9WCJh7hNRRoWUZoYNA4K0+k=
+github.com/walteh/copyrc v0.0.14 h1:A1OucB4/3AwpAKMrDcTQKQFjwJhtdyvwVIFQysFJK6M=
+github.com/walteh/copyrc v0.0.14/go.mod h1:ABbiE75e1QGeQJNBD7Ah9WCJh7hNRRoWUZoYNA4K0+k=
 github.com/weppos/publicsuffix-go v0.30.3-0.20240510084413-5f1d03393b3d h1:q80YKUcDWRNvvQcziH63e3ammTWARwrhohBCunHaYAg=
 github.com/weppos/publicsuffix-go v0.30.3-0.20240510084413-5f1d03393b3d/go.mod h1:vLdXKydr/OJssAXmjY0XBgLXUfivBMrNRIBljgtqCnw=
 github.com/whyrusleeping/cbor v0.0.0-20171005072247-63513f603b11 h1:5HZfQkwe0mIfyDmc1Em5GqlNRzcdtlv4HTNmdpt7XH0=

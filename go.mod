@@ -6,6 +6,7 @@ require (
 	github.com/atombender/go-jsonschema v0.17.0
 	github.com/fatih/color v1.18.0
 	github.com/google/gnostic v0.7.0
+	github.com/google/go-cmp v0.6.0
 	github.com/k0kubun/pp/v3 v3.4.1
 	github.com/pkg/errors v0.9.1
 	github.com/pmezard/go-difflib v1.0.0
