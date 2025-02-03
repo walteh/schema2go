@@ -79,6 +79,9 @@ func formatStartingWhitespace(s string, colord *color.Color) string {
 }
 
 func enrichCmpDiff(diff string) string {
+	if diff == "" {
+		return ""
+	}
 	prevNoColor := color.NoColor
 	defer func() {
 		color.NoColor = prevNoColor
@@ -133,17 +136,18 @@ func diffTyped[T any](printer *pp.PrettyPrinter, want T, got T) string {
 		return diffTyped[any](printer, want, got)
 	case string:
 		unified := diffd(any(want).(string), any(got).(string))
+
 		return enrichUnifiedDiff(unified)
 	default:
 		cmpd := cmp.Diff(want, got)
-		if cmpd == "" {
-			return ""
-		}
 		return enrichCmpDiff(cmpd)
 	}
 }
 
 func enrichUnifiedDiff(diff string) string {
+	if diff == "" {
+		return ""
+	}
 	prevNoColor := color.NoColor
 	defer func() {
 		color.NoColor = prevNoColor
