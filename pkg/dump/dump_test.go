@@ -612,8 +612,7 @@ func TestBuildEnvironmentVariable(t *testing.T) {
 		PartOfB string
 	}
 	type PieceOfConfig struct {
-		B
-		C string
+		C string `json:"ZC"`
 	}
 	type Config struct {
 		A    string
@@ -624,11 +623,9 @@ func TestBuildEnvironmentVariable(t *testing.T) {
 		A: "A",
 		MapB: map[string]PieceOfConfig{
 			"1": {
-				B: B{PartOfB: "B"},
 				C: "C",
 			},
 			"2": {
-				B: B{PartOfB: "2B"},
 				C: "2C",
 			},
 		},
@@ -642,9 +639,7 @@ func TestBuildEnvironmentVariable(t *testing.T) {
 	err := dumper.Fdump(cfg)
 	assert.NoError(t, err)
 	expected := `A: A
-MAPB_1_B_PARTOFB: B
 MAPB_1_C: C
-MAPB_2_B_PARTOFB: 2B
 MAPB_2_C: 2C
 `
 	assert.Equal(t, expected, out.String())
@@ -657,9 +652,7 @@ MAPB_2_C: 2C
 	err = dumper.Fdump(cfg)
 	assert.NoError(t, err)
 	expected = `CONFIG_A: A
-CONFIG_MAPB_1_PIECEOFCONFIG_B_PARTOFB: B
 CONFIG_MAPB_1_PIECEOFCONFIG_C: C
-CONFIG_MAPB_2_PIECEOFCONFIG_B_PARTOFB: 2B
 CONFIG_MAPB_2_PIECEOFCONFIG_C: 2C
 `
 	assert.Equal(t, expected, out.String())
@@ -916,7 +909,7 @@ func Test_DumpJSONAnnotationResultStruct(t *testing.T) {
 
 func TestDumpStructWithPrefixJson(t *testing.T) {
 	type PieceOfConfig struct {
-		C string `json:"ZC`
+		C string `json:"ZC"`
 	}
 
 	type T struct {
