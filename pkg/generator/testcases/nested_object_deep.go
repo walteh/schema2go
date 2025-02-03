@@ -7,8 +7,12 @@ import (
 
 type nested_object_deep struct{}
 
+func init() {
+	registerTestCase(&nested_object_deep{})
+}
+
 func (t *nested_object_deep) Name() string {
-	return "nested_object_deep"
+	return myfilename()
 }
 
 func (t *nested_object_deep) JSONSchema() string {

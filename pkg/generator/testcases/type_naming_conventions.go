@@ -7,8 +7,12 @@ import (
 
 type type_naming_conventions struct{}
 
+func init() {
+	registerTestCase(&type_naming_conventions{})
+}
+
 func (t *type_naming_conventions) Name() string {
-	return "type_naming_conventions"
+	return myfilename()
 }
 
 func (t *type_naming_conventions) JSONSchema() string {
@@ -87,16 +91,18 @@ func (t *type_naming_conventions) RawSchema() *jsonschema.Schema {
 				Name: "mixedArray",
 				Value: &jsonschema.Schema{
 					Type: typePtr("array"),
-					Value: &jsonschema.Schema{
-						OneOf: &[]*jsonschema.Schema{
-							{Ref: strPtr("#/definitions/ReferencedType")},
-							{
-								Type: typePtr("object"),
-								Properties: &[]*jsonschema.NamedSchema{
-									{
-										Name: "inline",
-										Value: &jsonschema.Schema{
-											Type: typePtr("string"),
+					Items: &jsonschema.SchemaOrSchemaArray{
+						Schema: &jsonschema.Schema{
+							OneOf: &[]*jsonschema.Schema{
+								{Ref: strPtr("#/definitions/ReferencedType")},
+								{
+									Type: typePtr("object"),
+									Properties: &[]*jsonschema.NamedSchema{
+										{
+											Name: "inline",
+											Value: &jsonschema.Schema{
+												Type: typePtr("string"),
+											},
 										},
 									},
 								},

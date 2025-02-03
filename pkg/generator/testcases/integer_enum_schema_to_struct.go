@@ -7,8 +7,12 @@ import (
 
 type integer_enum_schema_to_struct struct{}
 
+func init() {
+	registerTestCase(&integer_enum_schema_to_struct{})
+}
+
 func (t *integer_enum_schema_to_struct) Name() string {
-	return "integer_enum_schema_to_struct"
+	return myfilename()
 }
 
 func (t *integer_enum_schema_to_struct) JSONSchema() string {
@@ -69,25 +73,33 @@ func (t *integer_enum_schema_to_struct) StaticSchema() *generator.StaticSchema {
 			&generator.StaticStruct{
 				Name_:        "PortType",
 				Description_: "",
-				Fields_:      nil,
-				IsEnum_:      true,
-				EnumType_:    "int",
-				EnumValues_: []generator.EnumValue{
-					{
-						Name:  "PortType80",
-						Value: "80",
-					},
-					{
-						Name:  "PortType443",
-						Value: "443",
-					},
-					{
-						Name:  "PortType8080",
-						Value: "8080",
-					},
-					{
-						Name:  "PortType8443",
-						Value: "8443",
+				Fields_: []generator.Field{
+					&generator.StaticField{
+						Name_:         "Value",
+						JSONName_:     "value",
+						Description_:  "",
+						IsRequired_:   false,
+						Type_:         "int",
+						IsEnum_:       true,
+						EnumTypeName_: "PortType",
+						EnumValues_: []generator.EnumValue{
+							{
+								Name:  "PortType80",
+								Value: "80",
+							},
+							{
+								Name:  "PortType443",
+								Value: "443",
+							},
+							{
+								Name:  "PortType8080",
+								Value: "8080",
+							},
+							{
+								Name:  "PortType8443",
+								Value: "8443",
+							},
+						},
 					},
 				},
 				HasAllOf_:            false,
@@ -98,21 +110,29 @@ func (t *integer_enum_schema_to_struct) StaticSchema() *generator.StaticSchema {
 			&generator.StaticStruct{
 				Name_:        "StatusType",
 				Description_: "",
-				Fields_:      nil,
-				IsEnum_:      true,
-				EnumType_:    "int",
-				EnumValues_: []generator.EnumValue{
-					{
-						Name:  "StatusType200",
-						Value: "200",
-					},
-					{
-						Name:  "StatusType404",
-						Value: "404",
-					},
-					{
-						Name:  "StatusType500",
-						Value: "500",
+				Fields_: []generator.Field{
+					&generator.StaticField{
+						Name_:         "Value",
+						JSONName_:     "value",
+						Description_:  "",
+						IsRequired_:   false,
+						Type_:         "int",
+						IsEnum_:       true,
+						EnumTypeName_: "StatusType",
+						EnumValues_: []generator.EnumValue{
+							{
+								Name:  "StatusType200",
+								Value: "200",
+							},
+							{
+								Name:  "StatusType404",
+								Value: "404",
+							},
+							{
+								Name:  "StatusType500",
+								Value: "500",
+							},
+						},
 					},
 				},
 				HasAllOf_:            false,

@@ -7,8 +7,12 @@ import (
 
 type oneof_schema_to_struct struct{}
 
+func init() {
+	registerTestCase(&oneof_schema_to_struct{})
+}
+
 func (t *oneof_schema_to_struct) Name() string {
-	return "oneof_schema_to_struct"
+	return myfilename()
 }
 
 func (t *oneof_schema_to_struct) JSONSchema() string {
@@ -52,9 +56,9 @@ func (t *oneof_schema_to_struct) RawSchema() *jsonschema.Schema {
 						{Type: typePtr("boolean")},
 						{
 							Type: typePtr("string"),
-							EnumValues: &[]interface{}{
-								"pending",
-								"failed",
+							Enumeration: &[]jsonschema.SchemaEnumValue{
+								{String: strPtr("pending")},
+								{String: strPtr("failed")},
 							},
 						},
 					},
@@ -179,17 +183,25 @@ func (t *oneof_schema_to_struct) StaticSchema() *generator.StaticSchema {
 			&generator.StaticStruct{
 				Name_:        "OneOfExample_Status_OneOf_Enum",
 				Description_: "",
-				Fields_:      nil,
-				IsEnum:       true,
-				EnumType:     "string",
-				EnumValues: []generator.EnumValue{
-					{
-						Name:  "OneOfExample_Status_OneOf_Enum_Pending",
-						Value: "pending",
-					},
-					{
-						Name:  "OneOfExample_Status_OneOf_Enum_Failed",
-						Value: "failed",
+				Fields_: []generator.Field{
+					&generator.StaticField{
+						Name_:         "Value",
+						JSONName_:     "value",
+						Description_:  "",
+						IsRequired_:   false,
+						Type_:         "string",
+						IsEnum_:       true,
+						EnumTypeName_: "OneOfExample_Status_OneOf_Enum",
+						EnumValues_: []generator.EnumValue{
+							{
+								Name:  "OneOfExample_Status_OneOf_Enum_Pending",
+								Value: "pending",
+							},
+							{
+								Name:  "OneOfExample_Status_OneOf_Enum_Failed",
+								Value: "failed",
+							},
+						},
 					},
 				},
 				HasAllOf_:            false,

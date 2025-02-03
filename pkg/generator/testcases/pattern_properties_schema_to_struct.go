@@ -8,7 +8,7 @@ import (
 type pattern_properties_schema_to_struct struct{}
 
 func (t *pattern_properties_schema_to_struct) Name() string {
-	return "pattern_properties_schema_to_struct"
+	return myfilename()
 }
 
 func (t *pattern_properties_schema_to_struct) JSONSchema() string {
@@ -54,7 +54,8 @@ func (t *pattern_properties_schema_to_struct) RawSchema() *jsonschema.Schema {
 			},
 		},
 		AdditionalProperties: &jsonschema.SchemaOrBoolean{
-			Value: false,
+			Schema:  nil,
+			Boolean: boolPtr(false),
 		},
 	}
 }

@@ -7,8 +7,12 @@ import (
 
 type schema_documentation struct{}
 
+func init() {
+	registerTestCase(&schema_documentation{})
+}
+
 func (t *schema_documentation) Name() string {
-	return "schema_documentation"
+	return myfilename()
 }
 
 func (t *schema_documentation) JSONSchema() string {
@@ -49,9 +53,8 @@ func (t *schema_documentation) RawSchema() *jsonschema.Schema {
 			{
 				Name: "field1",
 				Value: &jsonschema.Schema{
-					Type:          typePtr("string"),
-					Description:   strPtr("A well documented string field"),
-					ExampleValues: &[]interface{}{"example1", "example2"},
+					Type:        typePtr("string"),
+					Description: strPtr("A well documented string field"),
 				},
 			},
 			{
@@ -65,8 +68,8 @@ func (t *schema_documentation) RawSchema() *jsonschema.Schema {
 							Value: &jsonschema.Schema{
 								Type:        typePtr("integer"),
 								Description: strPtr("A documented integer field"),
-								MinValue:    float64Ptr(0),
-								MaxValue:    float64Ptr(100),
+								Minimum:     jsonschema.NewSchemaNumberWithFloat(0),
+								Maximum:     jsonschema.NewSchemaNumberWithFloat(100),
 							},
 						},
 					},

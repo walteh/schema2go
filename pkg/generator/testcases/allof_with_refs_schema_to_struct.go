@@ -8,7 +8,7 @@ import (
 type allof_with_refs_schema_to_struct struct{}
 
 func (t *allof_with_refs_schema_to_struct) Name() string {
-	return "allof_with_refs_schema_to_struct"
+	return myfilename()
 }
 
 func (t *allof_with_refs_schema_to_struct) JSONSchema() string {
@@ -115,7 +115,6 @@ func (t *allof_with_refs_schema_to_struct) StaticSchema() *generator.StaticSchem
 						Description_:         "",
 						IsRequired_:          false,
 						Type_:                "EmployeeInfo",
-						IsEmbedded:           true,
 						IsEnum_:              false,
 						EnumTypeName_:        "",
 						EnumValues_:          nil,
@@ -129,7 +128,6 @@ func (t *allof_with_refs_schema_to_struct) StaticSchema() *generator.StaticSchem
 						Description_:         "",
 						IsRequired_:          false,
 						Type_:                "PersonInfo",
-						IsEmbedded:           true,
 						IsEnum_:              false,
 						EnumTypeName_:        "",
 						EnumValues_:          nil,

@@ -7,8 +7,12 @@ import (
 
 type anyof_schema_to_struct struct{}
 
+func init() {
+	registerTestCase(&anyof_schema_to_struct{})
+}
+
 func (t *anyof_schema_to_struct) Name() string {
-	return "anyof_schema_to_struct"
+	return myfilename()
 }
 
 func (t *anyof_schema_to_struct) JSONSchema() string {
