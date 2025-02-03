@@ -19,27 +19,51 @@ func (d *Dumper) initRootPath(val reflect.Value) {
 	}
 }
 
+// writeDotPath writes the current path and colon
+func (d *Dumper) writeDotPath() {
+	if len(d.path) > 0 {
+		d.buf.WriteString(strings.Join(d.path, "."))
+		d.buf.WriteString(": ")
+	}
+}
+
+// writeNilValue writes a nil value in dot notation format
+func (d *Dumper) writeNilValue(v reflect.Value) {
+	d.writeDotPath()
+	d.buf.WriteString("(nil)")
+	d.buf.WriteByte('\n')
+}
+
 // dumpMapWithDotNotation handles map dumping with dot notation format
 func (d *Dumper) dumpMapWithDotNotation(v reflect.Value) {
 	d.initRootPath(v)
+
+	if v.IsNil() {
+		d.writeNilValue(v)
+		return
+	}
+
 	keys := v.MapKeys()
+	if len(keys) == 0 {
+		d.writeDotPath()
+		d.buf.WriteByte('\n')
+		return
+	}
+
 	for _, k := range keys {
 		// Add map key to path
 		keyStr := fmt.Sprintf("%v", k.Interface())
 		d.path = append(d.path, keyStr)
 
-		// Write path
-		if len(d.path) > 0 {
-			d.buf.WriteString(strings.Join(d.path, "."))
-			d.buf.WriteString(": ")
-		}
-
-		// Dump value
+		// Write path and value
+		d.writeDotPath()
 		d.dump(v.MapIndex(k))
 		d.buf.WriteByte('\n')
 
 		// Remove map key from path
-		d.path = d.path[:len(d.path)-1]
+		if len(d.path) > 0 {
+			d.path = d.path[:len(d.path)-1]
+		}
 	}
 }
 
@@ -49,21 +73,25 @@ func (d *Dumper) dumpStructWithDotNotation(v reflect.Value) {
 	t := v.Type()
 	for i := 0; i < v.NumField(); i++ {
 		field := v.Field(i)
-		if !field.CanInterface() && d.HidePrivateFields {
+		fieldType := t.Field(i)
+
+		// Skip unexported fields if HidePrivateFields is true
+		if !fieldType.IsExported() && d.HidePrivateFields {
 			continue
 		}
 
 		// Add field name to path
-		d.path = append(d.path, t.Field(i).Name)
+		d.path = append(d.path, fieldType.Name)
 
-		// Write path
-		if len(d.path) > 0 {
-			d.buf.WriteString(strings.Join(d.path, "."))
-			d.buf.WriteString(": ")
+		// Write path and value
+		d.writeDotPath()
+		if field.Kind() == reflect.Ptr && field.IsNil() {
+			d.buf.WriteString("(nil)")
+		} else if !field.CanInterface() && d.HidePrivateFields {
+			d.buf.WriteString("(unexported)")
+		} else {
+			d.dump(field)
 		}
-
-		// Dump value
-		d.dump(field)
 		d.buf.WriteByte('\n')
 
 		// Remove field name from path
@@ -76,6 +104,18 @@ func (d *Dumper) dumpStructWithDotNotation(v reflect.Value) {
 // dumpSliceWithDotNotation handles slice/array dumping with dot notation format
 func (d *Dumper) dumpSliceWithDotNotation(v reflect.Value) {
 	d.initRootPath(v)
+
+	if v.IsNil() {
+		d.writeNilValue(v)
+		return
+	}
+
+	if v.Len() == 0 {
+		d.writeDotPath()
+		d.buf.WriteByte('\n')
+		return
+	}
+
 	for i := 0; i < v.Len(); i++ {
 		// Add array index to path
 		if len(d.path) > 0 {
@@ -85,13 +125,8 @@ func (d *Dumper) dumpSliceWithDotNotation(v reflect.Value) {
 			d.path = append(d.path, fmt.Sprintf("[%d]", i))
 		}
 
-		// Write path
-		if len(d.path) > 0 {
-			d.buf.WriteString(strings.Join(d.path, "."))
-			d.buf.WriteString(": ")
-		}
-
-		// Dump value
+		// Write path and value
+		d.writeDotPath()
 		d.dump(v.Index(i))
 		d.buf.WriteByte('\n')
 
