@@ -353,8 +353,9 @@ func (d *Dumper) dumpPointer(v reflect.Value) {
 		d.dump(elem, true)
 		return
 	}
+	// d.buf.WriteString(fmt.Sprintf(" $%s$ ", elem.Kind()))
 
-	d.buf.WriteString(__(d.Theme.Address, "&"))
+	// d.buf.WriteString(__(d.Theme.Address, "&"))
 	addr := uintptr(v.UnsafePointer())
 
 	if id, ok := d.ptrs[addr]; ok {

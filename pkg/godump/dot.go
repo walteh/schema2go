@@ -27,6 +27,18 @@ func (d *Dumper) writeDotPath() {
 	}
 }
 
+func (d *Dumper) shouldWriteDotPath(v reflect.Value) bool {
+	if v.Kind() == reflect.Ptr {
+		v = v.Elem()
+	}
+	switch v.Kind() {
+	case reflect.Struct, reflect.Interface, reflect.Map, reflect.Slice:
+		return false
+	default:
+		return true
+	}
+}
+
 // writeNilValue writes a nil value in dot notation format
 func (d *Dumper) writeNilValue(v reflect.Value) {
 	d.writeDotPath()
@@ -84,7 +96,12 @@ func (d *Dumper) dumpStructWithDotNotation(v reflect.Value) {
 		d.path = append(d.path, fieldType.Name)
 
 		// Write path and value
-		d.writeDotPath()
+		// only write the path
+		if d.shouldWriteDotPath(field) {
+			d.writeDotPath()
+		}
+		// d.buf.WriteString(fmt.Sprintf(" {%s} ", field.Kind()))
+
 		if field.Kind() == reflect.Ptr && field.IsNil() {
 			d.buf.WriteString("(nil)")
 		} else if !field.CanInterface() && d.HidePrivateFields {
@@ -92,7 +109,9 @@ func (d *Dumper) dumpStructWithDotNotation(v reflect.Value) {
 		} else {
 			d.dump(field)
 		}
-		d.buf.WriteByte('\n')
+		if d.shouldWriteDotPath(field) {
+			d.buf.WriteByte('\n')
+		}
 
 		// Remove field name from path
 		if len(d.path) > 0 {
@@ -124,11 +143,17 @@ func (d *Dumper) dumpSliceWithDotNotation(v reflect.Value) {
 		} else {
 			d.path = append(d.path, fmt.Sprintf("[%d]", i))
 		}
-
+		idx := v.Index(i)
 		// Write path and value
-		d.writeDotPath()
+		if d.shouldWriteDotPath(idx) {
+			d.writeDotPath()
+		}
+
 		d.dump(v.Index(i))
-		d.buf.WriteByte('\n')
+
+		if d.shouldWriteDotPath(idx) {
+			d.buf.WriteByte('\n')
+		}
 
 		// Restore path
 		if len(d.path) > 0 {

@@ -339,3 +339,48 @@ func TestDotNotationUnexportedAndInterfaces(t *testing.T) {
 	assert.Contains(t, resultInterface, "FullTimeEmployee.Name: \"Alice Manager\"", "should contain Name through interface")
 	assert.Contains(t, resultInterface, "FullTimeEmployee.Assistant.ID: 101", "should contain Assistant's ID through interface")
 }
+
+// NumberWrapper is a struct that can hold either an integer or float pointer
+type NumberWrapper struct {
+	Integer *int
+	Float   *float64
+}
+
+// SchemaProperty represents a property with min/max constraints
+type SchemaProperty struct {
+	Maximum *NumberWrapper
+	Minimum *NumberWrapper
+}
+
+func TestDotNotationNestedPointers(t *testing.T) {
+	float100 := float64(100)
+	float0 := float64(0)
+
+	prop := &SchemaProperty{
+		Maximum: &NumberWrapper{
+			Integer: nil,
+			Float:   &float100,
+		},
+		Minimum: &NumberWrapper{
+			Integer: nil,
+			Float:   &float0,
+		},
+	}
+
+	d := godump.Dumper{
+		DotNotation: true,
+	}
+
+	result := d.Sprint(prop)
+	t.Log("\nNested Pointer Output:\n", result)
+
+	// Test the exact format we want
+	assert.Contains(t, result, "SchemaProperty.Maximum.Integer: (nil)", "should show nil integer")
+	assert.Contains(t, result, "SchemaProperty.Maximum.Float: &100", "should show float pointer value")
+	assert.Contains(t, result, "SchemaProperty.Minimum.Integer: (nil)", "should show nil integer")
+	assert.Contains(t, result, "SchemaProperty.Minimum.Float: &0", "should show float pointer value")
+
+	// Verify what we don't want to see
+	assert.NotContains(t, result, "SchemaProperty.Maximum: &SchemaProperty.Maximum", "should not repeat path")
+	assert.NotContains(t, result, "SchemaProperty.Minimum: &SchemaProperty.Minimum", "should not repeat path")
+}
