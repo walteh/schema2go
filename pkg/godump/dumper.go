@@ -12,6 +12,7 @@ import (
 	"os"
 	"reflect"
 	"strings"
+	"text/tabwriter"
 )
 
 // Style defines a general interface used for styling.
@@ -119,6 +120,9 @@ type Dumper struct {
 	// DotNotation makes the output use dot notation like the dump package (x.y.z)
 	DotNotation bool
 
+	// UseTabWriter makes the output use tabwriter to format the output.
+	UseTabWriter bool
+
 	// Theme allows you to define your preferred styling.
 	Theme Theme
 
@@ -172,6 +176,13 @@ func (d *Dumper) Fprintln(dst io.Writer, v any) error {
 func (d *Dumper) Sprint(v any) string {
 	d.init()
 	d.dump(reflect.ValueOf(v))
+	if d.DotNotation && d.UseTabWriter {
+		buf := bytes.NewBuffer(nil)
+		tr := tabwriter.NewWriter(buf, 0, 4, 4, ' ', 0)
+		tr.Write(d.buf.Bytes())
+		tr.Flush()
+		return buf.String()
+	}
 	return d.buf.String()
 }
 
@@ -190,6 +201,7 @@ func (d *Dumper) init() {
 		d.Indentation = "   "
 	}
 	d.path = make([]string, 0)
+
 	d.depth = 0
 	d.ptrTag = 0
 }

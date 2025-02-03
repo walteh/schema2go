@@ -33,6 +33,8 @@ type Encoder struct {
 	DisableTypePrefix bool
 	Prefix            string
 	writer            io.Writer
+	// 🔄 Track seen pointers to prevent infinite recursion
+	seenPointers map[uintptr]bool
 }
 
 // NewDefaultEncoder instanciate a go-dump encoder
@@ -46,8 +48,9 @@ func NewEncoder(w io.Writer) *Encoder {
 		Formatters: []KeyFormatterFunc{
 			WithDefaultFormatter(),
 		},
-		Separator: ".",
-		writer:    w,
+		Separator:    ".",
+		writer:       w,
+		seenPointers: make(map[uintptr]bool), // Initialize the seen pointers map
 	}
 	return enc
 }
@@ -97,32 +100,49 @@ func (e *Encoder) Sdump(i interface{}) (string, error) {
 }
 
 func (e *Encoder) fdumpInterface(w map[string]interface{}, i interface{}, roots []string) error {
+	if i == nil {
+		return nil
+	}
+
+	v := reflect.ValueOf(i)
+	if v.Kind() == reflect.Ptr {
+		ptr := v.Pointer()
+		fmt.Printf("🔍 Checking pointer %v at %v (type: %v)\n", ptr, strings.Join(roots, e.Separator), v.Type())
+		if e.seenPointers[ptr] {
+			// We've seen this pointer before, just note it's a cycle
+			fmt.Printf("⚠️ Found cycle at %v\n", strings.Join(roots, e.Separator))
+			w[strings.Join(sliceFormat(roots, e.Formatters), e.Separator)] = fmt.Sprintf("*CYCLE<%v>", v.Type())
+			return nil
+		}
+		fmt.Printf("✨ New pointer at %v\n", strings.Join(roots, e.Separator))
+		e.seenPointers[ptr] = true
+		v = v.Elem()
+	}
+
 	f := valueFromInterface(i)
-	k := reflect.ValueOf(i).Kind()
-	if k == reflect.Ptr && reflect.ValueOf(i).IsNil() || !validAndNotEmpty(f) {
+	if !validAndNotEmpty(f) {
 		if len(roots) == 0 {
 			return nil
 		}
 		k := strings.Join(sliceFormat(roots, e.Formatters), e.Separator)
-		var prefix string
-		if e.Prefix != "" {
-			prefix = e.Prefix + e.Separator
-		}
-		w[prefix+k] = ""
+		w[k] = ""
 		return nil
 	}
+
 	switch f.Kind() {
 	case reflect.Struct:
-		if e.ExtraFields.Type {
-			nodeType := append(roots, "__Type__")
-			nodeTypeFormatted := strings.Join(sliceFormat(nodeType, e.Formatters), e.Separator)
-			w[nodeTypeFormatted] = f.Type().Name()
+		if m, ok := i.(json.Marshaler); ok {
+			if b, err := m.MarshalJSON(); err == nil {
+				var data interface{}
+				if err := json.Unmarshal(b, &data); err == nil {
+					if err := e.fdumpInterface(w, data, roots); err != nil {
+						return err
+					}
+					return nil
+				}
+			}
 		}
-		croots := roots
-		if len(roots) == 0 && !e.DisableTypePrefix {
-			croots = append(roots, f.Type().Name())
-		}
-		if err := e.fdumpStruct(w, f, croots); err != nil {
+		if err := e.fdumpStruct(w, f, roots); err != nil {
 			return err
 		}
 	case reflect.Array, reflect.Slice:
@@ -131,29 +151,19 @@ func (e *Encoder) fdumpInterface(w map[string]interface{}, i interface{}, roots 
 		}
 		return nil
 	case reflect.Map:
-		if e.ExtraFields.Type {
-			nodeType := append(roots, "__Type__")
-			nodeTypeFormatted := strings.Join(sliceFormat(nodeType, e.Formatters), e.Separator)
-			w[nodeTypeFormatted] = "Map"
-		}
 		if err := e.fDumpMap(w, i, roots); err != nil {
 			return err
 		}
 		return nil
 	default:
 		k := strings.Join(sliceFormat(roots, e.Formatters), e.Separator)
-		if e.ExtraFields.DeepJSON && (f.Kind() == reflect.String) {
+		if e.ExtraFields.DeepJSON && f.Kind() == reflect.String {
 			if err := e.fDumpJSON(w, f.Interface().(string), roots, k); err != nil {
 				return err
 			}
 		} else {
-			var prefix string
-			if e.Prefix != "" {
-				prefix = e.Prefix + e.Separator
-			}
-			w[prefix+k] = f.Interface()
+			w[k] = f.Interface()
 		}
-
 	}
 	return nil
 }
@@ -189,12 +199,16 @@ func (e *Encoder) fDumpJSON(w map[string]interface{}, i string, roots []string, 
 }
 
 func (e *Encoder) fDumpArray(w map[string]interface{}, i interface{}, roots []string) error {
-	f := valueFromInterface(i)
-	if _, ok := f.Interface().([]byte); ok {
-		if err := e.fdumpInterface(w, string(f.Interface().([]byte)), roots); err != nil {
-			return err
+	v := reflect.ValueOf(i)
+	if v.Kind() == reflect.Ptr {
+		ptr := v.Pointer()
+		if e.seenPointers[ptr] {
+			// We've seen this pointer before, just note it's a cycle
+			w[strings.Join(sliceFormat(roots, e.Formatters), e.Separator)] = fmt.Sprintf("*CYCLE<%v>", v.Type())
+			return nil
 		}
-		return nil
+		e.seenPointers[ptr] = true
+		v = v.Elem()
 	}
 
 	if e.ExtraFields.Type {
@@ -203,27 +217,16 @@ func (e *Encoder) fDumpArray(w map[string]interface{}, i interface{}, roots []st
 		w[nodeTypeFormatted] = "Array"
 	}
 
-	v := reflect.ValueOf(i)
-	if v.Kind() == reflect.Ptr {
-		v = v.Elem()
-	}
-
 	if e.ExtraFields.Len {
 		nodeLen := append(roots, "__Len__")
 		nodeLenFormatted := strings.Join(sliceFormat(nodeLen, e.Formatters), e.Separator)
 		w[nodeLenFormatted] = v.Len()
 	}
 
-	if e.ExtraFields.DetailedArray && len(roots) > 0 {
-		structKey := strings.Join(sliceFormat(roots, e.Formatters), e.Separator)
-		w[structKey] = i
-	}
-
 	for i := 0; i < v.Len(); i++ {
-		var l string
 		var croots []string
 		if len(roots) > 0 {
-			l = roots[len(roots)-1:][0]
+			l := roots[len(roots)-1:][0]
 			if !e.ArrayJSONNotation {
 				croots = append(roots, fmt.Sprintf("%s%d", l, i))
 			} else {
@@ -232,29 +235,28 @@ func (e *Encoder) fDumpArray(w map[string]interface{}, i interface{}, roots []st
 				croots = append(t, fmt.Sprintf("%s[%d]", l, i))
 			}
 		} else {
-			var skey = fmt.Sprintf("[%d]", i)
 			if !e.ArrayJSONNotation {
-				skey = fmt.Sprintf("%s%d", e.Prefix+l, i)
+				croots = append(roots, fmt.Sprintf("%d", i))
+			} else {
+				croots = append(roots, fmt.Sprintf("[%d]", i))
 			}
-			croots = append(roots, skey)
-		}
-		f := v.Index(i)
-
-		stringer, ok := f.Interface().(fmt.Stringer)
-		if ok {
-			k := strings.Join(sliceFormat(croots, e.Formatters), e.Separator)
-			var prefix string
-			if e.Prefix != "" {
-				prefix = e.Prefix
-			}
-			w[prefix+k] = stringer.String()
 		}
 
-		if err := e.fdumpInterface(w, f.Interface(), croots); err != nil {
+		value := v.Index(i)
+		if value.Kind() == reflect.Ptr {
+			ptr := value.Pointer()
+			if e.seenPointers[ptr] {
+				// We've seen this pointer before, just note it's a cycle
+				w[strings.Join(sliceFormat(croots, e.Formatters), e.Separator)] = fmt.Sprintf("*CYCLE<%v>", value.Type())
+				continue
+			}
+			e.seenPointers[ptr] = true
+		}
+
+		if err := e.fdumpInterface(w, value.Interface(), croots); err != nil {
 			return err
 		}
 	}
-
 	return nil
 }
 
@@ -305,61 +307,68 @@ func (e *Encoder) fDumpMap(w map[string]interface{}, i interface{}, roots []stri
 }
 
 func (e *Encoder) fdumpStruct(w map[string]interface{}, s reflect.Value, roots []string) error {
+	if !s.IsValid() {
+		return nil
+	}
+
+	// Get the underlying value if it's a pointer
+	if s.Kind() == reflect.Ptr {
+		ptr := s.Pointer()
+		if e.seenPointers[ptr] {
+			// We've seen this pointer before, just note it's a cycle
+			w[strings.Join(sliceFormat(roots, e.Formatters), e.Separator)] = fmt.Sprintf("*CYCLE<%v>", s.Type())
+			return nil
+		}
+		e.seenPointers[ptr] = true
+		s = s.Elem()
+	}
+
+	if !s.IsValid() {
+		return nil
+	}
+
 	if e.ExtraFields.DetailedStruct {
 		if e.ExtraFields.Len {
 			nodeLen := append(roots, "__Len__")
 			nodeLenFormatted := strings.Join(sliceFormat(nodeLen, e.Formatters), e.Separator)
 			w[nodeLenFormatted] = s.NumField()
 		}
-
-		structKey := strings.Join(sliceFormat(roots, e.Formatters), e.Separator)
-		if s.CanInterface() && len(roots) > 1 {
-			w[structKey] = s.Interface()
-		}
 	}
 
-	var atLeastOneField bool
-	for i := 0; i < s.NumField(); i++ {
-		k := reflect.ValueOf(i).Kind()
-		if k == reflect.Ptr && reflect.ValueOf(i).IsNil() {
-			if len(roots) == 0 {
-				continue
-			}
-			k := strings.Join(sliceFormat(roots, e.Formatters), e.Separator)
-			w[k] = ""
-			atLeastOneField = true
-			continue
-		}
+	croots := roots
+	if len(roots) == 0 && !e.DisableTypePrefix {
+		croots = append(roots, s.Type().Name())
+	}
 
-		if !s.Field(i).CanInterface() {
+	for i := 0; i < s.NumField(); i++ {
+		f := s.Field(i)
+		if !f.CanInterface() {
 			continue
 		}
-		var croots []string
-		var keyNameComputed bool
+		field := s.Type().Field(i)
 		if e.ExtraFields.UseJSONTag {
-			tagValues := strings.Split(s.Type().Field(i).Tag.Get("json"), ",")
-			if len(tagValues) > 0 && tagValues[0] != "omitempty" && tagValues[0] != "" {
-				croots = append(roots, tagValues[0])
-				keyNameComputed = true
+			if jsonTag := field.Tag.Get("json"); jsonTag != "" {
+				if jsonTag == "-" {
+					continue
+				}
+				if strings.Contains(jsonTag, ",") {
+					if strings.Contains(jsonTag, ",omitempty") {
+						if f.IsZero() {
+							continue
+						}
+					}
+					jsonTag = strings.Split(jsonTag, ",")[0]
+				}
+				if jsonTag != "" {
+					field.Name = jsonTag
+				}
 			}
 		}
-		if !keyNameComputed {
-			croots = append(roots, s.Type().Field(i).Name)
-		}
-		atLeastOneField = true
-		if err := e.fdumpInterface(w, s.Field(i).Interface(), croots); err != nil {
+		croots := append(croots, field.Name)
+		if err := e.fdumpInterface(w, f.Interface(), croots); err != nil {
 			return err
 		}
 	}
-
-	if !atLeastOneField {
-		stringer, ok := s.Interface().(fmt.Stringer)
-		if ok {
-			structKey := strings.Join(sliceFormat(roots, e.Formatters), e.Separator)
-			w[structKey] = stringer.String()
-		}
-	}
-
 	return nil
 }
 
@@ -375,6 +384,10 @@ func (e *Encoder) ToStringMap(i interface{}) (res map[string]string, err error) 
 			runtime.Stack(buf, true)
 		}
 	}()
+
+	// Initialize pointer tracking
+	e.seenPointers = make(map[uintptr]bool)
+
 	ires := map[string]interface{}{}
 	if err = e.fdumpInterface(ires, i, nil); err != nil {
 		return
@@ -398,6 +411,10 @@ func (e *Encoder) ToMap(i interface{}) (res map[string]interface{}, err error) {
 			runtime.Stack(buf, true)
 		}
 	}()
+
+	// Initialize pointer tracking
+	e.seenPointers = make(map[uintptr]bool)
+
 	res = map[string]interface{}{}
 	if err = e.fdumpInterface(res, i, nil); err != nil {
 		return

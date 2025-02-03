@@ -6,11 +6,12 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
+	"github.com/google/go-cmp/cmp"
 	"github.com/k0kubun/pp/v3"
-
-	"github.com/sergi/go-diff/diffmatchpatch"
+	"github.com/walteh/schema2go/pkg/godump"
 
 	"github.com/pmezard/go-difflib/difflib"
+	"github.com/sergi/go-diff/diffmatchpatch"
 )
 
 func TypedDiffExportedOnly[T any](want T, got T) string {
@@ -37,11 +38,19 @@ func diffd(want string, got string) string {
 		FromDate: "",
 		ToFile:   "Actual",
 		ToDate:   "",
-		Context:  2,
+		Context:  5,
 	})
 
 	return diff
 
+}
+
+func dumpValue(v any) string {
+	d := godump.Dumper{
+		DotNotation: true,
+	}
+
+	return d.Sprint(v)
 }
 
 // formatStartingWhitespace formats leading whitespace characters to be visible while maintaining proper spacing
@@ -55,24 +64,61 @@ func diffd(want string, got string) string {
 //	· represents a space (Middle Dot U+00B7)
 //	→ represents a tab (Rightwards Arrow U+2192)
 func formatStartingWhitespace(s string, colord *color.Color) string {
-	out := " |"
+	out := color.New(color.Bold).Sprint(" | ")
 	for j, char := range s {
 		switch char {
 		case ' ':
-			out += "∙" // ⌷
+			out += color.New(color.Faint, color.FgHiGreen).Sprint("∙") // ⌷
 		case '\t':
-			out += "└──▹" // →
+			out += color.New(color.Faint, color.FgHiGreen).Sprint("→   ") // → └──▹
 		default:
-			return color.New(color.Faint).Sprint(out) + colord.Sprint(s[j:])
+			return out + colord.Sprint(s[j:])
 		}
 	}
-	return color.New(color.Faint).Sprint(out)
+	return out
+}
+
+func enrichCmpDiff(diff string) string {
+	prevNoColor := color.NoColor
+	defer func() {
+		color.NoColor = prevNoColor
+	}()
+	color.NoColor = false
+
+	expectedPrefix := fmt.Sprintf("[%s] %s", color.New(color.FgBlue, color.Bold).Sprint("want"), color.New(color.Faint).Sprint(" +"))
+	actualPrefix := fmt.Sprintf("[%s] %s", color.New(color.Bold, color.FgRed).Sprint("got"), color.New(color.Faint).Sprint("  -"))
+
+	str := "\n"
+
+	// Process each line
+	lines := strings.Split(diff, "\n")
+	for _, line := range lines {
+		trimmed := strings.TrimSpace(line)
+		if trimmed == "" {
+			str += line + "\n"
+			continue
+		}
+
+		// Format the line based on its content
+		switch {
+		case strings.HasPrefix(line, "-"):
+			content := strings.TrimPrefix(line, "-")
+			str += actualPrefix + " | " + color.New(color.FgRed).Sprint(content) + "\n"
+		case strings.HasPrefix(line, "+"):
+			content := strings.TrimPrefix(line, "+")
+			str += expectedPrefix + " | " + color.New(color.FgBlue).Sprint(content) + "\n"
+		default:
+			str += strings.Repeat(" ", 9) + " | " + color.New(color.Faint).Sprint(line) + "\n"
+		}
+	}
+
+	return str
 }
 
 func diffTyped[T any](printer *pp.PrettyPrinter, want T, got T) string {
 	// Enable colors
 
-	var abc string
+	// printer.WithLineInfo = true
 
 	switch any(want).(type) {
 	case reflect.Type:
@@ -86,14 +132,18 @@ func diffTyped[T any](printer *pp.PrettyPrinter, want T, got T) string {
 		got := ConvolutedFormatReflectValue(g)
 		return diffTyped[any](printer, want, got)
 	case string:
-		abc = diffd(any(want).(string), any(got).(string))
+		unified := diffd(any(want).(string), any(got).(string))
+		return enrichUnifiedDiff(unified)
 	default:
-		abc = diffd(printer.Sprint(want), printer.Sprint(got))
+		cmpd := cmp.Diff(want, got)
+		if cmpd == "" {
+			return ""
+		}
+		return enrichCmpDiff(cmpd)
 	}
-	if abc == "" {
-		return ""
-	}
+}
 
+func enrichUnifiedDiff(diff string) string {
 	prevNoColor := color.NoColor
 	defer func() {
 		color.NoColor = prevNoColor
@@ -103,11 +153,11 @@ func diffTyped[T any](printer *pp.PrettyPrinter, want T, got T) string {
 	expectedPrefix := fmt.Sprintf("[%s] %s", color.New(color.FgBlue, color.Bold).Sprint("want"), color.New(color.Faint).Sprint(" +"))
 	actualPrefix := fmt.Sprintf("[%s] %s", color.New(color.Bold, color.FgRed).Sprint("got"), color.New(color.Faint).Sprint("  -"))
 
-	abc = strings.ReplaceAll(abc, "--- Expected", fmt.Sprintf("%s %s [%s]", color.New(color.Faint).Sprint("---"), color.New(color.FgBlue).Sprint("want"), color.New(color.FgBlue, color.Bold).Sprint("want")))
-	abc = strings.ReplaceAll(abc, "+++ Actual", fmt.Sprintf("%s %s [%s]", color.New(color.Faint).Sprint("+++"), color.New(color.FgRed).Sprint("got"), color.New(color.FgRed, color.Bold).Sprint("got")))
+	diff = strings.ReplaceAll(diff, "--- Expected", fmt.Sprintf("%s %s [%s]", color.New(color.Faint).Sprint("---"), color.New(color.FgBlue).Sprint("want"), color.New(color.FgBlue, color.Bold).Sprint("want")))
+	diff = strings.ReplaceAll(diff, "+++ Actual", fmt.Sprintf("%s %s [%s]", color.New(color.Faint).Sprint("+++"), color.New(color.FgRed).Sprint("got"), color.New(color.FgRed, color.Bold).Sprint("got")))
 
 	realignmain := []string{}
-	for i, spltz := range strings.Split(abc, "\n@@") {
+	for i, spltz := range strings.Split(diff, "\n@@") {
 		if i == 0 {
 			realignmain = append(realignmain, spltz)
 		} else {
@@ -138,7 +188,6 @@ func diffTyped[T any](printer *pp.PrettyPrinter, want T, got T) string {
 	}
 	str := "\n"
 	str += strings.Join(realignmain, "\n")
-
 	return str
 }
 

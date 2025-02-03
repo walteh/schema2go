@@ -23,7 +23,11 @@ func (d *Dumper) initRootPath(val reflect.Value) {
 func (d *Dumper) writeDotPath() {
 	if len(d.path) > 0 {
 		d.buf.WriteString(strings.Join(d.path, "."))
-		d.buf.WriteString(": ")
+		if d.UseTabWriter {
+			d.buf.WriteString("\t= ")
+		} else {
+			d.buf.WriteString(": ")
+		}
 	}
 }
 
