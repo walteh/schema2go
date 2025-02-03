@@ -12,6 +12,7 @@ import (
 	"testing"
 	"unsafe"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/walteh/schema2go/pkg/godump"
 )
 
@@ -981,4 +982,45 @@ func checkFromFeed(t *testing.T, result []byte, feedPath string) {
 +++ "%s" (%d)`, i+1, line, len(line), resultLines[i], len(resultLines[i]))
 		}
 	}
+}
+
+func TestDotNotation(t *testing.T) {
+	type Child struct {
+		Name string
+		Age  int
+	}
+
+	type Parent struct {
+		Name     string
+		Children []Child
+		Info     map[string]string
+	}
+
+	p := Parent{
+		Name: "John",
+		Children: []Child{
+			{Name: "Alice", Age: 10},
+			{Name: "Bob", Age: 12},
+		},
+		Info: map[string]string{
+			"city":    "New York",
+			"country": "USA",
+		},
+	}
+
+	d := godump.Dumper{
+		DotNotation: true,
+	}
+
+	result := d.Sprint(p)
+	t.Log("Output:\n", result)
+
+	// Verify dot notation format
+	assert.Contains(t, result, "Parent.Name: \"John\"")
+	assert.Contains(t, result, "Parent.Children[0].Name: \"Alice\"")
+	assert.Contains(t, result, "Parent.Children[0].Age: 10")
+	assert.Contains(t, result, "Parent.Children[1].Name: \"Bob\"")
+	assert.Contains(t, result, "Parent.Children[1].Age: 12")
+	assert.Contains(t, result, "Parent.Info.city: \"New York\"")
+	assert.Contains(t, result, "Parent.Info.country: \"USA\"")
 }

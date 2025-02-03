@@ -116,6 +116,9 @@ type Dumper struct {
 	// HidePrivateFields allows you to optionally hide struct's unexported fields from being printed.
 	HidePrivateFields bool
 
+	// DotNotation makes the output use dot notation like the dump package (x.y.z)
+	DotNotation bool
+
 	// Theme allows you to define your preferred styling.
 	Theme Theme
 
@@ -123,6 +126,7 @@ type Dumper struct {
 	depth  uint
 	ptrs   map[uintptr]uint
 	ptrTag uint
+	path   []string
 }
 
 // Print formats `v` and writes the result to standard output.
@@ -185,6 +189,9 @@ func (d *Dumper) init() {
 	if d.Indentation == "" {
 		d.Indentation = "   "
 	}
+	d.path = make([]string, 0)
+	d.depth = 0
+	d.ptrTag = 0
 }
 
 func (d *Dumper) dump(val reflect.Value, ignoreDepth ...bool) {
@@ -245,6 +252,11 @@ func (d *Dumper) dump(val reflect.Value, ignoreDepth ...bool) {
 }
 
 func (d *Dumper) dumpSlice(v reflect.Value) {
+	if d.DotNotation {
+		d.dumpSliceWithDotNotation(v)
+		return
+	}
+
 	var tag string
 	if d.ptrTag != 0 {
 		tag = __(d.Theme.PointerTag, fmt.Sprintf("#%d", d.ptrTag))
@@ -284,6 +296,11 @@ func (d *Dumper) dumpSlice(v reflect.Value) {
 }
 
 func (d *Dumper) dumpMap(v reflect.Value) {
+	if d.DotNotation {
+		d.dumpMapWithDotNotation(v)
+		return
+	}
+
 	keys := v.MapKeys()
 
 	var tag string
@@ -352,6 +369,11 @@ func (d *Dumper) dumpPointer(v reflect.Value) {
 }
 
 func (d *Dumper) dumpStruct(v reflect.Value) {
+	if d.DotNotation {
+		d.dumpStructWithDotNotation(v)
+		return
+	}
+
 	vtype := v.Type()
 
 	var tag string
