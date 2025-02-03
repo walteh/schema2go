@@ -234,6 +234,9 @@ func (f *FieldModel) IsEnum() bool {
 }
 
 func (f *FieldModel) EnumTypeName() string {
+	if !f.IsEnum() {
+		return ""
+	}
 	enumName := toGoFieldName(f.JSONName())
 	if strings.HasSuffix(enumName, "Color") {
 		enumName = "Color"

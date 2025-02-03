@@ -139,7 +139,7 @@ func diffTyped[T any](printer *pp.PrettyPrinter, want T, got T) string {
 
 		return enrichUnifiedDiff(unified)
 	default:
-		cmpd := cmp.Diff(want, got)
+		cmpd := cmp.Diff(got, want)
 		return enrichCmpDiff(cmpd)
 	}
 }

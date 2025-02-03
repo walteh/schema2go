@@ -112,6 +112,7 @@ func (*basic_ref_schema_to_struct) RawSchema() *jsonschema.Schema {
 }
 
 func (*basic_ref_schema_to_struct) StaticSchema() *generator.StaticSchema {
+	// 🏗️ Person struct (from definitions)
 	personFields := []generator.Field{
 		&generator.StaticField{
 			Name_:        "Name",
@@ -129,6 +130,7 @@ func (*basic_ref_schema_to_struct) StaticSchema() *generator.StaticSchema {
 		},
 	}
 
+	// 🏗️ Inner person struct (nested object)
 	innerPersonFields := []generator.Field{
 		&generator.StaticField{
 			Name_:        "Name",
@@ -146,6 +148,7 @@ func (*basic_ref_schema_to_struct) StaticSchema() *generator.StaticSchema {
 		},
 	}
 
+	// 🏗️ Root struct fields
 	refExampleFields := []generator.Field{
 		&generator.StaticField{
 			Name_:        "Person",
@@ -153,6 +156,12 @@ func (*basic_ref_schema_to_struct) StaticSchema() *generator.StaticSchema {
 			Description_: "",
 			IsRequired_:  false,
 			Type_:        "*Person",
+			ValidationRules_: []generator.ValidationRule{
+				{
+					Type:    "nested",
+					Message: "validating person",
+				},
+			},
 		},
 		&generator.StaticField{
 			Name_:        "InnerPerson",
@@ -160,37 +169,56 @@ func (*basic_ref_schema_to_struct) StaticSchema() *generator.StaticSchema {
 			Description_: "",
 			IsRequired_:  false,
 			Type_:        "*RefExampleInnerPerson",
+			ValidationRules_: []generator.ValidationRule{
+				{
+					Type:    "nested",
+					Message: "validating innerPerson",
+				},
+			},
 		},
 	}
 
+	// 📝 Person struct (from definitions)
+	// - Basic validation for fields
+	// - Custom marshaling for proper JSON handling
 	personStruct := &generator.StaticStruct{
 		Name_:                "Person",
 		Fields_:              personFields,
 		HasDefaults_:         false,
-		HasValidation_:       true,
+		HasValidation_:       false, // Should validate its own fields
 		HasCustomMarshaling_: true,
 	}
 
-	innerPersonStruct := &generator.StaticStruct{
-		Name_:                "RefExampleInnerPerson",
-		Fields_:              innerPersonFields,
-		HasDefaults_:         false,
-		HasValidation_:       true,
-		HasCustomMarshaling_: true,
-	}
-
+	// 📝 Root struct
+	// - Validates nested objects
+	// - Custom marshaling for proper JSON handling
 	refExampleStruct := &generator.StaticStruct{
 		Name_:                "RefExample",
 		Fields_:              refExampleFields,
 		HasDefaults_:         false,
-		HasValidation_:       true,
+		HasValidation_:       true, // Should validate nested objects
+		HasCustomMarshaling_: true,
+	}
+
+	// 📝 Inner person struct (nested object)
+	// - Basic validation for fields
+	// - Custom marshaling for proper JSON handling
+	innerPersonStruct := &generator.StaticStruct{
+		Name_:                "RefExampleInnerPerson",
+		Fields_:              innerPersonFields,
+		HasDefaults_:         false,
+		HasValidation_:       false, // Should validate its own fields
 		HasCustomMarshaling_: true,
 	}
 
 	return &generator.StaticSchema{
 		Package_: "models",
-		Structs_: []generator.Struct{personStruct, innerPersonStruct, refExampleStruct},
-		Enums_:   nil,
+		// Order matters:
+		// 1. Referenced types (Person)
+		// 2. Root type (RefExample)
+		// 3. Nested types (RefExampleInnerPerson)
+		Structs_: []generator.Struct{personStruct, refExampleStruct, innerPersonStruct},
+		Enums_:   nil, // No enums in this schema
 		Imports_: []string{
 			"encoding/json",
 			"gitlab.com/tozd/go/errors",
