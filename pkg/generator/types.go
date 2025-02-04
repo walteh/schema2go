@@ -8,6 +8,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"unicode"
 
 	"github.com/google/gnostic/jsonschema"
 	"github.com/k0kubun/pp/v3"
@@ -83,16 +84,26 @@ type Field interface {
 	DefaultValue() *string
 	DefaultValueComment() *string
 	ValidationRules() []ValidationRule
+	BaseType() string
 }
 
 var _ Field = &FieldModel{}
 
 // FieldModel represents a Go struct field
+// JSON tags are not added to the main struct fields since we use custom marshaling.
+// Instead, JSON tags are added to an internal alias struct in the UnmarshalJSON method.
+// This approach gives us more control over the marshaling process and allows us to:
+// 1. Handle validation before/after marshaling
+// 2. Apply default values during unmarshaling
+// 3. Keep the main struct clean and focused on the Go representation
 type FieldModel struct {
-	SourceSchema  *jsonschema.Schema
-	ParentSchema  *jsonschema.Schema
-	customJSONTag string // Optional override for the JSON tag name (e.g., for allOf fields)
-	customGoName  string // Optional override for the Go field name (e.g., Name_AllOf)
+	SourceSchema   *jsonschema.Schema
+	ParentSchema   *jsonschema.Schema
+	customJSONTag  string // Used for internal JSON tag generation in marshal/unmarshal methods
+	customGoName   string // Optional override for the Go field name (e.g., Name_AllOf)
+	Required       bool
+	Parent         *StructModel
+	CustomJSONName string
 }
 
 // ValidationRuleType represents the type of validation rule
@@ -147,16 +158,28 @@ func (f *FieldModel) Name() string {
 }
 
 func (f *FieldModel) JSONName() string {
-	if f.customJSONTag != "" {
-		return f.customJSONTag
+	// We don't need JSON tags on the main struct since we have custom marshaling
+	return ""
+}
+
+// This is the internal JSON name used for marshaling/unmarshaling
+func (f *FieldModel) internalJSONName() string {
+	if f.Parent == nil {
+		return ""
 	}
-	props := parser.GetProperties(f.ParentSchema)
-	for name, prop := range props {
-		if prop == f.SourceSchema {
-			return name
-		}
+
+	// For regular fields
+	name := f.customJSONTag
+	if name == "" {
+		name = toJSONFieldName(f.Name())
 	}
-	return "" // Should never happen if model is constructed correctly
+
+	// Only add omitempty for non-required fields if it's not already there
+	if !f.IsRequired() && !strings.Contains(name, "omitempty") {
+		name += ",omitempty"
+	}
+
+	return name
 }
 
 func (f *FieldModel) Description() string {
@@ -164,69 +187,27 @@ func (f *FieldModel) Description() string {
 }
 
 func (f *FieldModel) IsRequired() bool {
-	return parser.IsRequired(f.ParentSchema, f.JSONName())
+	if f.Parent == nil {
+		return false
+	}
+
+	if f.Parent.HasAllOf() && f.IsEmbedded() {
+		return false
+	}
+
+	return f.Required
 }
 
 func (f *FieldModel) Type() string {
-	// For referenced types
-	if f.SourceSchema.Ref != nil {
-		// Extract the type name from the reference
-		refParts := strings.Split(*f.SourceSchema.Ref, "/")
-		typeName := refParts[len(refParts)-1]
-
-		// Add pointer for optional fields
-		if !f.IsRequired() {
-			return "*" + typeName
-		}
-		return typeName
+	if f.Parent == nil {
+		return ""
 	}
 
-	if f.IsEnum() {
-		return "*" + f.EnumTypeName()
+	baseType := f.BaseType()
+	if !f.IsRequired() && !strings.HasPrefix(baseType, "*") {
+		return "*" + baseType
 	}
-
-	// Get base type
-	baseType := parser.GetTypeOrEmpty(f.SourceSchema)
-	var goType string
-
-	// Map JSON Schema types to Go types
-	switch baseType {
-	case "string":
-		goType = "string"
-	case "integer":
-		goType = "int"
-	case "number":
-		goType = "float64"
-	case "boolean":
-		goType = "bool"
-	case "array":
-		items := parser.GetArrayItems(f.SourceSchema)
-		if items == nil || items.Schema == nil {
-			goType = "[]interface{}" // Fallback for unknown array types
-		} else {
-			itemField := &FieldModel{
-				SourceSchema: items.Schema,
-				ParentSchema: f.SourceSchema,
-			}
-			goType = "[]" + itemField.Type()
-		}
-	case "object":
-		// For nested objects, use the parent struct name + field name
-		if parentTitle := parser.GetTitle(f.ParentSchema); parentTitle != "" {
-			goType = parentTitle + toGoFieldName(f.JSONName())
-		} else {
-			goType = toGoFieldName(f.JSONName())
-		}
-	default:
-		goType = "interface{}" // Fallback for unknown types
-	}
-
-	// Add pointer for optional fields
-	if !f.IsRequired() && !strings.HasPrefix(goType, "[]") {
-		goType = "*" + goType
-	}
-
-	return goType
+	return baseType
 }
 
 func (f *FieldModel) IsEnum() bool {
@@ -294,35 +275,37 @@ func (f *FieldModel) DefaultValueComment() *string {
 func (f *FieldModel) ValidationRules() []ValidationRule {
 	var rules []ValidationRule
 
+	// Skip validation for allOf fields
+	if strings.HasSuffix(f.customGoName, "_AllOf") {
+		return nil
+	}
+
 	// Required validation
 	if f.IsRequired() && parser.GetTypeOrEmpty(f.SourceSchema) != "object" {
 		rules = append(rules, ValidationRule{
 			Type:    ValidationRequired,
 			Message: fmt.Sprintf("%s is required", f.JSONName()),
-			// Parent:  f,
 		})
 	}
 
 	// Enum validation
 	if f.IsEnum() {
-		values := make([]string, 0)
+		values := make([]string, 0, len(f.EnumValues()))
 		for _, v := range f.EnumValues() {
-			values = append(values, v.Name)
+			values = append(values, v.Value)
 		}
 		rules = append(rules, ValidationRule{
 			Type:    ValidationEnum,
 			Message: fmt.Sprintf("invalid %s", f.JSONName()),
-			// Parent:  f,
-			Values: strings.Join(values, ", "),
+			Values:  strings.Join(values, ", "),
 		})
 	}
 
 	// Nested validation
-	if parser.GetTypeOrEmpty(f.SourceSchema) == "object" || f.SourceSchema.Ref != nil {
+	if parser.GetTypeOrEmpty(f.SourceSchema) == "object" {
 		rules = append(rules, ValidationRule{
 			Type:    ValidationNested,
 			Message: fmt.Sprintf("validating %s", f.JSONName()),
-			// Parent:  f,
 		})
 	}
 
@@ -369,50 +352,54 @@ func (s *StructModel) Description() string {
 
 func (s *StructModel) Fields() []Field {
 	var fields []Field
-	seen := make(map[string]bool)
 
-	// Helper function to add fields in order
-	addFieldsInOrder := func(props *[]*jsonschema.NamedSchema, parentSchema *jsonschema.Schema, addAllOfSuffix bool) {
-		if props == nil {
-			return
-		}
-		// Add fields in the order they appear in the schema
-		for _, prop := range *props {
-			if !seen[prop.Name] {
-				seen[prop.Name] = true
-				suffix := ""
-				if addAllOfSuffix {
-					suffix = "_AllOf"
-				}
+	// Handle allOf fields
+	if s.HasAllOf() {
+		for _, allOf := range parser.GetAllOf(s.SourceSchema) {
+			if allOf.Ref != nil {
+				// For referenced types
+				typeName := strings.Split(*allOf.Ref, "/")[len(strings.Split(*allOf.Ref, "/"))-1]
 				field := &FieldModel{
-					SourceSchema:  prop.Value,
-					ParentSchema:  parentSchema,
-					customJSONTag: prop.Name,
-					customGoName:  toGoFieldName(prop.Name) + suffix,
+					SourceSchema:  allOf,
+					ParentSchema:  s.SourceSchema,
+					customJSONTag: "", // Empty for embedded fields
+					customGoName:  typeName + "_AllOf",
+					Required:      false, // Embedded fields are never required
+					Parent:        s,
 				}
 				fields = append(fields, field)
-			}
-		}
-	}
-
-	// For allOf schemas, merge fields from all schemas
-	if parser.HasAllOf(s.SourceSchema) {
-		allOf := *s.SourceSchema.AllOf
-		for _, schema := range allOf {
-			if schema.Ref != nil {
-				// Get the referenced schema
-				if refSchema := parser.GetDefinition(s.SourceSchema, *schema.Ref); refSchema != nil {
-					addFieldsInOrder(refSchema.Properties, refSchema, true)
-				}
 			} else {
-				addFieldsInOrder(schema.Properties, schema, true)
+				// For inline types
+				props := parser.GetProperties(allOf)
+				for name, schema := range props {
+					field := &FieldModel{
+						SourceSchema:  schema,
+						ParentSchema:  allOf,
+						customJSONTag: "", // Empty for embedded fields
+						customGoName:  toGoFieldName(name) + "_AllOf",
+						Required:      false, // Embedded fields are never required
+						Parent:        s,
+					}
+					fields = append(fields, field)
+				}
 			}
 		}
-		return fields
 	}
 
-	// For non-allOf schemas, use regular field handling
-	addFieldsInOrder(s.SourceSchema.Properties, s.SourceSchema, false)
+	// Handle regular fields
+	props := parser.GetProperties(s.SourceSchema)
+	for name, schema := range props {
+		field := &FieldModel{
+			SourceSchema:  schema,
+			ParentSchema:  s.SourceSchema,
+			customJSONTag: name,
+			customGoName:  toGoFieldName(name),
+			Required:      parser.IsRequired(s.SourceSchema, name),
+			Parent:        s,
+		}
+		fields = append(fields, field)
+	}
+
 	return fields
 }
 
@@ -441,8 +428,11 @@ func (s *StructModel) HasAllOf() bool {
 }
 
 func (s *StructModel) HasCustomMarshaling() bool {
-	// Always return true since we want all structs to have JSON marshaling methods
-	return true
+	// Return true if:
+	// 1. The struct has allOf fields
+	// 2. The struct has validation rules
+	// 3. The struct has default values
+	return s.HasAllOf() || s.HasValidation() || s.HasDefaults()
 }
 
 // SchemaModel Methods
@@ -760,4 +750,93 @@ func (s *SchemaModel) Imports() []string {
 	sort.Strings(result)
 
 	return result
+}
+
+func toJSONFieldName(name string) string {
+	// Special case for ID fields
+	if name == "ID" {
+		return "id"
+	}
+
+	// If the name is already snake_case, return it as is
+	if strings.Contains(name, "_") {
+		return name
+	}
+
+	// Convert camelCase to snake_case
+	var result []rune
+	for i, r := range name {
+		if i > 0 && unicode.IsUpper(r) {
+			result = append(result, '_')
+		}
+		result = append(result, unicode.ToLower(r))
+	}
+	return string(result)
+}
+
+func (f *FieldModel) IsEmbedded() bool {
+	return strings.HasSuffix(f.customGoName, "_AllOf")
+}
+
+func (f *FieldModel) BaseType() string {
+	// For referenced types
+	if f.SourceSchema.Ref != nil {
+		// Extract the type name from the reference
+		refParts := strings.Split(*f.SourceSchema.Ref, "/")
+		return refParts[len(refParts)-1]
+	}
+
+	// For allOf fields, use the primitive type
+	if f.IsEmbedded() {
+		baseType := parser.GetTypeOrEmpty(f.SourceSchema)
+		switch baseType {
+		case "string":
+			return "string"
+		case "integer":
+			return "int"
+		case "number":
+			return "float64"
+		case "boolean":
+			return "bool"
+		default:
+			return strings.TrimSuffix(f.customGoName, "_AllOf")
+		}
+	}
+
+	if f.IsEnum() {
+		return f.EnumTypeName()
+	}
+
+	// Get base type
+	baseType := parser.GetTypeOrEmpty(f.SourceSchema)
+
+	// Map JSON Schema types to Go types
+	switch baseType {
+	case "string":
+		return "string"
+	case "integer":
+		return "int"
+	case "number":
+		return "float64"
+	case "boolean":
+		return "bool"
+	case "array":
+		items := parser.GetArrayItems(f.SourceSchema)
+		if items == nil || items.Schema == nil {
+			return "[]interface{}" // Fallback for unknown array types
+		}
+		itemField := &FieldModel{
+			SourceSchema: items.Schema,
+			ParentSchema: f.SourceSchema,
+		}
+		return "[]" + itemField.Type()
+	case "object":
+		// For nested objects, use the parent struct name + field name
+		if parentTitle := parser.GetTitle(f.ParentSchema); parentTitle != "" {
+			return parentTitle + toGoFieldName(f.JSONName())
+		}
+		return toGoFieldName(f.JSONName())
+	default:
+		return "interface{}" // Fallback for unknown types
+	}
 }

@@ -7,6 +7,10 @@ import (
 
 type allof_with_refs_schema_to_struct struct{}
 
+func init() {
+	registerTestCase(&allof_with_refs_schema_to_struct{})
+}
+
 func (t *allof_with_refs_schema_to_struct) Name() string {
 	return myfilename()
 }
@@ -142,42 +146,6 @@ func (t *allof_with_refs_schema_to_struct) StaticSchema() *generator.StaticSchem
 				HasValidation_:       false,
 			},
 			&generator.StaticStruct{
-				Name_:        "EmployeeInfo",
-				Description_: "",
-				Fields_: []generator.Field{
-					&generator.StaticField{
-						Name_:                "Department",
-						JSONName_:            "department",
-						Description_:         "",
-						IsRequired_:          false,
-						Type_:                "*string",
-						IsEnum_:              false,
-						EnumTypeName_:        "",
-						EnumValues_:          nil,
-						DefaultValue_:        nil,
-						DefaultValueComment_: nil,
-						ValidationRules_:     nil,
-					},
-					&generator.StaticField{
-						Name_:                "EmployeeID",
-						JSONName_:            "employeeId",
-						Description_:         "",
-						IsRequired_:          false,
-						Type_:                "*string",
-						IsEnum_:              false,
-						EnumTypeName_:        "",
-						EnumValues_:          nil,
-						DefaultValue_:        nil,
-						DefaultValueComment_: nil,
-						ValidationRules_:     nil,
-					},
-				},
-				HasAllOf_:            false,
-				HasCustomMarshaling_: true,
-				HasDefaults_:         false,
-				HasValidation_:       false,
-			},
-			&generator.StaticStruct{
 				Name_:        "PersonInfo",
 				Description_: "",
 				Fields_: []generator.Field{
@@ -213,6 +181,46 @@ func (t *allof_with_refs_schema_to_struct) StaticSchema() *generator.StaticSchem
 				HasDefaults_:         false,
 				HasValidation_:       false,
 			},
+			&generator.StaticStruct{
+				Name_:        "EmployeeInfo",
+				Description_: "",
+				Fields_: []generator.Field{
+					&generator.StaticField{
+						Name_:                "Department",
+						JSONName_:            "department",
+						Description_:         "",
+						IsRequired_:          false,
+						Type_:                "*string",
+						IsEnum_:              false,
+						EnumTypeName_:        "",
+						EnumValues_:          nil,
+						DefaultValue_:        nil,
+						DefaultValueComment_: nil,
+						ValidationRules_:     nil,
+					},
+					&generator.StaticField{
+						Name_:                "EmployeeID",
+						JSONName_:            "employeeId",
+						Description_:         "",
+						IsRequired_:          false,
+						Type_:                "*string",
+						IsEnum_:              false,
+						EnumTypeName_:        "",
+						EnumValues_:          nil,
+						DefaultValue_:        nil,
+						DefaultValueComment_: nil,
+						ValidationRules_:     nil,
+					},
+				},
+				HasAllOf_:            false,
+				HasCustomMarshaling_: false,
+				HasDefaults_:         false,
+				HasValidation_:       false,
+			},
+		},
+		Imports_: []string{
+			"encoding/json",
+			"gitlab.com/tozd/go/errors",
 		},
 	}
 }
@@ -229,8 +237,8 @@ import (
 )
 
 type AllOfWithRefsExample struct {
-	EmployeeInfo_AllOf $$$json:",inline"$$$
-	PersonInfo_AllOf   $$$json:",inline"$$$
+	EmployeeInfo_AllOf EmployeeInfo
+	PersonInfo_AllOf   PersonInfo
 }
 
 func (x *AllOfWithRefsExample) UnmarshalJSON(data []byte) error {
@@ -246,24 +254,8 @@ type EmployeeInfo struct {
 	EmployeeID *string $$$json:"employeeId,omitempty"$$$
 }
 
-func (x *EmployeeInfo) UnmarshalJSON(data []byte) error {
-	return nil // TODO: Implement custom unmarshaling for allOf fields
-}
-
-func (x EmployeeInfo) MarshalJSON() ([]byte, error) {
-	return nil, nil // TODO: Implement custom marshaling for allOf fields
-}
-
 type PersonInfo struct {
 	Age  *int    $$$json:"age,omitempty"$$$
 	Name *string $$$json:"name,omitempty"$$$
-}
-
-func (x *AllOfWithRefsExample) UnmarshalJSON(data []byte) error {
-	return nil // TODO: Implement custom unmarshaling for allOf fields
-}
-
-func (x AllOfWithRefsExample) MarshalJSON() ([]byte, error) {
-	return nil, nil // TODO: Implement custom marshaling for allOf fields
 }`
 }

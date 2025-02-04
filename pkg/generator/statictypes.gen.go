@@ -92,6 +92,7 @@ type StaticField struct {
 	DefaultValue_        *string
 	DefaultValueComment_ *string
 	ValidationRules_     []ValidationRule
+	BaseType_            string
 }
 
 // Name implements Field.
@@ -147,6 +148,11 @@ func (b *StaticField) DefaultValueComment() *string {
 // ValidationRules implements Field.
 func (b *StaticField) ValidationRules() []ValidationRule {
 	return b.ValidationRules_
+}
+
+// BaseType implements Field.
+func (b *StaticField) BaseType() string {
+	return b.BaseType_
 }
 
 func NewStaticSchema(impl Schema) *StaticSchema {
@@ -213,6 +219,8 @@ func NewStaticField(impl Field) *StaticField {
 	stat.DefaultValueComment_ = impl.DefaultValueComment()
 
 	stat.ValidationRules_ = impl.ValidationRules()
+
+	stat.BaseType_ = impl.BaseType()
 
 	return stat
 }
