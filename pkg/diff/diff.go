@@ -8,7 +8,6 @@ import (
 	"github.com/fatih/color"
 	"github.com/google/go-cmp/cmp"
 	"github.com/k0kubun/pp/v3"
-	"github.com/walteh/schema2go/pkg/godump"
 
 	"github.com/pmezard/go-difflib/difflib"
 	"github.com/sergi/go-diff/diffmatchpatch"
@@ -43,14 +42,6 @@ func diffd(want string, got string) string {
 
 	return diff
 
-}
-
-func dumpValue(v any) string {
-	d := godump.Dumper{
-		DotNotation: true,
-	}
-
-	return d.Sprint(v)
 }
 
 // formatStartingWhitespace formats leading whitespace characters to be visible while maintaining proper spacing
