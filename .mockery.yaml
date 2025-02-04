@@ -9,7 +9,7 @@ issue-845-fix: true
 filename: "{{.InterfaceName}}.{{.PackageName}}.mockery.go"
 mockname: Mock{{.InterfaceName}}_{{.PackageName}}
 packages:
-    github.com/walteh/schema2go/pkg/generator:
+    github.com/walteh/schema2go/internal/archives/generator:
         interfaces:
             Schema: {}
             Struct: {}

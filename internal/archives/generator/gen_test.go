@@ -5,9 +5,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	"github.com/walteh/schema2go/internal/archives/generator"
+	"github.com/walteh/schema2go/internal/archives/generator/testcases"
 	"github.com/walteh/schema2go/pkg/diff"
-	"github.com/walteh/schema2go/pkg/generator"
-	"github.com/walteh/schema2go/pkg/generator/testcases"
 )
 
 const testCasesHash = "1ec3aaecb246ccf10046aaaa2a0e858bfa39a614faed8acd97109782e0a147a2"

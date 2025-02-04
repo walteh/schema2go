@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/google/gnostic/jsonschema"
-	"github.com/walteh/schema2go/pkg/generator"
+	"github.com/walteh/schema2go/internal/archives/generator"
 )
 
 func myfilename() string {

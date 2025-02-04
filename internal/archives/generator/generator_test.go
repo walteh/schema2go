@@ -8,8 +8,8 @@ import (
 	"testing"
 
 	"github.com/google/gnostic/jsonschema"
+	"github.com/walteh/schema2go/internal/archives/generator"
 	"github.com/walteh/schema2go/pkg/diff"
-	"github.com/walteh/schema2go/pkg/generator"
 )
 
 func ptr[T any](v T) *T {

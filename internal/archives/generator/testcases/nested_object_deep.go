@@ -2,7 +2,7 @@ package testcases
 
 import (
 	"github.com/google/gnostic/jsonschema"
-	"github.com/walteh/schema2go/pkg/generator"
+	"github.com/walteh/schema2go/internal/archives/generator"
 )
 
 type nested_object_deep struct{}

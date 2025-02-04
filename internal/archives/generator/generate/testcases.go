@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"text/template"
 
-	"github.com/walteh/schema2go/pkg/generator/testcases"
+	"github.com/walteh/schema2go/internal/archives/generator/testcases"
 )
 
 func generateTestCases() {
@@ -78,8 +78,8 @@ func generateTestCases() {
 	buf.WriteString("package generator_test\n\n")
 	buf.WriteString("import (\n")
 	buf.WriteString("\"testing\"\n")
-	buf.WriteString("\"github.com/walteh/schema2go/pkg/generator/testcases\"\n")
-	buf.WriteString("\"github.com/walteh/schema2go/pkg/generator\"\n")
+	buf.WriteString("\"github.com/walteh/schema2go/internal/archives/generator/testcases\"\n")
+	buf.WriteString("\"github.com/walteh/schema2go/internal/archives/generator\"\n")
 	buf.WriteString("\"github.com/stretchr/testify/require\"\n")
 	// buf.WriteString("\"github.com/walteh/schema2go/gen/mockery\"\n")
 	buf.WriteString("\"github.com/google/gnostic/jsonschema\"\n")

@@ -2,82 +2,109 @@ package testcases
 
 import (
 	"github.com/google/gnostic/jsonschema"
-	"github.com/walteh/schema2go/pkg/generator"
+	"github.com/walteh/schema2go/internal/archives/generator"
 )
 
-type anyof_schema_to_struct struct{}
+type type_naming_conventions struct{}
 
 func init() {
-	registerTestCase(&anyof_schema_to_struct{})
+	registerTestCase(&type_naming_conventions{})
 }
 
-func (t *anyof_schema_to_struct) Name() string {
+func (t *type_naming_conventions) Name() string {
 	return myfilename()
 }
 
-func (t *anyof_schema_to_struct) JSONSchema() string {
+func (t *type_naming_conventions) JSONSchema() string {
 	return `{
 		"$schema": "http://json-schema.org/draft-07/schema#",
-		"title": "AnyOfExample",
+		"title": "Config",
 		"type": "object",
 		"properties": {
-			"value": {
-				"anyOf": [
-					{ "type": "string" },
-					{ "type": "number" },
-					{ "type": "boolean" }
-				]
-			},
-			"nested": {
+			"inline": {
 				"type": "object",
 				"properties": {
-					"field": {
-						"anyOf": [
-							{ "$ref": "#/definitions/RefType" },
-							{ "type": "string" }
-						]
+					"value": {
+						"oneOf": [{ "type": "string" }, { "type": "integer" }]
 					}
+				}
+			},
+			"referenced": {
+				"$ref": "#/definitions/ReferencedType"
+			},
+			"mixedArray": {
+				"type": "array",
+				"items": {
+					"oneOf": [
+						{ "$ref": "#/definitions/ReferencedType" },
+						{
+							"type": "object",
+							"properties": { "inline": { "type": "string" } }
+						}
+					]
 				}
 			}
 		},
 		"definitions": {
-			"RefType": {
+			"ReferencedType": {
 				"type": "object",
 				"properties": {
-					"name": { "type": "string" }
+					"value": {
+						"oneOf": [{ "type": "string" }, { "type": "integer" }]
+					}
 				}
 			}
 		}
 	}`
 }
 
-func (t *anyof_schema_to_struct) RawSchema() *jsonschema.Schema {
+func (t *type_naming_conventions) RawSchema() *jsonschema.Schema {
 	return &jsonschema.Schema{
 		Schema: strPtr("http://json-schema.org/draft-07/schema#"),
-		Title:  strPtr("AnyOfExample"),
+		Title:  strPtr("Config"),
 		Type:   typePtr("object"),
 		Properties: &[]*jsonschema.NamedSchema{
 			{
-				Name: "value",
-				Value: &jsonschema.Schema{
-					AnyOf: &[]*jsonschema.Schema{
-						{Type: typePtr("string")},
-						{Type: typePtr("number")},
-						{Type: typePtr("boolean")},
-					},
-				},
-			},
-			{
-				Name: "nested",
+				Name: "inline",
 				Value: &jsonschema.Schema{
 					Type: typePtr("object"),
 					Properties: &[]*jsonschema.NamedSchema{
 						{
-							Name: "field",
+							Name: "value",
 							Value: &jsonschema.Schema{
-								AnyOf: &[]*jsonschema.Schema{
-									{Ref: strPtr("#/definitions/RefType")},
+								OneOf: &[]*jsonschema.Schema{
 									{Type: typePtr("string")},
+									{Type: typePtr("integer")},
+								},
+							},
+						},
+					},
+				},
+			},
+			{
+				Name: "referenced",
+				Value: &jsonschema.Schema{
+					Ref: strPtr("#/definitions/ReferencedType"),
+				},
+			},
+			{
+				Name: "mixedArray",
+				Value: &jsonschema.Schema{
+					Type: typePtr("array"),
+					Items: &jsonschema.SchemaOrSchemaArray{
+						Schema: &jsonschema.Schema{
+							OneOf: &[]*jsonschema.Schema{
+								{Ref: strPtr("#/definitions/ReferencedType")},
+								{
+									Type: typePtr("object"),
+									Properties: &[]*jsonschema.NamedSchema{
+										{
+											Name: "inline",
+											Value: &jsonschema.Schema{
+												Type: typePtr("string"),
+											},
+										},
+									},
 								},
 							},
 						},
@@ -87,14 +114,17 @@ func (t *anyof_schema_to_struct) RawSchema() *jsonschema.Schema {
 		},
 		Definitions: &[]*jsonschema.NamedSchema{
 			{
-				Name: "RefType",
+				Name: "ReferencedType",
 				Value: &jsonschema.Schema{
 					Type: typePtr("object"),
 					Properties: &[]*jsonschema.NamedSchema{
 						{
-							Name: "name",
+							Name: "value",
 							Value: &jsonschema.Schema{
-								Type: typePtr("string"),
+								OneOf: &[]*jsonschema.Schema{
+									{Type: typePtr("string")},
+									{Type: typePtr("integer")},
+								},
 							},
 						},
 					},
@@ -104,30 +134,46 @@ func (t *anyof_schema_to_struct) RawSchema() *jsonschema.Schema {
 	}
 }
 
-func strPtr(s string) *string {
-	return &s
-}
-
-func typePtr(s string) *jsonschema.StringOrStringArray {
-	return &jsonschema.StringOrStringArray{
-		String: &s,
-	}
-}
-
-func (t *anyof_schema_to_struct) StaticSchema() *generator.StaticSchema {
+func (t *type_naming_conventions) StaticSchema() *generator.StaticSchema {
 	return &generator.StaticSchema{
 		Package_: "models",
 		Structs_: []generator.Struct{
 			&generator.StaticStruct{
-				Name_:        "RefType",
+				Name_:        "Config",
 				Description_: "",
 				Fields_: []generator.Field{
 					&generator.StaticField{
-						Name_:                "Name",
-						JSONName_:            "name",
+						Name_:                "Inline",
+						JSONName_:            "inline",
 						Description_:         "",
 						IsRequired_:          false,
-						Type_:                "*string",
+						Type_:                "*Config_Inline",
+						IsEnum_:              false,
+						EnumTypeName_:        "",
+						EnumValues_:          nil,
+						DefaultValue_:        nil,
+						DefaultValueComment_: nil,
+						ValidationRules_:     nil,
+					},
+					&generator.StaticField{
+						Name_:                "Referenced",
+						JSONName_:            "referenced",
+						Description_:         "",
+						IsRequired_:          false,
+						Type_:                "*ReferencedType",
+						IsEnum_:              false,
+						EnumTypeName_:        "",
+						EnumValues_:          nil,
+						DefaultValue_:        nil,
+						DefaultValueComment_: nil,
+						ValidationRules_:     nil,
+					},
+					&generator.StaticField{
+						Name_:                "MixedArray",
+						JSONName_:            "mixedArray",
+						Description_:         "",
+						IsRequired_:          false,
+						Type_:                "[]Config_MixedArray",
 						IsEnum_:              false,
 						EnumTypeName_:        "",
 						EnumValues_:          nil,
@@ -142,7 +188,7 @@ func (t *anyof_schema_to_struct) StaticSchema() *generator.StaticSchema {
 				HasValidation_:       false,
 			},
 			&generator.StaticStruct{
-				Name_:        "AnyOfExample",
+				Name_:        "Config_Inline",
 				Description_: "",
 				Fields_: []generator.Field{
 					&generator.StaticField{
@@ -150,20 +196,7 @@ func (t *anyof_schema_to_struct) StaticSchema() *generator.StaticSchema {
 						JSONName_:            "value",
 						Description_:         "",
 						IsRequired_:          false,
-						Type_:                "AnyOfExample_Value",
-						IsEnum_:              false,
-						EnumTypeName_:        "",
-						EnumValues_:          nil,
-						DefaultValue_:        nil,
-						DefaultValueComment_: nil,
-						ValidationRules_:     nil,
-					},
-					&generator.StaticField{
-						Name_:                "Nested",
-						JSONName_:            "nested",
-						Description_:         "",
-						IsRequired_:          false,
-						Type_:                "*AnyOfExample_Nested",
+						Type_:                "Config_Inline_Value",
 						IsEnum_:              false,
 						EnumTypeName_:        "",
 						EnumValues_:          nil,
@@ -178,11 +211,11 @@ func (t *anyof_schema_to_struct) StaticSchema() *generator.StaticSchema {
 				HasValidation_:       false,
 			},
 			&generator.StaticStruct{
-				Name_:        "AnyOfExample_Value",
+				Name_:        "Config_Inline_Value",
 				Description_: "",
 				Fields_: []generator.Field{
 					&generator.StaticField{
-						Name_:                "StringValue_AnyOf",
+						Name_:                "StringValue_OneOf",
 						JSONName_:            "string_value",
 						Description_:         "",
 						IsRequired_:          false,
@@ -195,24 +228,11 @@ func (t *anyof_schema_to_struct) StaticSchema() *generator.StaticSchema {
 						ValidationRules_:     nil,
 					},
 					&generator.StaticField{
-						Name_:                "NumberValue_AnyOf",
-						JSONName_:            "number_value",
+						Name_:                "IntegerValue_OneOf",
+						JSONName_:            "integer_value",
 						Description_:         "",
 						IsRequired_:          false,
-						Type_:                "*float64",
-						IsEnum_:              false,
-						EnumTypeName_:        "",
-						EnumValues_:          nil,
-						DefaultValue_:        nil,
-						DefaultValueComment_: nil,
-						ValidationRules_:     nil,
-					},
-					&generator.StaticField{
-						Name_:                "BooleanValue_AnyOf",
-						JSONName_:            "boolean_value",
-						Description_:         "",
-						IsRequired_:          false,
-						Type_:                "*bool",
+						Type_:                "*int",
 						IsEnum_:              false,
 						EnumTypeName_:        "",
 						EnumValues_:          nil,
@@ -227,15 +247,15 @@ func (t *anyof_schema_to_struct) StaticSchema() *generator.StaticSchema {
 				HasValidation_:       false,
 			},
 			&generator.StaticStruct{
-				Name_:        "AnyOfExample_Nested",
+				Name_:        "ReferencedType",
 				Description_: "",
 				Fields_: []generator.Field{
 					&generator.StaticField{
-						Name_:                "Field",
-						JSONName_:            "field",
+						Name_:                "Value",
+						JSONName_:            "value",
 						Description_:         "",
 						IsRequired_:          false,
-						Type_:                "AnyOfExample_Nested_Field",
+						Type_:                "ReferencedType_Value",
 						IsEnum_:              false,
 						EnumTypeName_:        "",
 						EnumValues_:          nil,
@@ -250,15 +270,15 @@ func (t *anyof_schema_to_struct) StaticSchema() *generator.StaticSchema {
 				HasValidation_:       false,
 			},
 			&generator.StaticStruct{
-				Name_:        "AnyOfExample_Nested_Field",
+				Name_:        "ReferencedType_Value",
 				Description_: "",
 				Fields_: []generator.Field{
 					&generator.StaticField{
-						Name_:                "RefValue_AnyOf",
-						JSONName_:            "ref_value",
+						Name_:                "StringValue_OneOf",
+						JSONName_:            "string_value",
 						Description_:         "",
 						IsRequired_:          false,
-						Type_:                "*RefType",
+						Type_:                "*string",
 						IsEnum_:              false,
 						EnumTypeName_:        "",
 						EnumValues_:          nil,
@@ -267,11 +287,11 @@ func (t *anyof_schema_to_struct) StaticSchema() *generator.StaticSchema {
 						ValidationRules_:     nil,
 					},
 					&generator.StaticField{
-						Name_:                "StringValue_AnyOf",
-						JSONName_:            "string_value",
+						Name_:                "IntegerValue_OneOf",
+						JSONName_:            "integer_value",
 						Description_:         "",
 						IsRequired_:          false,
-						Type_:                "*string",
+						Type_:                "*int",
 						IsEnum_:              false,
 						EnumTypeName_:        "",
 						EnumValues_:          nil,
@@ -289,7 +309,7 @@ func (t *anyof_schema_to_struct) StaticSchema() *generator.StaticSchema {
 	}
 }
 
-func (t *anyof_schema_to_struct) GoCode() string {
+func (t *type_naming_conventions) GoCode() string {
 	return `// Code generated by schema2go. DO NOT EDIT.
 // 🏗️ Generated from JSON Schema
 
@@ -300,43 +320,27 @@ import (
 	"gitlab.com/tozd/go/errors"
 )
 
-type RefType struct {
-	Name *string $$$json:\"name,omitempty\"$$$
+type Config struct {
+	Inline *Config_Inline $$$json:"inline,omitempty"$$$
+	Referenced *ReferencedType $$$json:"referenced,omitempty"$$$
+	MixedArray []Config_MixedArray $$$json:"mixedArray,omitempty"$$$
 }
 
-type AnyOfExample struct {
-	Value AnyOfExample_Value $$$json:\"value,omitempty\"$$$
-	Nested *AnyOfExample_Nested $$$json:\"nested,omitempty\"$$$
+type Config_Inline struct {
+	Value Config_Inline_Value $$$json:"value,omitempty"$$$
 }
 
-type AnyOfExample_Value struct {
-	StringValue_AnyOf  *string  $$$json:\"string_value,omitempty\"$$$
-	NumberValue_AnyOf  *float64 $$$json:\"number_value,omitempty\"$$$
-	BooleanValue_AnyOf *bool    $$$json:\"boolean_value,omitempty\"$$$
+type Config_Inline_Value struct {
+	StringValue_OneOf *string $$$json:"string_value,omitempty"$$$
+	IntegerValue_OneOf *int $$$json:"integer_value,omitempty"$$$
 }
 
-type AnyOfExample_Nested struct {
-	Field AnyOfExample_Nested_Field $$$json:\"field,omitempty\"$$$
+type ReferencedType struct {
+	Value ReferencedType_Value $$$json:"value,omitempty"$$$
 }
 
-type AnyOfExample_Nested_Field struct {
-	RefValue_AnyOf   *RefType $$$json:\"ref_value,omitempty\"$$$
-	StringValue_AnyOf *string  $$$json:\"string_value,omitempty\"$$$
-}
-
-func (a *AnyOfExample_Value) UnmarshalJSON(data []byte) error {
-	return nil // TODO: Implement
-}
-
-func (a AnyOfExample_Value) MarshalJSON() ([]byte, error) {
-	return nil, nil // TODO: Implement
-}
-
-func (a *AnyOfExample_Nested_Field) UnmarshalJSON(data []byte) error {
-	return nil // TODO: Implement
-}
-
-func (a AnyOfExample_Nested_Field) MarshalJSON() ([]byte, error) {
-	return nil, nil // TODO: Implement
+type ReferencedType_Value struct {
+	StringValue_OneOf *string $$$json:"string_value,omitempty"$$$
+	IntegerValue_OneOf *int $$$json:"integer_value,omitempty"$$$
 }`
 }

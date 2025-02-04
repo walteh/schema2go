@@ -2,7 +2,7 @@ package testcases
 
 import (
 	"github.com/google/gnostic/jsonschema"
-	"github.com/walteh/schema2go/pkg/generator"
+	"github.com/walteh/schema2go/internal/archives/generator"
 )
 
 type required_fields_schema_to_struct struct {
