@@ -15,7 +15,7 @@ func (t *type_naming_conventions) Name() string {
 }
 
 func (t *type_naming_conventions) JSONSchema() string {
-	return `{
+	return /*jsonc*/ `{
 		"$schema": "http://json-schema.org/draft-07/schema#",
 		"title": "Config",
 		"type": "object",
@@ -134,5 +134,8 @@ func (t *type_naming_conventions) RawSchema() *jsonschema.Schema {
 }
 
 func (t *type_naming_conventions) GoCode() string {
-	return ``
+	return /*go*/ `
+package example
+
+`
 }

@@ -15,7 +15,7 @@ func (t *schema_documentation) Name() string {
 }
 
 func (t *schema_documentation) JSONSchema() string {
-	return `{
+	return /*jsonc*/ `{
 		"$schema": "http://json-schema.org/draft-07/schema#",
 		"title": "DocumentedExample",
 		"description": "A thoroughly documented example schema",
@@ -83,5 +83,8 @@ func float64Ptr(v float64) *float64 {
 }
 
 func (t *schema_documentation) GoCode() string {
-	return ``
+	return /*go*/ `
+package example
+
+`
 }

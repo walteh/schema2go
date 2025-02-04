@@ -16,7 +16,7 @@ func (me *required_fields_schema_to_struct) Name() string {
 }
 
 func (*required_fields_schema_to_struct) JSONSchema() string {
-	return `{
+	return /*jsonc*/ `{
 		"$schema": "http://json-schema.org/draft-07/schema#",
 		"title": "RequiredExample",
 		"type": "object",
@@ -68,5 +68,8 @@ func (*required_fields_schema_to_struct) RawSchema() *jsonschema.Schema {
 }
 
 func (*required_fields_schema_to_struct) GoCode() string {
-	return ``
+	return /*go*/ `
+package example
+
+`
 }

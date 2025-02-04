@@ -16,7 +16,7 @@ func (me *allof_schema_to_struct) Name() string {
 }
 
 func (*allof_schema_to_struct) JSONSchema() string {
-	return `{
+	return /*jsonc*/ `{
 		"$schema": "http://json-schema.org/draft-07/schema#",
 		"title": "AllOfExample",
 		"type": "object",
@@ -64,5 +64,8 @@ func (*allof_schema_to_struct) RawSchema() *jsonschema.Schema {
 }
 
 func (*allof_schema_to_struct) GoCode() string {
-	return ``
+	return /*go*/ `
+package example
+
+`
 }

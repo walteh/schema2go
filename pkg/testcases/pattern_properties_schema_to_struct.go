@@ -11,7 +11,7 @@ func (t *pattern_properties_schema_to_struct) Name() string {
 }
 
 func (t *pattern_properties_schema_to_struct) JSONSchema() string {
-	return `{
+	return /*jsonc*/ `{
 		"$schema": "http://json-schema.org/draft-07/schema#",
 		"title": "DynamicConfig",
 		"type": "object",
@@ -64,5 +64,8 @@ func boolPtr(b bool) *bool {
 }
 
 func (t *pattern_properties_schema_to_struct) GoCode() string {
-	return ``
+	return /*go*/ `
+package example
+
+`
 }

@@ -16,7 +16,7 @@ func (me *nested_object_simple) Name() string {
 }
 
 func (*nested_object_simple) JSONSchema() string {
-	return `{
+	return /*jsonc*/ `{
 		"$schema": "http://json-schema.org/draft-07/schema#",
 		"title": "Parent",
 		"type": "object",
@@ -66,5 +66,8 @@ func (*nested_object_simple) RawSchema() *jsonschema.Schema {
 }
 
 func (*nested_object_simple) GoCode() string {
-	return ``
+	return /*go*/ `
+package example
+
+`
 }
