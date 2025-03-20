@@ -3,7 +3,7 @@ package parser
 import (
 	"strings"
 
-	"github.com/atombender/go-jsonschema/pkg/schemas"
+	"github.com/walteh/schema2go/pkg/schemas"
 )
 
 func ParseGoJsonSchema(input string) (*schemas.Schema, error) {
