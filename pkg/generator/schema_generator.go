@@ -3,6 +3,7 @@ package generator
 import (
 	"errors"
 	"fmt"
+	"path/filepath"
 	"strings"
 
 	"github.com/google/go-cmp/cmp"
@@ -45,6 +46,16 @@ type schemaGenerator struct {
 func (g *schemaGenerator) generateRootType() error {
 	if g.schema.ObjectAsType == nil {
 		return errSchemaHasNoRoot
+	}
+
+	for parentName, def := range g.schema.Definitions {
+		if len(def.OneOf) > 0 {
+			resolved := g.resolveRefs(def.OneOf)
+
+			g.schemaTypesByRef = map[string]*schemas.Type{}
+
+			_ = schemas.SharedFieldsOfOneOfChildren(resolved, parentName)
+		}
 	}
 
 	for _, name := range sortDefinitionsByName(g.schema.Definitions) {
@@ -640,6 +651,7 @@ func (g *schemaGenerator) generateStructType(t *schemas.Type, scope nameScope) (
 	var structType codegen.StructType
 
 	for _, name := range sortedKeys(t.Properties) {
+
 		if err := g.addStructField(&structType, t, scope, name, uniqueNames, requiredNames); err != nil {
 			return nil, err
 		}
@@ -741,9 +753,20 @@ func (g *schemaGenerator) addStructField(
 	requiredNames map[string]bool,
 ) error {
 	prop := t.Properties[name]
+
+	sharedAttr := prop.GetSharedAttribute()
+
+	if sharedAttr != nil && sharedAttr.IsConstant {
+		return nil
+	}
+
 	isRequired := requiredNames[name]
 
 	fieldName := g.caser.Identifierize(name)
+
+	if sharedAttr != nil {
+		fieldName = sharedAttr.ParentName + fieldName
+	}
 
 	if ext := prop.GoJSONSchemaExtension; ext != nil {
 		for _, pkg := range ext.Imports {
@@ -870,7 +893,7 @@ func (g *schemaGenerator) generateAllOfType(allOf []*schemas.Type, scope nameSco
 func (g *schemaGenerator) generateOneOfType(oneOf *schemas.Type, scope nameScope) (codegen.Type, error) {
 	typs := g.resolveRefs(oneOf.OneOf)
 
-	attrs := schemas.SharedFieldsOfOneOfChildren(typs)
+	attrs := schemas.SharedFieldsOfOneOfChildren(typs, scope.string())
 
 	interfaceType := codegen.InterfaceType{
 		// Name:    scope.string(),
@@ -906,18 +929,39 @@ func (g *schemaGenerator) generateOneOfType(oneOf *schemas.Type, scope nameScope
 				Nillable: paramType.IsNillable(),
 			}
 
-			for _, value := range attr.ConstantValuesMap {
+			for key, value := range attr.ConstantValuesMap {
+				constantName := scope.add(upperCaseName).add(g.caser.Identifierize(value)).string()
+
 				constant := codegen.Constant{
-					Name:  scope.add(upperCaseName).add(g.caser.Identifierize(value)).string(),
+					Name:  constantName,
 					Value: value,
 					Type:  tdecl,
 				}
 
 				g.output.file.Package.AddDecl(&constant)
+
+				g.output.file.Package.AddDecl(&codegen.Method{
+					Impl: func(out *codegen.Emitter) {
+						out.Printlnf("func (j *%s) %s() %s { return %s }", filepath.Base(key), upperCaseName, tdecl.Type, constantName)
+					},
+					Name: filepath.Base(key) + "_" + upperCaseName + "_constant_function",
+				})
 			}
 
 			g.output.file.Package.AddDecl(&decl)
+
+		} else {
+			for key := range attr.ConstantValuesMap {
+
+				g.output.file.Package.AddDecl(&codegen.Method{
+					Impl: func(out *codegen.Emitter) {
+						out.Printlnf("func (j *%s) %s() string { return j.%sValue }", filepath.Base(key), upperCaseName, upperCaseName)
+					},
+					Name: filepath.Base(key) + "_" + upperCaseName + "_non_constant_function",
+				})
+			}
 		}
+
 	}
 
 	// g.output.file.Package.AddDecl(&interfaceType)

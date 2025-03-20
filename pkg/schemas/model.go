@@ -201,6 +201,8 @@ type Type struct {
 
 	definitionRefName string `json:"-"`
 
+	sharedAttribute *SharedAttr `json:"-"`
+
 	// Flags.
 	Dereferenced bool `json:"-"` // Marks that his type has been dereferenced.
 }
@@ -219,9 +221,10 @@ type SharedAttr struct {
 	IsRequired        bool
 	Type              Type
 	ConstantValuesMap map[string]string
+	ParentName        string
 }
 
-func SharedFieldsOfOneOfChildren(types []*Type) []SharedAttr {
+func SharedFieldsOfOneOfChildren(types []*Type, parentName string) []SharedAttr {
 	shared := []SharedAttr{}
 
 	// If there are no oneOf children, return an empty array
@@ -281,18 +284,34 @@ func SharedFieldsOfOneOfChildren(types []*Type) []SharedAttr {
 
 			if isConstant {
 				constantValuesMap[otherChild.definitionRefName] = *otherPropType.Const
+			} else {
+				constantValuesMap[otherChild.definitionRefName] = ""
 			}
+
 		}
 
 		// If this property is shared across all children
 		if isShared {
-			shared = append(shared, SharedAttr{
+			sharedAttr := SharedAttr{
+				ParentName:        parentName,
 				Name:              propName,
 				IsConstant:        isConstant,
 				IsRequired:        isRequired,
 				Type:              *propType,
 				ConstantValuesMap: constantValuesMap,
-			})
+			}
+
+			shared = append(shared, sharedAttr)
+		}
+	}
+
+	for _, child := range types {
+		for propName, prop := range child.Properties {
+			for _, sharedAttr := range shared {
+				if sharedAttr.Name == propName {
+					prop.sharedAttribute = &sharedAttr
+				}
+			}
 		}
 	}
 
@@ -320,6 +339,10 @@ func (value *Type) SetOneOfParent(parent *Type) {
 
 func (value *Type) GetOneOfParent() *Type {
 	return value.oneOfParent
+}
+
+func (value *Type) GetSharedAttribute() *SharedAttr {
+	return value.sharedAttribute
 }
 
 func SetAllOneOfParentsForDefinitions(typ *Type) {

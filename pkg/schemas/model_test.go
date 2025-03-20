@@ -61,7 +61,7 @@ func TestSharedFieldsOfOneOfChildren(t *testing.T) {
 		}
 
 		// Get shared fields
-		shared := SharedFieldsOfOneOfChildren(parent.OneOf)
+		shared := SharedFieldsOfOneOfChildren(parent.OneOf, "")
 
 		// Verify results
 		assert.Len(t, shared, 1)
@@ -108,7 +108,7 @@ func TestSharedFieldsOfOneOfChildren(t *testing.T) {
 		}
 
 		// Get shared fields
-		shared := SharedFieldsOfOneOfChildren(parent.OneOf)
+		shared := SharedFieldsOfOneOfChildren(parent.OneOf, "")
 
 		// Verify results
 		assert.Len(t, shared, 1)
@@ -145,7 +145,7 @@ func TestSharedFieldsOfOneOfChildren(t *testing.T) {
 		}
 
 		// Get shared fields
-		shared := SharedFieldsOfOneOfChildren(parent.OneOf)
+		shared := SharedFieldsOfOneOfChildren(parent.OneOf, "")
 
 		// Verify results
 		assert.Empty(t, shared)
@@ -158,7 +158,7 @@ func TestSharedFieldsOfOneOfChildren(t *testing.T) {
 		}
 
 		// Get shared fields
-		shared := SharedFieldsOfOneOfChildren(parent.OneOf)
+		shared := SharedFieldsOfOneOfChildren(parent.OneOf, "")
 
 		// Verify results
 		assert.Empty(t, shared)
@@ -193,7 +193,7 @@ func TestSharedFieldsOfOneOfChildren(t *testing.T) {
 		}
 
 		// Get shared fields
-		shared := SharedFieldsOfOneOfChildren(parent.OneOf)
+		shared := SharedFieldsOfOneOfChildren(parent.OneOf, "")
 
 		// Verify results - should be empty because required status is inconsistent
 		assert.Empty(t, shared, "Fields with inconsistent required status should not be considered shared")
@@ -228,7 +228,7 @@ func TestSharedFieldsOfOneOfChildren(t *testing.T) {
 		}
 
 		// Get shared fields
-		shared := SharedFieldsOfOneOfChildren(parent.OneOf)
+		shared := SharedFieldsOfOneOfChildren(parent.OneOf, "")
 
 		// Verify results
 		assert.Len(t, shared, 1, "Fields with consistent required status should be considered shared")
