@@ -67,8 +67,8 @@ func (t *schema_documentation) RawSchema() *jsonschema.Schema {
 							Value: &jsonschema.Schema{
 								Type:        typePtr("integer"),
 								Description: strPtr("A documented integer field"),
-								Minimum:     jsonschema.NewSchemaNumberWithFloat(0),
-								Maximum:     jsonschema.NewSchemaNumberWithFloat(100),
+								Minimum:     jsonschema.NewSchemaNumberWithInteger(0),
+								Maximum:     jsonschema.NewSchemaNumberWithInteger(100),
 							},
 						},
 					},
