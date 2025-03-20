@@ -2,18 +2,26 @@
 
 package simple
 
-import "encoding/json"
-import "fmt"
+import (
+	"encoding/json"
+	"errors"
+	"fmt"
+)
 
 type Circle struct {
-	// Color corresponds to the JSON schema field "color".
-	Color string `json:"color" yaml:"color" mapstructure:"color"`
+	// ShapeColor corresponds to the JSON schema field "color".
+	ShapeColor string `json:"color" yaml:"color" mapstructure:"color"`
 
 	// Radius corresponds to the JSON schema field "radius".
 	Radius float64 `json:"radius" yaml:"radius" mapstructure:"radius"`
+}
 
-	// Type corresponds to the JSON schema field "type".
-	Type string `json:"type" yaml:"type" mapstructure:"type"`
+func (j *Circle) Color() string {
+	return j.ShapeColor
+}
+
+func (j *Circle) Type() ShapeType {
+	return ShapeTypeCircle
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
@@ -65,21 +73,79 @@ func (j *House) UnmarshalJSON(b []byte) error {
 	if err := json.Unmarshal(b, &plain); err != nil {
 		return err
 	}
+	if v, err := parseUnknownShape(plain.Base); err != nil {
+		return err
+	} else {
+		plain.Base = v
+	}
+	if v, err := parseUnknownShape(plain.Roof); err != nil {
+		return err
+	} else {
+		plain.Roof = v
+	}
 	*j = House(plain)
 	return nil
 }
 
-type Shape map[string]interface{}
+type Shape interface {
+	Type() ShapeType
+	Color() string
+}
+
+
+func parseUnknownShape(raw interface{}) (Shape, error) {
+
+	if raw == nil {
+		return nil, nil
+	}
+
+	shapes := []Shape{
+		(*Circle)(nil),
+		(*Square)(nil),
+		(*Triangle)(nil),
+	}
+
+	errs := []error{}
+
+	for _, shape := range shapes {
+		str, err := json.Marshal(shape)
+		if err != nil {
+			return nil, err
+		}
+		err = json.Unmarshal(str, raw)
+		if err != nil {
+			errs = append(errs, fmt.Errorf("failed to unmarshal %T: %w", shape, err))
+			continue
+		}
+		return shape, nil
+	}
+
+	return nil, fmt.Errorf("no matching shape found: %w", errors.Join(errs...))
+}
+
+type ShapeType string
+
+const (
+	ShapeTypeCircle ShapeType = "circle"
+	ShapeTypeSquare ShapeType = "square"
+	ShapeTypeTriangle ShapeType = "triangle"
+)
+
 
 type Square struct {
-	// Color corresponds to the JSON schema field "color".
-	Color string `json:"color" yaml:"color" mapstructure:"color"`
+	// ShapeColor corresponds to the JSON schema field "color".
+	ShapeColor string `json:"color" yaml:"color" mapstructure:"color"`
 
 	// Side corresponds to the JSON schema field "side".
 	Side float64 `json:"side" yaml:"side" mapstructure:"side"`
+}
 
-	// Type corresponds to the JSON schema field "type".
-	Type string `json:"type" yaml:"type" mapstructure:"type"`
+func (j *Square) Color() string {
+	return j.ShapeColor
+}
+
+func (j *Square) Type() ShapeType {
+	return ShapeTypeSquare
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
@@ -110,14 +176,19 @@ type Triangle struct {
 	// Base corresponds to the JSON schema field "base".
 	Base float64 `json:"base" yaml:"base" mapstructure:"base"`
 
-	// Color corresponds to the JSON schema field "color".
-	Color string `json:"color" yaml:"color" mapstructure:"color"`
+	// ShapeColor corresponds to the JSON schema field "color".
+	ShapeColor string `json:"color" yaml:"color" mapstructure:"color"`
 
 	// Height corresponds to the JSON schema field "height".
 	Height float64 `json:"height" yaml:"height" mapstructure:"height"`
+}
 
-	// Type corresponds to the JSON schema field "type".
-	Type string `json:"type" yaml:"type" mapstructure:"type"`
+func (j *Triangle) Color() string {
+	return j.ShapeColor
+}
+
+func (j *Triangle) Type() ShapeType {
+	return ShapeTypeTriangle
 }
 
 // UnmarshalJSON implements json.Unmarshaler.

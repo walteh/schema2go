@@ -392,3 +392,58 @@ func (f *StructField) Generate(out *Emitter) {
 		out.Printf(" `%s`", f.Tags)
 	}
 }
+
+type InterfaceMethod struct {
+	Name    string
+	Params  []Type
+	Returns []Type
+}
+
+func (i *InterfaceMethod) Generate(out *Emitter) {
+	out.Printf("%s(", i.Name)
+	for j, p := range i.Params {
+		if j > 0 {
+			out.Printf(", ")
+		}
+
+		// emit the type
+		p.Generate(out)
+
+	}
+
+	out.Printf(") ")
+	out.Printf("(")
+	for j, r := range i.Returns {
+		if j > 0 {
+			out.Printf(", ")
+		}
+
+		r.Generate(out)
+	}
+
+	out.Printf(")")
+}
+
+type InterfaceType struct {
+	Methods []InterfaceMethod
+}
+
+func (InterfaceType) IsNillable() bool { return true }
+
+func (i *InterfaceType) AddMethod(m InterfaceMethod) {
+	i.Methods = append(i.Methods, m)
+}
+
+func (i *InterfaceType) Generate(out *Emitter) {
+	out.Printlnf("interface {")
+	out.Newline()
+	out.Indent(1)
+
+	for _, m := range i.Methods {
+		m.Generate(out)
+		out.Newline()
+	}
+
+	out.Indent(-1)
+	out.Printlnf("}")
+}

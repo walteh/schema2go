@@ -50,6 +50,8 @@ func (g *schemaGenerator) generateRootType() error {
 	for _, name := range sortDefinitionsByName(g.schema.Definitions) {
 		def := g.schema.Definitions[name]
 
+		schemas.SetAllOneOfParentsForDefinitions(def)
+
 		_, err := g.generateDeclaredType(def, newNameScope(g.caser.Identifierize(name)))
 		if err != nil {
 			return err
@@ -65,7 +67,9 @@ func (g *schemaGenerator) generateRootType() error {
 		return nil
 	}
 
-	_, err := g.generateDeclaredType((*schemas.Type)(g.schema.ObjectAsType), newNameScope(rootTypeName))
+	typ := (*schemas.Type)(g.schema.ObjectAsType)
+
+	_, err := g.generateDeclaredType(typ, newNameScope(rootTypeName))
 
 	return err
 }
@@ -604,7 +608,7 @@ func (g *schemaGenerator) determineTypeName(t *schemas.Type) (string, bool) {
 }
 
 func (g *schemaGenerator) generateStructType(t *schemas.Type, scope nameScope) (codegen.Type, error) {
-	if len(t.Properties) == 0 && len(t.AllOf) == 0 && len(t.AnyOf) == 0 {
+	if len(t.Properties) == 0 && len(t.AllOf) == 0 && len(t.AnyOf) == 0 && len(t.OneOf) == 0 {
 		if len(t.Required) > 0 {
 			g.warner("Object type with no properties has required fields; " +
 				"skipping validation code for them since we don't know their types")
@@ -647,6 +651,10 @@ func (g *schemaGenerator) generateStructType(t *schemas.Type, scope nameScope) (
 
 	if len(t.AllOf) > 0 {
 		return g.generateAllOfType(t.AllOf, scope)
+	}
+
+	if len(t.OneOf) > 0 {
+		return g.generateOneOfType(t, scope)
 	}
 
 	// Checking .Not here because `false` is unmarshalled to .Not = Type{}.
@@ -859,6 +867,107 @@ func (g *schemaGenerator) generateAllOfType(allOf []*schemas.Type, scope nameSco
 	return g.generateTypeInline(allOfType, scope)
 }
 
+func (g *schemaGenerator) generateOneOfType(oneOf *schemas.Type, scope nameScope) (codegen.Type, error) {
+	typs := g.resolveRefs(oneOf.OneOf)
+
+	attrs := schemas.SharedFieldsOfOneOfChildren(typs)
+
+	interfaceType := codegen.InterfaceType{
+		// Name:    scope.string(),
+		Methods: []codegen.InterfaceMethod{},
+	}
+
+	for _, attr := range attrs {
+
+		upperCaseName := g.caser.Identifierize(attr.Name)
+
+		paramType, err := g.generateTypeInline(&attr.Type, scope.add(upperCaseName))
+		if err != nil {
+			return nil, fmt.Errorf("could not generate type for field %q: %w", attr.Name, err)
+		}
+
+		method := codegen.InterfaceMethod{
+			Name:    upperCaseName,
+			Params:  []codegen.Type{},
+			Returns: []codegen.Type{paramType},
+		}
+
+		interfaceType.AddMethod(method)
+
+		if attr.IsConstant {
+
+			decl := codegen.TypeDecl{
+				Name: scope.add(upperCaseName).string(),
+				Type: paramType,
+			}
+
+			tdecl := codegen.CustomNameType{
+				Type:     decl.Name,
+				Nillable: paramType.IsNillable(),
+			}
+
+			for _, value := range attr.ConstantValuesMap {
+				constant := codegen.Constant{
+					Name:  scope.add(upperCaseName).add(g.caser.Identifierize(value)).string(),
+					Value: value,
+					Type:  tdecl,
+				}
+
+				g.output.file.Package.AddDecl(&constant)
+			}
+
+			g.output.file.Package.AddDecl(&decl)
+		}
+	}
+
+	// g.output.file.Package.AddDecl(&interfaceType)
+
+	// type Shape interface {
+	// 	Type() ShapeType
+	// 	Color() string
+	// }
+
+	// func parseUnknownShape(raw interface{}) (Shape, error) {
+
+	// 	if raw == nil {
+	// 		return nil, nil
+	// 	}
+
+	// 	shapes := []Shape{
+	// 		(*Circle)(nil),
+	// 		(*Square)(nil),
+	// 		(*Triangle)(nil),
+	// 	}
+
+	// 	errs := []error{}
+
+	// 	for _, shape := range shapes {
+	// 		str, err := json.Marshal(shape)
+	// 		if err != nil {
+	// 			return nil, err
+	// 		}
+	// 		err = json.Unmarshal(str, raw)
+	// 		if err != nil {
+	// 			errs = append(errs, fmt.Errorf("failed to unmarshal %T: %w", shape, err))
+	// 			continue
+	// 		}
+	// 		return shape, nil
+	// 	}
+
+	// 	return nil, fmt.Errorf("no matching shape found: %w", errors.Join(errs...))
+	// }
+
+	// type ShapeType string
+
+	// const (
+	// 	ShapeTypeCircle ShapeType = "circle"
+	// 	ShapeTypeSquare ShapeType = "square"
+	// 	ShapeTypeTriangle ShapeType = "triangle"
+	// )
+
+	return &interfaceType, nil
+}
+
 func (g *schemaGenerator) defaultPropertyValue(prop *schemas.Type) any {
 	if prop.AdditionalProperties != nil {
 		if len(prop.AdditionalProperties.Type) == 0 {
@@ -913,6 +1022,10 @@ func (g *schemaGenerator) generateTypeInline(t *schemas.Type, scope nameScope) (
 
 		if len(t.AllOf) > 0 {
 			return g.generateAllOfType(t.AllOf, scope)
+		}
+
+		if len(t.OneOf) > 0 {
+			return g.generateOneOfType(t, scope)
 		}
 
 		typeIndex := 0
@@ -1181,6 +1294,8 @@ func (g *schemaGenerator) resolveRef(t *schemas.Type) (*schemas.Type, error) {
 	ntyp.Decl.SchemaType.Dereferenced = true
 
 	g.schemaTypesByRef[t.Ref] = ntyp.Decl.SchemaType
+
+	ntyp.Decl.SchemaType.SetDefinitionRefName(t.Ref)
 
 	return ntyp.Decl.SchemaType, nil
 }

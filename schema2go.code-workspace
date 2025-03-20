@@ -4,10 +4,7 @@
 			"name": "root",
 			"path": "."
 		},
-		{
-			"name": "fork [go]",
-			"path": "../go-jsonschema"
-		},
+
 		{
 			"name": "code-extension [ts]",
 			"path": "code-extension"

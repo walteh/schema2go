@@ -196,8 +196,144 @@ type Type struct {
 	subSchemasCount   int           `json:"-"`
 	subSchemaTypeElem bool          `json:"-"`
 
+	Const       *string `json:"const,omitempty"`
+	oneOfParent *Type   `json:"-"`
+
+	definitionRefName string `json:"-"`
+
 	// Flags.
 	Dereferenced bool `json:"-"` // Marks that his type has been dereferenced.
+}
+
+func (value *Type) SetDefinitionRefName(name string) {
+	value.definitionRefName = name
+}
+
+func (value *Type) GetDefinitionRefName() string {
+	return value.definitionRefName
+}
+
+type SharedAttr struct {
+	Name              string
+	IsConstant        bool
+	IsRequired        bool
+	Type              Type
+	ConstantValuesMap map[string]string
+}
+
+func SharedFieldsOfOneOfChildren(types []*Type) []SharedAttr {
+	shared := []SharedAttr{}
+
+	// If there are no oneOf children, return an empty array
+	if len(types) == 0 {
+		return shared
+	}
+
+	// Get the first child to compare against others
+	firstChild := types[0]
+
+	// If the first child doesn't have properties, return empty
+	if firstChild.Properties == nil {
+		return shared
+	}
+
+	// For each property in the first child
+	for propName, propType := range firstChild.Properties {
+		isShared := true
+		isConstant := propType.Const != nil
+		isRequired := isPropertyRequired(firstChild, propName)
+		constantValuesMap := map[string]string{}
+		if isConstant {
+			constantValuesMap[firstChild.definitionRefName] = *propType.Const
+		}
+
+		// Check if this property exists in all other children
+		for _, otherChild := range types[1:] {
+			if otherChild.Properties == nil {
+				isShared = false
+				break
+			}
+
+			otherPropType := otherChild.Properties[propName]
+
+			// If any child doesn't have this property, it's not shared
+			if otherPropType == nil {
+				isShared = false
+				break
+			}
+
+			// If types don't match, it's not a valid shared field
+			if !propType.Type.Equals(otherPropType.Type) {
+				isShared = false
+				break
+			}
+
+			// If required status doesn't match, it's not a valid shared field
+			if isRequired != isPropertyRequired(otherChild, propName) {
+				isShared = false
+				break
+			}
+
+			// Check if this is a constant field (all children have const values but possibly different)
+			if isConstant && otherPropType.Const == nil {
+				isConstant = false
+			}
+
+			if isConstant {
+				constantValuesMap[otherChild.definitionRefName] = *otherPropType.Const
+			}
+		}
+
+		// If this property is shared across all children
+		if isShared {
+			shared = append(shared, SharedAttr{
+				Name:              propName,
+				IsConstant:        isConstant,
+				IsRequired:        isRequired,
+				Type:              *propType,
+				ConstantValuesMap: constantValuesMap,
+			})
+		}
+	}
+
+	return shared
+}
+
+// isPropertyRequired checks if a property is in the required list
+func isPropertyRequired(typ *Type, propName string) bool {
+	if typ.Required == nil {
+		return false
+	}
+
+	for _, req := range typ.Required {
+		if req == propName {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (value *Type) SetOneOfParent(parent *Type) {
+	value.oneOfParent = parent
+}
+
+func (value *Type) GetOneOfParent() *Type {
+	return value.oneOfParent
+}
+
+func SetAllOneOfParentsForDefinitions(typ *Type) {
+
+	if typ.subSchemaType == SubSchemaTypeOneOf {
+		for _, child := range typ.OneOf {
+			child.SetOneOfParent(typ)
+		}
+	}
+
+	for _, child := range typ.Definitions {
+		SetAllOneOfParentsForDefinitions(child)
+	}
+
 }
 
 func (value *Type) SetSubSchemaType(sst SubSchemaType) {
@@ -287,6 +423,23 @@ func AnyOf(types []*Type) (*Type, error) {
 	typ.subSchemasCount = len(types)
 
 	return typ, nil
+}
+
+func OneOf(types []*Type) (*Type, error) {
+	typ, err := IsolateCommonFields(types)
+	if err != nil {
+		return nil, err
+	}
+
+	typ.subSchemaType = SubSchemaTypeOneOf
+	typ.subSchemasCount = len(types)
+
+	return typ, nil
+}
+
+func IsolateCommonFields(types []*Type) (*Type, error) {
+	// TODO(walter): Implement this.
+	return nil, nil
 }
 
 func MergeTypes(types []*Type) (*Type, error) {
