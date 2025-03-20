@@ -1,0 +1,82 @@
+{
+	"$schema": "http://json-schema.org/schema#",
+	"definitions": {
+		"House": {
+			"type": "object",
+			"properties": {
+				"base": {
+					"$ref": "#/definitions/Shape"
+				},
+				"roof": {
+					"$ref": "#/definitions/Shape"
+				}
+			},
+			"required": ["base", "roof"]
+		},
+		"Shape": {
+			"type": "object",
+			"oneOf": [
+				{
+					"$ref": "#/definitions/Circle"
+				},
+				{
+					"$ref": "#/definitions/Square"
+				},
+				{
+					"$ref": "#/definitions/Triangle"
+				}
+			]
+		},
+		"Circle": {
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"const": "circle"
+				},
+				"color": {
+					"type": "string"
+				},
+				"radius": {
+					"type": "number"
+				}
+			},
+			"required": ["type", "radius", "color"]
+		},
+		"Square": {
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"const": "square"
+				},
+				"color": {
+					"type": "string"
+				},
+				"side": {
+					"type": "number"
+				}
+			},
+			"required": ["type", "side", "color"]
+		},
+		"Triangle": {
+			"type": "object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"const": "triangle"
+				},
+				"color": {
+					"type": "string"
+				},
+				"base": {
+					"type": "number"
+				},
+				"height": {
+					"type": "number"
+				}
+			},
+			"required": ["type", "base", "height", "color"]
+		}
+	}
+}
