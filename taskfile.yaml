@@ -5,6 +5,11 @@ version: "3"
 vars:
     GO_MODULES:
         sh: cat go.work | grep -oEh  '\t+(\./*[^[:space:]]*)' | tr -d '\t'
+    BINARY_NAME: "ss"
+    JSONSCHEMA_FILES:
+        sh: find . -type f -name '*.schema.json'
+    MOCKERY_SOURCE_FILES:
+        sh: 'grep -r "//go:mockery" --include="*.go" . | cut -d: -f1 | sort | uniq'
 
 includes:
     tool:
@@ -17,77 +22,78 @@ includes:
 tasks:
     generate-taskfiles:
         run: once
-        env:
-            {
-                OUTPUT_DIR: "./out",
-                SCRIPTS_DIR: "./scripts",
-                TASKFILE_OUTPUT_DIR: "./gen/taskfiles",
-            }
+        env: { OUTPUT_DIR: "./out", SCRIPTS_DIR: "./scripts", TASKFILE_OUTPUT_DIR: "./gen/taskfiles" }
         cmds:
-            - ./scripts/setup-tools-for-local.sh --generate-taskfiles --skip-build
+            - ./scripts/generate-taskfiles.sh --generate-taskfiles
         sources:
             - ./tools/**/*
             - ./scripts/**/*
         generates:
             - "./gen/taskfiles/**/*"
 
-    local-setup-tools:
-        run: once
-        deps: [generate-taskfiles]
-        env:
-            {
-                SCRIPTS_DIR: "./scripts",
-                TASKFILE_OUTPUT_DIR: "./gen/taskfiles",
-                TOOLS_OUTPUT_DIR: "./out/tools",
-            }
-        cmds:
-            - ./scripts/setup-tools-for-local.sh
-        sources:
-            - ./tools/**/*
-            - ./scripts/setup-tools-for-local.sh
-            - ./scripts/build-tool.sh
-            - go.work.sum
-        generates:
-            - ./out/tools/**/*
-
     mockery:
+        deps: [generate-mockery-config]
         cmds:
-            - ./scripts/run-tool.sh mockery
-            - find ./gen/mockery -type f -not -mmin -1 -delete
+            - ./go tool mockery --config=./gen/mockery/.mockery.yaml
+            - find ./gen/mockery/*.go -type f -not -mmin -1 -delete
         generates:
             - ./gen/mockery/*.go
         sources:
-            - ./**/*.go
+            - "{{.MOCKERY_SOURCE_FILES}}"
+            - gen/mockery/.mockery.yaml
 
     test:
-        cmd: ./test-runner.sh
+        cmd: ./go test ./...
+        env:
+            MAX_LINES: '{{.MAX_LINES | default "1000"}}'
+
+    test-all:
+        cmd: ./go test -max-lines=all ./...
+
+    generate-mockery-config:
+        cmds:
+            - ./scripts/generate-mockery-config.sh
+        generates:
+            - gen/mockery/.mockery.yaml
+        sources:
+            - "{{.MOCKERY_SOURCE_FILES}}"
 
     install-executables:
         cmds:
-            - go install ./cmd/gotmpls
+            - ./go install ./cmd/{{.BINARY_NAME}}
 
-    copyrc:
-        desc: copyrc
+    generate-jsonschema-single:
+        internal: true
+        requires: { vars: [ITEMNAME, ITEM] }
         cmds:
-            - ./scripts/run-tool.sh copyrc -config=.copyrc.hcl
-        sources:
-            - .copyrc.hcl
+            - mkdir -p ./gen/jsonschema/go/{{.ITEMNAME}}
+            - ./go tool go-jsonschema {{.ITEM}} -o=./gen/jsonschema/go/{{.ITEMNAME}}/model.go -p={{.ITEMNAME}}
+
+    generate-jsonschema:
+        run: once
+        cmds:
+            - for: { var: JSONSCHEMA_FILES }
+              vars: { ITEMNAME: '{{ splitList "/"  .ITEM | last | replace ".schema.json" "" }}', ITEM: "{{.ITEM}}" }
+              task: generate-jsonschema-single
+
         generates:
-            - "**/*.copyrc.lock"
-        status:
-            - ./scripts/run-tool.sh copyrc -config=.copyrc.hcl -status
+            - ./gen/jsonschema/go/*.go
+        sources:
+            - "**/*.schema.json"
 
-    copywrite:
-        cmds:
-            - ./scripts/run-tool.sh addlicense -c="walteh LLC" -l="apache"  "./cmd" "./pkg" "./scripts"
+    # copyrc:
+    #     desc: copyrc
+    #     cmds:
+    #         - ./go tool copyrc -config=.copyrc.hcl -force
+    #     sources:
+    #         - .copyrc.hcl
+    #     generates:
+    #         - "**/*.copyrc.lock"
+    #     status:
+    #         - ./go tool copyrc -config=.copyrc.hcl -status
 
     go-mod-tidy:
-        env:
-            {
-                GOPROXY: https://proxy.golang.org,
-                GOSUMDB: sum.golang.org,
-                GOPRIVATE: github.com/walteh,
-            }
+        env: { GOPROXY: https://proxy.golang.org, GOSUMDB: sum.golang.org, GOPRIVATE: github.com/walteh }
         cmds:
             - for: { var: GO_MODULES }
               cmd: |
@@ -95,12 +101,66 @@ tasks:
 
     go-mod-upgrade:
         run: once
-        deps: [local-setup-tools]
-        env:
-            {
-                GOPROXY: https://proxy.golang.org,
-                GOSUMDB: sum.golang.org,
-                GOPRIVATE: github.com/walteh,
-            }
+        env: { GOPROXY: https://proxy.golang.org, GOSUMDB: sum.golang.org, GOPRIVATE: github.com/walteh }
         cmds:
-            - ./scripts/run-tool.sh go-mod-upgrade --force
+            - ./go tool go-mod-upgrade --force
+
+    refresh-extension-go:
+        dir: code-extension
+        cmds:
+            - rm -rf out
+            - mkdir -p out
+            - task: go
+            - bun install
+
+    # not really a huge size difference in the .vsix file, and its way slower to build
+    refresh-extension-tinygo:
+        dir: code-extension
+        cmds:
+            - rm -rf out
+            - mkdir -p out
+            - task: wasm-tinygo
+            - bun install
+
+    rebuild-extension:
+        dir: code-extension
+        cmds:
+            - task: refresh-extension-go
+            - bun run build
+
+    package-extension:
+        dir: code-extension
+        cmds:
+            - task: refresh-extension-go
+            - bun run package
+            - mv ./*.vsix ~/Downloads
+            - open https://marketplace.visualstudio.com/manage/publishers/walteh
+
+    go:
+        desc: Build WASM module
+        cmds:
+            - go build -o code-extension/out/{{.BINARY_NAME}} ./cmd/{{.BINARY_NAME}}
+
+    wasm:
+        desc: Build WASM module
+        cmds:
+            - GOOS=js GOARCH=wasm go build -o code-extension/out/{{.BINARY_NAME}}.wasm ./cmd/{{.BINARY_NAME}}-wasm
+            - cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" code-extension/out/wasm_exec.js
+
+    wasm-tinygo:
+        desc: Build WASM module with TinyGo
+        cmds:
+            - GOOS=js GOARCH=wasm tinygo build -o ./code-extension/out/{{.BINARY_NAME}}.tinygo.wasm ./cmd/{{.BINARY_NAME}}-wasm
+            - cp "$(tinygo env TINYGOROOT)/targets/wasm_exec.js" ./code-extension/out/wasm_exec.tinygo.js
+
+    wasi:
+        desc: Build WASI module
+        cmds:
+            - GOOS=wasip1 GOARCH=wasm go build -o ./code-extension/out/{{.BINARY_NAME}}.wasi.wasm ./cmd/{{.BINARY_NAME}}-wasi
+            - cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" ./code-extension/out/wasm_exec.wasi.js
+
+    wasi-tinygo:
+        desc: Build WASI module
+        cmds:
+            - GOOS=wasip1 GOARCH=wasm tinygo build -o ./code-extension/out/{{.BINARY_NAME}}.wasi.wasm ./cmd/{{.BINARY_NAME}}-wasi
+            - cp "$(tinygo env TINYGOROOT)/targets/wasm_exec.js" ./code-extension/out/wasm_exec.wasi.js
